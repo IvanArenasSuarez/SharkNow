@@ -1,6 +1,6 @@
-import daisyui from "daisyui"
-/** @type {import('tailwindcss').Config} */
 
+/** @type {import('tailwindcss').Config} */
+import daisyui from "daisyui"
 export default {
   content: [
     "./index.html",
@@ -14,7 +14,7 @@ export default {
   ],
   
   daisyui: {
-    themes: ["cupcake", "dark", "cmyk"],
+    themes: ["cupcake"],
   },
   
 }
