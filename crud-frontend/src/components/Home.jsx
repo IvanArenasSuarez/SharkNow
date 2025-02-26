@@ -63,7 +63,7 @@ export default function Home() {
               </figure>
               <div className="card-body">
                 <h3 className="text-xl font-semibold">Sombreros</h3>
-                <p>Se obtiene por realizar cierto número de cantidad sesiones de estudio.</p>
+                <p>Se obtiene por realizar cierto número de sesiones de estudio.</p>
               </div>
             </div>
   
@@ -74,7 +74,7 @@ export default function Home() {
               </figure>
               <div className="card-body">
                 <h3 className="text-xl font-semibold">Marcos</h3>
-                <p>Se recibe por mantener una racha de estudio constante.</p>
+                <p>Se reciben aleatoriamente junto con los sombreros</p>
               </div>
             </div>
           </div>
