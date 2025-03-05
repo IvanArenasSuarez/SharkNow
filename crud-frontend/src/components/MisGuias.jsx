@@ -36,6 +36,7 @@ export default function MisGuias() {
                 </button>
             </li>
         </ul>
+        <button className="btn btn-primary">Crear Guia de Estudio</button>
         </div>
         </div>
         </>
