@@ -6,6 +6,7 @@ import Home from "./components/Home";
 import Navbar from "./components/Navbar";
 import Login_Form from "./components/Login_Form";
 import Login_Carrusel from "./components/Login_Carrusel";
+import MisGuias from "./components/MisGuias";
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -126,7 +127,7 @@ function App() {
                     element={isAuthenticated ? (
                         <div className="flex flex-col h-screen">
                             <div className="flex-grow"> 
-                                <Home /> 
+                                <MisGuias /> 
                             </div>
                         </div>
                     ) : (
