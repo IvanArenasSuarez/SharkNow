@@ -1,8 +1,16 @@
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { BellIcon } from "lucide-react";
 
 export default function Navbar() {
   const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    console.log("Token después de logout:", localStorage.getItem("token"));
+    window.location.href = "/login";
+  };
+
 
   return (
     <div className="navbar bg-base-100 shadow-md px-6">
@@ -48,7 +56,7 @@ export default function Navbar() {
               <a onClick={() => navigate("/configuracion")}>Configuración</a>
             </li>
             <li>
-              <a onClick={() => navigate("/logout")}>Cerrar Sesión</a>
+              <a onClick={handleLogout}>Cerrar Sesión</a>
             </li>
           </ul>
         </div>
