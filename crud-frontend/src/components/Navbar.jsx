@@ -11,6 +11,9 @@ export default function Navbar() {
     window.location.href = "/login";
   };
 
+  const gotoMisGuias = () => {
+    navigate("/mis_guias");
+  };
 
   return (
     <div className="navbar bg-base-100 shadow-md px-6">
@@ -21,7 +24,7 @@ export default function Navbar() {
       <div className="navbar-center hidden lg:flex">
         <ul className="menu menu-horizontal px-1">
           <li>
-            <a onClick={() => navigate("/guias-de-estudio")}>Guías de Estudio</a>
+            <a onClick={gotoMisGuias}>Guías de Estudio</a>
           </li>
           <li>
             <a onClick={() => navigate("/busqueda")}>Búsqueda</a>

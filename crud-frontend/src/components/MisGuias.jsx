@@ -1,4 +1,14 @@
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+
 export default function MisGuias() {
+
+    const navigate = useNavigate();
+
+    const gotoCrearGuias = () => {
+        navigate('/crear_guia');
+    };
+
     return (
         <div className="flex items-center justify-center h-screen px-6">
             <div className="flex flex-col lg:flex-row justify-between gap-6 w-full max-w-7xl">
@@ -57,7 +67,7 @@ export default function MisGuias() {
                         ))}
                     </ul>
 
-                    <button className="btn btn-primary w-1/3 mx-auto">Crear Guía de Estudio</button>
+                    <button onClick= {gotoCrearGuias}className="btn btn-primary w-1/3 mx-auto">Crear Guía de Estudio</button>
                 </div>
 
                 {/* Guías Seguidas */}

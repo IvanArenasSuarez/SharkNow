@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import Home from "./components/Home";
+import CrearGuia from "./components/CrearGuia";
 import Navbar from "./components/Navbar";
 import Login_Form from "./components/Login_Form";
 import Login_Carrusel from "./components/Login_Carrusel";
@@ -97,13 +98,15 @@ function App() {
                     element={isAuthenticated ? (
                         <div className="flex flex-col h-screen">
                             <div className="flex-grow"> 
-                                <MisGuias /> 
+                                <Home /> 
                             </div>
                         </div>
                     ) : (
                         <Navigate to="/login" />
                     )}
                 />
+                <Route path="/mis_guias" element={<MisGuias/>}/>
+                <Route path="/crear_guia" element={<CrearGuia/>}/>
             </Routes>
         </Router>
     );
