@@ -8,6 +8,8 @@ import Navbar from "./components/Navbar";
 import Login_Form from "./components/Login_Form";
 import Login_Carrusel from "./components/Login_Carrusel";
 import MisGuias from "./components/MisGuias";
+import EditarGuia from "./components/EditarGuia";
+
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -105,8 +107,9 @@ function App() {
                         <Navigate to="/login" />
                     )}
                 />
-                <Route path="/mis_guias" element={<MisGuias/>}/>
-                <Route path="/crear_guia" element={<CrearGuia/>}/>
+                <Route path="/mis-guias" element={<MisGuias/>}/>
+                <Route path="/crear-guia" element={<CrearGuia/>}/>
+                <Route path="/editar-guia" element={<EditarGuia/>}/>
             </Routes>
         </Router>
     );

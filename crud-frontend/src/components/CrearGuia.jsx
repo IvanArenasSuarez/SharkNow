@@ -1,4 +1,17 @@
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+
 export default function CrearGuia() {
+    
+    const navigate = useNavigate();
+
+    const gotoEditarGuia = () => {
+        navigate('/editar-guia')
+    }
+    const gotoMisGuias = () => {
+        navigate("/mis-guias");
+      };
+
     return (
         <div className="p-6 max-w-4xl mx-auto">
             <h1 className="text-2xl font-bold text-center mb-6">Crear Guía de Estudio</h1>
@@ -6,7 +19,7 @@ export default function CrearGuia() {
             {/* Contenedor principal con distribución 1 - 2 - 1 */}
             <div className="flex flex-col gap-8">
                 
-                {/* 1️⃣ Radio Buttons */}
+                {/* Radio Buttons */}
                 <div className="flex flex-col items-center gap-4">
                     <legend className="font-semibold text-lg">Tipo de Guía</legend>
                     <div className="flex gap-4">
@@ -17,7 +30,7 @@ export default function CrearGuia() {
                     </div>
                 </div>
 
-                {/* 2️⃣ Grupo de Selects y Text Inputs */}
+                {/* Grupo de Selects y Text Inputs */}
                 <div className="flex flex-col lg:flex-row gap-8">
                     
                     {/* Grupo de Selects */}
@@ -77,7 +90,7 @@ export default function CrearGuia() {
                     <div className="w-full lg:w-1/2 flex flex-col gap-6 flex-grow">
                         <fieldset>
                             <legend className="font-semibold mb-2 text-lg">Nombre de la Guía</legend>
-                            <input type="text" placeholder="Escribe aquí" className="input text-lg" />
+                            <input type="text" className="input text-lg" />
                         </fieldset>
 
                         <fieldset className="flex flex-col flex-grow">
@@ -87,10 +100,10 @@ export default function CrearGuia() {
                     </div>
                 </div>
 
-                {/* 3️⃣ Botones */}
+                {/* Botones */}
                 <div className="flex justify-center gap-4">
-                    <button className="btn btn-primary btn-lg text-lg w-40">Crear</button>
-                    <button className="btn btn-secondary btn-lg text-lg w-40">Cancelar</button>
+                    <button onClick={gotoEditarGuia} className="btn btn-primary btn-lg text-lg w-40">Crear</button>
+                    <button onClick={gotoMisGuias} className="btn btn-secondary btn-lg text-lg w-40">Cancelar</button>
                 </div>
             </div>
         </div>

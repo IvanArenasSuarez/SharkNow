@@ -6,7 +6,7 @@ export default function MisGuias() {
     const navigate = useNavigate();
 
     const gotoCrearGuias = () => {
-        navigate('/crear_guia');
+        navigate('/crear-guia');
     };
 
     return (

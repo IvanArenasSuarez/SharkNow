@@ -12,7 +12,7 @@ export default function Navbar() {
   };
 
   const gotoMisGuias = () => {
-    navigate("/mis_guias");
+    navigate("/mis-guias");
   };
 
   return (
