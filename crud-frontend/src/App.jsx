@@ -9,7 +9,8 @@ import Login_Form from "./components/Login_Form";
 import Login_Carrusel from "./components/Login_Carrusel";
 import MisGuias from "./components/MisGuias";
 import EditarGuia from "./components/EditarGuia";
-
+import Search from "./components/Search";
+import Profile from "./components/Profile";
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -94,7 +95,35 @@ function App() {
                         <Navigate to="/" />
                     )}
                 />
+                {/* Ruta para la página de búsqueda */}
+                <Route
+                    path="/busqueda"
+                    element={isAuthenticated ? (
+                        <div className="flex flex-col h-screen">
+                            <div className="flex-grow">
+                                <Search />
+                            </div>
+                        </div>
+                    ) : (
+                        <Navigate to="/login" />
+                    )}
+                />
                 
+                {/* Ruta para la página de Perfil */}
+                <Route
+                    path="/perfil"
+                    element={isAuthenticated ? (
+                        <div className="flex flex-col h-screen">
+                            <div className="flex-grow">
+                                <Profile />
+                            </div>
+                        </div>
+                    ) : (
+                        <Navigate to="/login" />
+                    )}
+                />
+
+                {/* Ruta para la página principal */}
                 <Route 
                     path="/*" 
                     element={isAuthenticated ? (
@@ -110,9 +139,10 @@ function App() {
                 <Route path="/mis-guias" element={<MisGuias/>}/>
                 <Route path="/crear-guia" element={<CrearGuia/>}/>
                 <Route path="/editar-guia" element={<EditarGuia/>}/>
+                <Route path="/perfil" element={<Profile/>}/>
+                <Route path="/busqueda" element={<Search/>}/>
+                
             </Routes>
         </Router>
     );
-}
-
-export default App;
+}export default App;
