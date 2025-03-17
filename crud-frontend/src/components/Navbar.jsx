@@ -4,16 +4,23 @@ import { BellIcon } from "lucide-react";
 export default function Navbar() {
   const navigate = useNavigate();
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    console.log("Token después de logout:", localStorage.getItem("token"));
+    window.location.href = "/login";
+  };    
   return (
-    <div className="navbar bg-base-100 shadow-md px-6">
+    <div className="navbar bg-blue-600 shadow-md px-6">
       <div className="navbar-start">
-        <a className="text-2xl font-bold">SharkNow</a>
+        <button onClick={() => navigate("/Home")} className="text-2xl font-bold btn btn-ghost hover:bg-blue-600 transition">
+            SharkNow
+        </button>
       </div>
 
       <div className="navbar-center hidden lg:flex">
-        <ul className="menu menu-horizontal px-1">
+        <ul className="menu menu-horizontal font-bold px-4 gap-x-10">
           <li>
-            <a onClick={() => navigate("/guias-de-estudio")}>Guías de Estudio</a>
+            <a onClick={() => navigate("/mis-guias")}>Guías de Estudio</a>
           </li>
           <li>
             <a onClick={() => navigate("/busqueda")}>Búsqueda</a>
@@ -48,7 +55,7 @@ export default function Navbar() {
               <a onClick={() => navigate("/configuracion")}>Configuración</a>
             </li>
             <li>
-              <a onClick={() => navigate("/logout")}>Cerrar Sesión</a>
+              <a onClick={handleLogout}>Cerrar Sesión</a>
             </li>
           </ul>
         </div>

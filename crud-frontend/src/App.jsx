@@ -3,9 +3,14 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import Home from "./components/Home";
+import CrearGuia from "./components/CrearGuia";
 import Navbar from "./components/Navbar";
 import Login_Form from "./components/Login_Form";
 import Login_Carrusel from "./components/Login_Carrusel";
+import MisGuias from "./components/MisGuias";
+import EditarGuia from "./components/EditarGuia";
+import Search from "./components/Search";
+import Profile from "./components/Profile";
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -64,42 +69,12 @@ function App() {
         }
     };
 
-    // 🔹 Maneja el cierre de sesión
     const handleLogout = () => {
-        console.warn("Cerrando sesión...");
         localStorage.removeItem("token");
         localStorage.removeItem("userData");
         setIsAuthenticated(false);
         setUserData(null);
-        window.location.reload(); // 🔹 Asegura que la UI se actualice
     };
-
-    // 🔹 Verifica el estado del servidor cada 60s y cierra sesión si está inactivo
-    useEffect(() => {
-        const checkAuth = async () => {
-            const token = getStoredToken();
-            if (!token || !decodeToken(token)) {
-                handleLogout();
-                return;
-            }
-
-            try {
-                const response = await axios.get("http://localhost:4000/check-auth", {
-                    headers: { Authorization: `Bearer ${token}` },
-                });
-
-                if (response.status !== 200) {
-                    handleLogout();
-                }
-            } catch (error) {
-                console.error("Servidor no responde, cerrando sesión...");
-                handleLogout();
-            }
-        };
-
-        const interval = setInterval(checkAuth, 60000);
-        return () => clearInterval(interval);
-    }, []);
 
     return (
         <Router>
@@ -120,7 +95,35 @@ function App() {
                         <Navigate to="/" />
                     )}
                 />
+                {/* Ruta para la página de búsqueda */}
+                <Route
+                    path="/busqueda"
+                    element={isAuthenticated ? (
+                        <div className="flex flex-col h-screen">
+                            <div className="flex-grow">
+                                <Search />
+                            </div>
+                        </div>
+                    ) : (
+                        <Navigate to="/login" />
+                    )}
+                />
                 
+                {/* Ruta para la página de Perfil */}
+                <Route
+                    path="/perfil"
+                    element={isAuthenticated ? (
+                        <div className="flex flex-col h-screen">
+                            <div className="flex-grow">
+                                <Profile />
+                            </div>
+                        </div>
+                    ) : (
+                        <Navigate to="/login" />
+                    )}
+                />
+
+                {/* Ruta para la página principal */}
                 <Route 
                     path="/*" 
                     element={isAuthenticated ? (
@@ -133,9 +136,13 @@ function App() {
                         <Navigate to="/login" />
                     )}
                 />
+                <Route path="/mis-guias" element={<MisGuias/>}/>
+                <Route path="/crear-guia" element={<CrearGuia/>}/>
+                <Route path="/editar-guia" element={<EditarGuia/>}/>
+                <Route path="/perfil" element={<Profile/>}/>
+                <Route path="/busqueda" element={<Search/>}/>
+                
             </Routes>
         </Router>
     );
-}
-
-export default App;
+}export default App;

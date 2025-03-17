@@ -1,85 +1,117 @@
+import Footer from "../components/Footer";
+import { useNavigate } from "react-router-dom";
+
 export default function Home() {
-    return (
-      <div className="p-6 space-y-12">
-        {/* ¿Qué es Sharknow? */}
-        <section className="text-center">
-          <h1 className="text-4xl font-bold">¿Qué es SharkNow?</h1>
-          <p className="mt-4 text-lg text-gray-300">
-            Sharknow es un sistema web para el autoestudio basado en la repetición espaciada el cual busca ser una 
-            herramienta de apoyo para la comunidad estudiantil de ESCOM mediante las guías de estudio creadas 
-            por estudiantes y profesores.
-          </p>
-  
-          {/* Carrusel de imágenes */}
-          <div className="carousel w-full max-w-2xl mx-auto mt-6 rounded-lg shadow-lg">
-            <div id="slide1" className="carousel-item relative w-full">
-              <img src="/img/sharknow1.jpg" className="w-full" alt="Slide 1" />
-              <div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
-                <a href="#slide3" className="btn btn-circle">❮</a>
-                <a href="#slide2" className="btn btn-circle">❯</a>
-              </div>
-            </div>
-            <div id="slide2" className="carousel-item relative w-full">
-              <img src="/img/sharknow2.png" className="w-full" alt="Slide 2" />
-              <div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
-                <a href="#slide1" className="btn btn-circle">❮</a>
-                <a href="#slide3" className="btn btn-circle">❯</a>
-              </div>
-            </div>
-            <div id="slide3" className="carousel-item relative w-full">
-              <img src="/img/sharknow3.png" className="w-full" alt="Slide 3" />
-              <div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
-                <a href="#slide2" className="btn btn-circle">❮</a>
-                <a href="#slide1" className="btn btn-circle">❯</a>
-              </div>
-            </div>
-           </div>
-        </section>
-  
-        {/* Sistema de Recompensas */}
-        <section className="text-center">
-          <h2 className="text-3xl font-bold">Sistema de Recompensas</h2>
-          <p className="mt-4 text-lg text-gray-300">
-            Sharknow te premia por aprender. Hay 3 tipos de recompensas que puedes ganar.
-          </p>
-  
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-            
-            <div className="card w-80 bg-base-100 shadow-md mx-auto">
-              <figure>
-                <img src="/img/reward1.jpg" alt="Recompensa 1" />
-              </figure>
-              <div className="card-body">
-                <h3 className="text-xl font-semibold">Insignias</h3>
-                <p > Se otorga por contribuir a la comunidad 
-                    a través de crear guías de estudio.</p>
-              </div>
-            </div>
-  
-            
-            <div className="card w-80 bg-base-100 shadow-md mx-auto">
-              <figure>
-                <img src="/img/reward2.jpg" alt="Recompensa 2" />
-              </figure>
-              <div className="card-body">
-                <h3 className="text-xl font-semibold">Sombreros</h3>
-                <p>Se obtiene por realizar cierto número de sesiones de estudio.</p>
-              </div>
-            </div>
-  
-            
-            <div className="card w-80 bg-base-100 shadow-md mx-auto">
-              <figure>
-                <img src="/img/reward3.jpg" alt="Recompensa 3" />
-              </figure>
-              <div className="card-body">
-                <h3 className="text-xl font-semibold">Marcos</h3>
-                <p>Se reciben aleatoriamente junto con los sombreros</p>
-              </div>
-            </div>
+  const navigate = useNavigate();
+  return (
+    <div className="flex flex-col min-h-screen">
+      {/* Sección Hero */}
+      <section className="bg-base-100 py-20 px-10">
+        <div className="container mx-auto flex flex-col md:flex-row items-center justify-between">
+          
+          {/* Lado izquierdo: Texto y botón */}
+          <div className="md:w-1/2 text-left">
+            <h1 className="text-5xl text-white font-bold">Bienvenido a SharkNow</h1>
+            <p className="mt-4 text-xl text-gray-200 max-w-md">
+              La herramienta para el autoestudio basada en el método de aprendizaje de repetición 
+              espaciada, la cual utiliza las guías de estudio creadas por la comunidad estudiantil de ESCOM
+              para apoyarlos a memorizar temas de estudio de su interés.
+            </p>
+            {/* CAMBIAR DIRECCIÓN */}
+            <button onClick={() => navigate("/busqueda")} className="mt-6 px-6 py-3 btn bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition">
+              Comenzar ahora
+            </button>
           </div>
-        </section>
-      </div>
-    );
-  }
-  
+
+          {/* Lado derecho: Imagen ilustrativa */}
+          <div className="md:w-1/2 flex justify-center mt-2 md:mt-0">
+            <img src="/src/assets/fondo.jpg" alt="Bienvenida SharkNow" className="w-full rounded-lg shadow-lg" />
+          </div>
+
+        </div>
+      </section>
+
+      {/* Sección: ¿Qué es SharkNow? con diseño en dos columnas */}
+      <section className="bg-blue-600 py-16 px-10">
+        <div className="container mx-auto flex flex-col md:flex-row items-center justify-between">
+          
+          {/* Lado izquierdo: Carrusel de imágenes */}
+          <div className="md:w-1/2 flex justify-center">
+            <div className="carousel w-full rounded-lg shadow-lg">
+              <div id="slide1" className="carousel-item relative w-full">
+                <img src="/src/assets/sharknow1.jpg" className="w-full" alt="Slide 1" />
+                <div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
+                  <a href="#slide3" className="btn btn-circle">❮</a>
+                  <a href="#slide2" className="btn btn-circle">❯</a>
+                </div>
+              </div>
+              <div id="slide2" className="carousel-item relative w-full">
+                <img src="/src/assets/sharknow2.png" className="w-full" alt="Slide 2" />
+                <div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
+                  <a href="#slide1" className="btn btn-circle">❮</a>
+                  <a href="#slide3" className="btn btn-circle">❯</a>
+                </div>
+              </div>
+              <div id="slide3" className="carousel-item relative w-full">
+                <img src="/src/assets/sharknow3.png" className="w-full" alt="Slide 3" />
+                <div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
+                  <a href="#slide2" className="btn btn-circle">❮</a>
+                  <a href="#slide1" className="btn btn-circle">❯</a>
+                </div>
+              </div>
+              </div>
+          </div>
+
+          {/* Lado derecho: Texto */}
+          <div className="md:w-1/2 text-right">
+            <h2 className="text-4xl font-bold text-white">¿Qué es la repetición espaciada?</h2>
+            <p className="mt-4 text-xl text-white max-w-md ml-auto text-right">
+              SharkNow hace uso de un método de aprendizaje llamado "Repetición espaciada", el cual tiene como objetivo 
+              la memorización mediante la repetición del contenido a estudiar, esto separado en espacios de tiempo determinados, 
+              los cuales van aumentando periódicamente dependiendo de la retención que obtenga el estudiante.
+            
+            </p>
+          </div>
+
+        </div>
+      </section>
+
+
+      {/* Sección: Sistema de Recompensas */}
+      <section className="text-center py-16 px-6">
+        <h2 className="text-4xl font-bold text-white">Aprende y Gana</h2>
+        <p className="mt-4 text-xl text-gray-200 max-w-3xl mx-auto">
+          Obtén recompensas para personalizar tu avatar mientras aprendes con SharkNow y
+          presúmeselo a todos. 
+        </p>
+       
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+          {/* Recompensa 1 */}
+          <div className="card w-80 bg-white shadow-lg mx-auto p-4 rounded-lg">
+            <img src="/src/assets/reward1.jpg" alt="Recompensa 1" className="rounded-lg" />
+            <h3 className="text-xl font-bold mt-4 text-blue-600">Sombreros</h3>
+            <p className="text-gray-700">Realiza tus sesiones de estudio y personaliza tu avatar con sombreros.</p>
+            
+          </div>
+
+          {/* Recompensa 2 */}
+          <div className="card w-80 bg-white shadow-lg mx-auto p-4 rounded-lg">
+            <img src="/src/assets/reward2.jpg" alt="Recompensa 2" className="rounded-lg" />
+            <h3 className="text-xl font-bold mt-4 text-blue-600">Insignias</h3>
+            <p className="text-gray-700">
+              Contribuye a la comunidad creando guías de estudio y obtén insignias.
+            </p>
+          </div>
+
+          {/* Recompensa 3 */}
+          <div className="card w-80 bg-white shadow-lg mx-auto p-4 rounded-lg">
+            <img src="/src/assets/reward3.jpg" alt="Recompensa 3" className="rounded-lg" />
+            <h3 className="text-xl font-bold mt-4 text-blue-600">Marcos</h3>
+            <p className="text-gray-700">Mantén una racha de sesiones de estudio y desbloquea marcos.</p>
+          </div>
+        </div>
+      </section>
+      <Footer />
+    </div>
+  );
+}
