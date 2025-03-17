@@ -11,7 +11,8 @@ export default function CrearGuia() {
     const gotoMisGuias = () => {
         navigate("/mis-guias");
       };
-
+    
+    const [tipoGuia, setTipoGuia] = React.useState("curricular");
     return (
         <div className="p-6 max-w-4xl mx-auto">
             <h1 className="text-2xl font-bold text-center mb-6">Crear Guía de Estudio</h1>
