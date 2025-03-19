@@ -29,20 +29,32 @@ export default function Profile() {
           </div>
 
           {/* Lado derecho: Información del usuario */}
-          <div className="w-full md:w-1/2 bg-gray-200 p-6 rounded-lg shadow-md">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">Información del Usuario</h2>
+          <div className="w-full md:w-1/2 p-6 rounded-lg shadow-md">
+            
             <div className="space-y-4">
               <div>
-                <h3 className="text-lg font-medium text-gray-700">Nombre(s)</h3>
-                <p className="text-gray-600">[Nombre del usuario]</p>
+                <h3 className="text-lg font-medium text-white">Nombre(s)</h3>
+                <input
+                  type="text"
+                  placeholder="Nombre del usuario"
+                  className="input input-bordered w-full md:w-2/3 p-3 rounded-lg text-base"
+                />
               </div>
               <div>
-                <h3 className="text-lg font-medium text-gray-700">Apellido(s)</h3>
-                <p className="text-gray-600">[Apellido del usuario]</p>
+                <h3 className="text-lg font-medium text-white">Apellido(s)</h3>
+                <input
+                  type="text"
+                  placeholder="Apellidos del usuario"
+                  className="input input-bordered w-full md:w-2/3 p-3 rounded-lg text-base"
+                />
               </div>
               <div>
-                <h3 className="text-lg font-medium text-gray-700">Descripción</h3>
-                <p className="text-gray-600">[Aquí irá una breve descripción del usuario]</p>
+                <h3 className="text-lg font-medium text-white">Descripción</h3>
+                <textarea
+                  placeholder="Descripción del usuario"
+                  rows="6" 
+                  className="w-full md:w-2/3 p-3 rounded-lg border border-gray-600 resize-y text-base"
+                ></textarea>
               </div>
             </div>
 
