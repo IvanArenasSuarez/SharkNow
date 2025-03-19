@@ -11,35 +11,71 @@ export default function Registro() {
     const [reCunt, setReCunt] = useState("");
     const [tipo, setTipo] = useState(1);
     const [error, setError] = useState(null);
-    const [isLoading, setIsLoading] = useState(false); 
+    const [validationErrors, setValidationErrors] = useState([]);
+    const [mostrarContra, setMostrarContra] = useState(false);
+    const [mostrarReContra, setMostrarReContra] = useState(false);
 
     function usuario(nombre, apellidos, correo, tipo, contraseña, reContraseña){
-        this.nombre = nombre
-        this.apellidos = apellidos
-        this.correo = correo
-        this.tipo = tipo
-        this.contraseña = contraseña
-        this.reContraseña = reContraseña  
+        this.nombre = nombre;
+        this.apellidos = apellidos;
+        this.correo = correo;
+        this.tipo = tipo;
+        this.contraseña = contraseña;
+        this.reContraseña = reContraseña;
     }
 
-    const validateEmail = (email) => {
-        const regex = /^[^\s@]+@[^\s@]+$/;
-        return regex.test(email);
+    const validarCorreo = (email) => {
+        const regex = /^[^\s@]+@([a-zA-Z0-9.-]+)$/;
+        const match = email.match(regex);
+
+        if (!match) return { esValido: false, tipo: null };
+
+        const domain = match[1];
+
+        if (domain === "alumno.ipn.mx") {
+            return { esValido: true, tipo: 1 };
+        } else if (domain === "ipn.mx") {
+            return { esValido: true, tipo: 2 };
+        } else {
+            return { esValido: false, tipo: null };
+        }
     };
 
+    const validarContra = (cunt) => {
+        const regex = /^(?=.*[0-9])(?=.*[\W_]).{8,}$/; 
+        return regex.test(cunt);
+    };
 
     const handleRegistro = async () => {
         setError(null);
+        let errores = [];
 
-        if(!validateEmail(correo)) {
-            setError("El correo ingresado no es válido")
+        const { esValido, tipo: nuevoTipo } = validarCorreo(correo);
+
+        if (!esValido) {
+            errores.push("El correo ingresado no es válido.");
+        }
+
+        if (!validarContra(cunt)) {
+            errores.push("La contraseña debe tener al menos 8 caracteres, incluir un número y un símbolo.");
+        }
+
+        if (cunt !== reCunt) {
+            errores.push("Las contraseñas no coinciden.");
+        }
+
+        if (errores.length > 0) {
+            setValidationErrors(errores);
             return;
         }
 
+        setTipo(nuevoTipo); // Asignar el nuevo tipo
+
         try {
-            console.table(new usuario(nombre, apellidos, correo, tipo, cunt, reCunt))
+            console.table(new usuario(nombre, apellidos, correo, nuevoTipo, cunt, reCunt));
+            setValidationErrors([]);
         } catch (ina) {
-            setError("Error al recibir la información")
+            setError("Error al recibir la información.");
         }
     };
 
@@ -53,6 +89,13 @@ export default function Registro() {
                 <h1 className="text-4xl font-bold text-center mb-6">Registro</h1>
 
                 {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+                {validationErrors.length > 0 && (
+                    <ul className="text-red-500 text-sm text-center">
+                        {validationErrors.map((err, index) => (
+                            <li key={index}>{err}</li>
+                        ))}
+                    </ul>
+                )}
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {/* Primera columna */}
@@ -75,7 +118,7 @@ export default function Registro() {
                                 value={apellidos}
                                 onChange={(e) => setApellidos(e.target.value)}
                                 required
-                                />
+                            />
                         </fieldset>
                         <fieldset>
                             <legend className="font-semibold mb-1">Correo Institucional</legend>
@@ -85,32 +128,59 @@ export default function Registro() {
                                 value={correo}
                                 onChange={(e) => setCorreo(e.target.value)}
                                 required
-                                />
+                            />
                         </fieldset>
                     </div>
 
                     {/* Segunda columna */}
                     <div className="flex flex-col gap-4">
+                        {/* Campo de Contraseña */}
                         <fieldset>
                             <legend className="font-semibold mb-1">Contraseña</legend>
                             <input 
-                                type="password" 
+                                type={mostrarContra ? "text" : "password"} 
                                 className="input w-full" 
+                                minLength={8}
                                 value={cunt}
                                 onChange={(e) => setCunt(e.target.value)}
                                 required
-                                />
+                            />
                         </fieldset>
+                        {/* Checkbox para mostrar la contraseña */}
+                        <div className="flex items-center">
+                            <input 
+                                type="checkbox" 
+                                id="mostrarContra" 
+                                className="checkbox checkbox-info mr-2"
+                                checked={mostrarContra}
+                                onChange={() => setMostrarContra(!mostrarContra)}
+                            />
+                            <label htmlFor="mostrarContra" className="text-sm">Mostrar contraseña</label>
+                        </div>
+
+                        {/* Campo de Confirmar Contraseña */}
                         <fieldset>
                             <legend className="font-semibold mb-1">Reescribir Contraseña</legend>
                             <input 
-                                type="password" 
+                                type={mostrarReContra ? "text" : "password"} 
                                 className="input w-full" 
+                                minLength={8}
                                 value={reCunt}
                                 onChange={(e) => setReCunt(e.target.value)}
                                 required
-                                />
+                            />
                         </fieldset>
+                        {/* Checkbox para mostrar la confirmación de contraseña */}
+                        <div className="flex items-center">
+                            <input 
+                                type="checkbox" 
+                                id="mostrarReContra" 
+                                className="checkbox checkbox-info mr-2"
+                                checked={mostrarReContra}
+                                onChange={() => setMostrarReContra(!mostrarReContra)}
+                            />
+                            <label htmlFor="mostrarReContra" className="text-sm">Mostrar contraseña</label>
+                        </div>
                     </div>
                 </div>
 

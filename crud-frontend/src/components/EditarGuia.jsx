@@ -28,7 +28,7 @@ export default function EditarGuia() {
 
     return (
         <div className="p-6 max-w-5xl mx-auto">
-            <h1 className="text-2xl font-bold text-center mb-6">Editar Guía de Estudio</h1>
+            <h1 className="text-4xl font-bold text-center mb-6">Editar Guía de Estudio</h1>
 
             <div className="flex flex-col lg:flex-row gap-15">
                 

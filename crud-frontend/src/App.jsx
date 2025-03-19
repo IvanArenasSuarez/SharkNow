@@ -11,7 +11,8 @@ import MisGuias from "./components/MisGuias";
 import EditarGuia from "./components/EditarGuia";
 import Search from "./components/Search";
 import Profile from "./components/Profile";
-import Registro from "./components/Registro"
+import Footer from "./components/Footer";
+import Registro from "./components/Registro";
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -144,6 +145,7 @@ function App() {
                 <Route path="/busqueda" element={<Search />} />
                 <Route path="/registro" element={<Registro />} />
             </Routes>
+            <Footer />
         </Router>
     );
 } export default App;
