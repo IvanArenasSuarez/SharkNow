@@ -51,7 +51,7 @@ export default function Search() {
             onChange={(e) => setSelectedFilter(e.target.value)}
             className="select select-bordered p-2 w-full md:w-1/6 rounded-lg"
           >
-            <option value="" disabled>Selecciona un filtro</option>
+            <option value="" disabled>Filtros</option>
             {filterOptions.map((filter) => (
               <option key={filter} value={filter}>{filter}</option>
             ))}
