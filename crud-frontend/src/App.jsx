@@ -11,6 +11,7 @@ import MisGuias from "./components/MisGuias";
 import EditarGuia from "./components/EditarGuia";
 import Search from "./components/Search";
 import Profile from "./components/Profile";
+import Registro from "./components/Registro"
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -108,7 +109,7 @@ function App() {
                         <Navigate to="/login" />
                     )}
                 />
-                
+
                 {/* Ruta para la página de Perfil */}
                 <Route
                     path="/perfil"
@@ -124,25 +125,25 @@ function App() {
                 />
 
                 {/* Ruta para la página principal */}
-                <Route 
-                    path="/*" 
+                <Route
+                    path="/*"
                     element={isAuthenticated ? (
                         <div className="flex flex-col h-screen">
-                            <div className="flex-grow"> 
-                                <Home /> 
+                            <div className="flex-grow">
+                                <Home />
                             </div>
                         </div>
                     ) : (
                         <Navigate to="/login" />
                     )}
                 />
-                <Route path="/mis-guias" element={<MisGuias/>}/>
-                <Route path="/crear-guia" element={<CrearGuia/>}/>
-                <Route path="/editar-guia" element={<EditarGuia/>}/>
-                <Route path="/perfil" element={<Profile/>}/>
-                <Route path="/busqueda" element={<Search/>}/>
-                
+                <Route path="/mis-guias" element={<MisGuias />} />
+                <Route path="/crear-guia" element={<CrearGuia />} />
+                <Route path="/editar-guia" element={<EditarGuia />} />
+                <Route path="/perfil" element={<Profile />} />
+                <Route path="/busqueda" element={<Search />} />
+                <Route path="/registro" element={<Registro />} />
             </Routes>
         </Router>
     );
-}export default App;
+} export default App;

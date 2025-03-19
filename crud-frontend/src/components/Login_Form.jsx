@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Login_Form({ onLogin }) {
     const [correo, setCorreo] = useState("");
@@ -30,15 +31,20 @@ export default function Login_Form({ onLogin }) {
         }
     };
 
+    const navigate = useNavigate();
+
+    const gotoRegistro = () => {
+        navigate("/registro");
+    };
     return (
         <div className="flex items-center justify-center h-screen">
-        <div className="p-6 rounded-lg shadow-lg w-80 flex flex-col gap-4">
-            <h1 className="text-2xl font-bold text-center">Iniciar Sesión</h1>
+            <div className="p-6 rounded-lg shadow-lg w-80 flex flex-col gap-4">
+                <h1 className="text-2xl font-bold text-center">Iniciar Sesión</h1>
 
                 {error && <p className="text-red-500 text-sm text-center">{error}</p>}
 
                 <div className="flex flex-col gap-2">
-                    <input 
+                    <input
                         type="email"
                         className="input input-bordered p-2 border border-gray-300 rounded-md"
                         placeholder="Correo"
@@ -46,7 +52,7 @@ export default function Login_Form({ onLogin }) {
                         onChange={(e) => setCorreo(e.target.value)}
                         required
                     />
-                    <input 
+                    <input
                         type="password"
                         className="input input-bordered p-2 border border-gray-300 rounded-md"
                         placeholder="Contraseña"
@@ -59,14 +65,14 @@ export default function Login_Form({ onLogin }) {
                 <button className="btn btn-link self-end">¿Olvidaste tu contraseña?</button>
 
                 <div className="flex gap-2">
-                    <button 
+                    <button
                         className={`btn flex-1 ${isLoading ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-700"} text-white py-2 rounded`}
                         onClick={handleLogin}
                         disabled={isLoading}
                     >
                         {isLoading ? "Cargando..." : "Iniciar Sesión"}
                     </button>
-                    <button className="btn btn-secondary flex-1">Registrarse</button>
+                    <button onClick={gotoRegistro} className="btn btn-secondary flex-1">Registrarse</button>
                 </div>
             </div>
         </div>
