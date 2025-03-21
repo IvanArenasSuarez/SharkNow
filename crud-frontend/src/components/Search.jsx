@@ -8,7 +8,7 @@ export default function Search() {
 
   const filterOptions = [
     "Materia",
-    "Nombre",
+    "Autor",
     "Academia",
     "Plan de estudios",
     "Más 'Me sirve'",
