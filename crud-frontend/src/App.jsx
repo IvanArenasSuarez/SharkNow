@@ -12,6 +12,7 @@ import EditarGuia from "./components/EditarGuia";
 import Search from "./components/Search";
 import Profile from "./components/Profile";
 import UserProfile from "./components/UserProfile";
+import Reporte from "./components/Reporte";
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -143,6 +144,7 @@ function App() {
                 <Route path="/perfil" element={<Profile/>}/>
                 <Route path="/busqueda" element={<Search/>}/>
                 <Route path="/perfil/alumno" element={<UserProfile />} />
+                <Route path="/reporte" element={<Reporte />} />
                 
             </Routes>
         </Router>
