@@ -13,6 +13,8 @@ import Search from "./components/Search";
 import Profile from "./components/Profile";
 import Footer from "./components/Footer";
 import Registro from "./components/Registro";
+import RecuperarContraseña from "./components/RecuperarContraseña";
+import VerGuiaSeguida from "./components/VerGuiaSeguida";
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -144,6 +146,8 @@ function App() {
                 <Route path="/perfil" element={<Profile />} />
                 <Route path="/busqueda" element={<Search />} />
                 <Route path="/registro" element={<Registro />} />
+                <Route path="/recuperar-contraseña" element = {<RecuperarContraseña />}/>
+                <Route path="/ver-guia-seguida" element = {<VerGuiaSeguida />} />
             </Routes>
             <Footer />
         </Router>
