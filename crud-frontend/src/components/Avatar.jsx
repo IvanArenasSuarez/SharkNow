@@ -65,8 +65,10 @@ export default function Avatar() {
                 className="w-full h-full object-cover"
               />
               {selectedHat && <img src={selectedHat} className="absolute top-0 w-20" alt="Sombrero" />}
-              {selectedBadge && <img src={selectedBadge} className="absolute bottom-0 w-14 mb-1" alt="Insignia" />}
-              {selectedFrame && <img src={selectedFrame} className="absolute inset-0 w-full h-full z-10" alt="Marco" />} 
+              {selectedBadge && <img src={selectedBadge} className="absolute bottom-0 w-14 mb-1 z-20" alt="Insignia" />}
+              {selectedFrame && (
+                <img src={selectedFrame} className="absolute inset-0 w-full h-full z-10" alt="Marco" />
+              )}
             </div>
 
             {/* Botones debajo del avatar */}
