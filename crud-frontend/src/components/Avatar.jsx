@@ -6,11 +6,13 @@ export default function Avatar() {
   const navigate = useNavigate();
 
   // Estado de personalización del avatar
+  const [selectedCharacter, setSelectedCharacter] = useState(null);
   const [selectedBadge, setSelectedBadge] = useState(null);
-  const [selectedFrame, setSelectedFrame] = useState(null);
+  const [selectedFrame, setSelectedFrame] = useState(null); // Marco
   const [selectedHat, setSelectedHat] = useState(null);
 
   // Estado para el desplazamiento de los carruseles
+  const [characterIndex, setCharacterIndex] = useState(0);
   const [badgeIndex, setBadgeIndex] = useState(0);
   const [frameIndex, setFrameIndex] = useState(0);
   const [hatIndex, setHatIndex] = useState(0);
@@ -24,12 +26,14 @@ export default function Avatar() {
     "src/assets/3.jpg",
     "src/assets/4.jpg",
     "src/assets/fondo.jpg",
-    "src/assets/reward1.jpg",// Más imágenes para probar el scroll
+    "src/assets/reward1.jpg",
     "src/assets/reward2.jpg",
+    "src/assets/MARCO.png",
+    "src/assets/MARCO2.png",
   ];
 
   const handleSave = () => {
-    console.log("Avatar guardado con:", { selectedBadge, selectedFrame, selectedHat });
+    console.log("Avatar guardado con:", { selectedCharacter, selectedBadge, selectedFrame, selectedHat });
     alert("Avatar actualizado correctamente.");
     navigate(-1);
   };
@@ -54,16 +58,15 @@ export default function Avatar() {
           <div className="w-full md:w-1/3 flex flex-col items-center bg-gray-800 p-6 rounded-lg shadow-md">
             <h1 className="text-3xl font-bold text-center mb-6">Personalizar Avatar</h1>
             <div className="relative w-56 h-56 rounded-full overflow-hidden border-4 border-gray-300 shadow-lg bg-gray-700 flex items-center justify-center">
+              {/* Imagen base del avatar (Personaje seleccionado) */}
               <img
-                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                src={selectedCharacter || "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"}
                 alt="Avatar del usuario"
                 className="w-full h-full object-cover"
               />
-              {selectedFrame && <img src={selectedFrame} className="absolute inset-0 w-full h-full" alt="Marco" />}
               {selectedHat && <img src={selectedHat} className="absolute top-0 w-20" alt="Sombrero" />}
-              {selectedBadge && (
-                <img src={selectedBadge} className="absolute bottom-0 w-14 mb-1" alt="Insignia" />
-              )}
+              {selectedBadge && <img src={selectedBadge} className="absolute bottom-0 w-14 mb-1" alt="Insignia" />}
+              {selectedFrame && <img src={selectedFrame} className="absolute inset-0 w-full h-full z-10" alt="Marco" />} 
             </div>
 
             {/* Botones debajo del avatar */}
@@ -84,11 +87,12 @@ export default function Avatar() {
           </div>
 
           {/* Lado derecho (Opciones de personalización) */}
-          <div className="w-full md:w-2/3 p-6 rounded-lg shadow-lg ">
+          <div className="w-full md:w-2/3 p-6 rounded-lg shadow-lg">
             <h2 className="text-2xl font-bold mb-6 text-center">Selecciona tus elementos</h2>
 
             {/* Secciones de personalización con carruseles centrados */}
             {[
+              { title: "Personaje", images: sampleImages, state: selectedCharacter, setState: setSelectedCharacter, index: characterIndex, setIndex: setCharacterIndex },
               { title: "Insignia", images: sampleImages, state: selectedBadge, setState: setSelectedBadge, index: badgeIndex, setIndex: setBadgeIndex },
               { title: "Marco", images: sampleImages, state: selectedFrame, setState: setSelectedFrame, index: frameIndex, setIndex: setFrameIndex },
               { title: "Sombrero", images: sampleImages, state: selectedHat, setState: setSelectedHat, index: hatIndex, setIndex: setHatIndex },
