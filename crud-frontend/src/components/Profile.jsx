@@ -3,6 +3,11 @@ import { useNavigate } from "react-router-dom";
 
 export default function Profile() {
     const navigate = useNavigate();
+
+    const gotoAvatar = () => {
+      navigate('/avatar');
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
       <div className="container mx-auto p-6 flex-grow">
@@ -21,7 +26,7 @@ export default function Profile() {
               />
             </div>
             <button
-              onClick={() => navigate("/personalizar")}
+              onClick={gotoAvatar}
               className="mt-4 px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition"
             >
               Personalizar

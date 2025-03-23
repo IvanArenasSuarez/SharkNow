@@ -13,6 +13,7 @@ import Search from "./components/Search";
 import Profile from "./components/Profile";
 import UserProfile from "./components/UserProfile";
 import Reporte from "./components/Reporte";
+import Avatar from "./components/Avatar";
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -145,7 +146,7 @@ function App() {
                 <Route path="/busqueda" element={<Search/>}/>
                 <Route path="/perfil/alumno" element={<UserProfile />} />
                 <Route path="/reporte" element={<Reporte />} />
-                
+                <Route path="/avatar" element={<Avatar />} />
             </Routes>
         </Router>
     );
