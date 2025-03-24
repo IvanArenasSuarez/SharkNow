@@ -1,6 +1,15 @@
+import { useState } from "react";
 import Footer from "../components/Footer";
 
 export default function UserProfile() {
+  
+  // Estados para el tipo de cuenta y la característica de academia del usuario que visualizamos
+  const [tipoCuenta, setTipoCuenta] = useState(2);
+  const [tieneCaracteristicaAcademia, setTieneCaracteristicaAcademia] = useState(false);
+  // Estados para el tipo de cuenta y la característica de academia del usuario actual
+  const [tipoCuenta2, setTipoCuenta2] = useState(2);
+  const [tieneCaracteristicaAcademia2, setTieneCaracteristicaAcademia2] = useState(true);
+
   return (
     <div className="flex flex-col min-h-screen">
       <div className="container mx-auto p-6 flex-grow">
@@ -10,7 +19,9 @@ export default function UserProfile() {
           
           {/* Lado izquierdo (Perfil del usuario) */}
           <div className="bg-gray-800 w-full md:w-1/3 flex flex-col items-center p-6 rounded-lg shadow-md">
-            <h1 className="text-3xl font-bold text-white text-center mb-6">Alumno</h1>
+            <h1 className="text-3xl font-bold text-white text-center mb-6">
+                {tipoCuenta === 1 ? "Alumno" : "Profesor"}
+            </h1>
             <div className="w-44 h-44 rounded-full overflow-hidden border-4 border-gray-300 shadow-lg">
               <img
                 src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
@@ -36,6 +47,13 @@ export default function UserProfile() {
                 <h3 className="text-lg font-medium text-white">Descripción</h3>
                 <p className="text-gray-300">[Descripción del usuario]</p>
               </div>
+              
+              {/* Botón para transferir característica de academia */}
+              {tipoCuenta === 2 && tieneCaracteristicaAcademia === false && tipoCuenta2 === 2 && tieneCaracteristicaAcademia2 && (
+                <button className="btn bg-blue-600 text-white px-5 py-2 rounded-lg shadow-md hover:bg-blue-700 transition">
+                  Transferir característica de academia
+                </button>
+              )}
             </div>
           </div>
 

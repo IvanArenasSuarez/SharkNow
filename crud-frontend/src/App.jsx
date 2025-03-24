@@ -144,7 +144,7 @@ function App() {
                 <Route path="/editar-guia" element={<EditarGuia/>}/>
                 <Route path="/perfil" element={<Profile/>}/>
                 <Route path="/busqueda" element={<Search/>}/>
-                <Route path="/perfil/alumno" element={<UserProfile />} />
+                <Route path="/perfil/usuario" element={<UserProfile />} />
                 <Route path="/reporte" element={<Reporte />} />
                 <Route path="/avatar" element={<Avatar />} />
             </Routes>
