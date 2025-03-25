@@ -98,7 +98,9 @@ export default function EditarGuia() {
                                     <p className="text-sm text-gray-600">Esta es una descripción de {pregunta}.</p>
                                 </div>
                                 <div className="flex gap-2">
-                                    <button className="btn btn-square btn-ghost">
+                                    <button 
+                                    onClick={() => navigate("/editar-pregunta")}
+                                    className="btn btn-square btn-ghost">
                                         <svg className="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                             <g strokeLinejoin="round" strokeLinecap="round" strokeWidth="2" fill="none" stroke="currentColor">
                                                 <path d={checkIcon}></path>

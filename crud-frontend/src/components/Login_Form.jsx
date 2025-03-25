@@ -1,10 +1,12 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Login_Form({ onLogin }) {
     const [correo, setCorreo] = useState("");
     const [contraseña, setContraseña] = useState("");
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [mostrarContra, setMostrarContra] = useState(false);
 
     const validateEmail = (email) => {
         const regex = /^[^\s@]+@[^\s@]+$/;
@@ -30,15 +32,24 @@ export default function Login_Form({ onLogin }) {
         }
     };
 
+    const navigate = useNavigate();
+
+    const gotoRegistro = () => {
+        navigate("/registro");
+    };
+    const gotoRecuperarContraseña = () => {
+        navigate("/recuperar-contraseña");
+    };
+
     return (
         <div className="flex items-center justify-center h-screen">
-        <div className="p-6 rounded-lg shadow-lg w-80 flex flex-col gap-4">
-            <h1 className="text-2xl font-bold text-center">Iniciar Sesión</h1>
+            <div className="p-6 rounded-lg shadow-lg w-80 flex flex-col gap-6">
+                <h1 className="text-2xl font-bold text-center">Iniciar Sesión</h1>
 
                 {error && <p className="text-red-500 text-sm text-center">{error}</p>}
 
-                <div className="flex flex-col gap-2">
-                    <input 
+                <div className="flex flex-col gap-4">
+                    <input
                         type="email"
                         className="input input-bordered p-2 border border-gray-300 rounded-md"
                         placeholder="Correo"
@@ -46,27 +57,37 @@ export default function Login_Form({ onLogin }) {
                         onChange={(e) => setCorreo(e.target.value)}
                         required
                     />
-                    <input 
-                        type="password"
+                    <input
+                        type={mostrarContra ? "text" : "password"}
                         className="input input-bordered p-2 border border-gray-300 rounded-md"
                         placeholder="Contraseña"
                         value={contraseña}
                         onChange={(e) => setContraseña(e.target.value)}
                         required
                     />
+                    <div className="flex items-center">
+                            <input 
+                                type="checkbox" 
+                                id="mostrarContra" 
+                                className="checkbox checkbox-info mr-2"
+                                checked={mostrarContra}
+                                onChange={() => setMostrarContra(!mostrarContra)}
+                            />
+                            <label htmlFor="mostrarContra" className="text-sm">Mostrar contraseña</label>
+                        </div>
                 </div>
 
-                <button className="btn btn-link self-end">¿Olvidaste tu contraseña?</button>
+                <button onClick={gotoRecuperarContraseña} className="btn btn-link self-end">¿Olvidaste tu contraseña?</button>
 
                 <div className="flex gap-2">
-                    <button 
+                    <button
                         className={`btn flex-1 ${isLoading ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-700"} text-white py-2 rounded`}
                         onClick={handleLogin}
                         disabled={isLoading}
                     >
                         {isLoading ? "Cargando..." : "Iniciar Sesión"}
                     </button>
-                    <button className="btn btn-secondary flex-1">Registrarse</button>
+                    <button onClick={gotoRegistro} className="btn btn-secondary flex-1">Registrarse</button>
                 </div>
             </div>
         </div>

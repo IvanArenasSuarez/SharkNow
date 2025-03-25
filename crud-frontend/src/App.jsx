@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
+
 import Home from "./components/Home";
 import CrearGuia from "./components/CrearGuia";
 import Navbar from "./components/Navbar";
@@ -9,17 +12,24 @@ import Login_Form from "./components/Login_Form";
 import Login_Carrusel from "./components/Login_Carrusel";
 import MisGuias from "./components/MisGuias";
 import EditarGuia from "./components/EditarGuia";
+import EditarPregunta from "./components/EditarPregunta";
 import Search from "./components/Search";
+import QuizGuia from "./components/QuizGuia";
 import Profile from "./components/Profile";
+import Footer from "./components/Footer";
+import Registro from "./components/Registro";
+import RecuperarContraseña from "./components/RecuperarContraseña";
+import VerGuiaSeguida from "./components/VerGuiaSeguida";
+import UserProfile from "./components/UserProfile";
+import Reporte from "./components/Reporte";
+import Avatar from "./components/Avatar";
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [userData, setUserData] = useState(null);
 
-    // Obtiene el token almacenado en localStorage
     const getStoredToken = () => localStorage.getItem("token");
 
-    // Decodifica el token y verifica su validez
     const decodeToken = (token) => {
         try {
             const decoded = jwtDecode(token);
@@ -37,7 +47,6 @@ function App() {
         }
     };
 
-    // Cargar datos de usuario si hay un token válido
     useEffect(() => {
         const token = getStoredToken();
         if (token) {
@@ -50,7 +59,6 @@ function App() {
         }
     }, []);
 
-    // Maneja el inicio de sesión
     const handleLogin = async (credentials) => {
         try {
             const response = await axios.post("http://localhost:4000/login", credentials);
@@ -78,71 +86,49 @@ function App() {
 
     return (
         <Router>
-            {isAuthenticated && <Navbar userData={userData} onLogout={handleLogout} />}
-            <Routes>
-                <Route
-                    path="/login"
-                    element={!isAuthenticated ? (
-                        <div className="flex h-screen">
-                            <div className='flex-[2] flex justify-center items-center'>
-                                <Login_Carrusel />
+            <DndProvider backend={HTML5Backend}>
+                {isAuthenticated && <Navbar userData={userData} onLogout={handleLogout} />}
+                <Routes>
+                    <Route
+                        path="/login"
+                        element={!isAuthenticated ? (
+                            <div className="flex h-screen">
+                                <div className='flex-[2] flex justify-center items-center'>
+                                    <Login_Carrusel />
+                                </div>
+                                <div className='flex-[2] flex justify-center items-center'>
+                                    <Login_Form onLogin={handleLogin} />
+                                </div>
                             </div>
-                            <div className='flex-[2] flex justify-center items-center'>
-                                <Login_Form onLogin={handleLogin} />
-                            </div>
-                        </div>
+                        ) : (
+                            <Navigate to="/" />
+                        )}
+                    />
+                            <Route path="/registro" element={<Registro />} />
+                            <Route path="/recuperar-contraseña" element={<RecuperarContraseña />} />
+                    {isAuthenticated ? (
+                        <>
+                            <Route path="/" element={<Home />} />
+                            <Route path="/mis-guias" element={<MisGuias />} />
+                            <Route path="/crear-guia" element={<CrearGuia />} />
+                            <Route path="/editar-guia" element={<EditarGuia />} />
+                            <Route path="/editar-pregunta" element={<EditarPregunta />} />                            
+                            <Route path="/perfil" element={<Profile />} />
+                            <Route path="/busqueda" element={<Search />} />
+                            <Route path="/quiz-guia" element={<QuizGuia />} />
+                            <Route path="/ver-guia-seguida" element={<VerGuiaSeguida />} />7
+                            <Route path="/perfil/usuario" element={<UserProfile />} />
+                            <Route path="/reporte" element={<Reporte />} />
+                            <Route path="/avatar" element={<Avatar />} />
+                        </>
                     ) : (
-                        <Navigate to="/" />
+                        <Route path="*" element={<Navigate to="/login" />} />
                     )}
-                />
-                {/* Ruta para la página de búsqueda */}
-                <Route
-                    path="/busqueda"
-                    element={isAuthenticated ? (
-                        <div className="flex flex-col h-screen">
-                            <div className="flex-grow">
-                                <Search />
-                            </div>
-                        </div>
-                    ) : (
-                        <Navigate to="/login" />
-                    )}
-                />
-                
-                {/* Ruta para la página de Perfil */}
-                <Route
-                    path="/perfil"
-                    element={isAuthenticated ? (
-                        <div className="flex flex-col h-screen">
-                            <div className="flex-grow">
-                                <Profile />
-                            </div>
-                        </div>
-                    ) : (
-                        <Navigate to="/login" />
-                    )}
-                />
-
-                {/* Ruta para la página principal */}
-                <Route 
-                    path="/*" 
-                    element={isAuthenticated ? (
-                        <div className="flex flex-col h-screen">
-                            <div className="flex-grow"> 
-                                <Home /> 
-                            </div>
-                        </div>
-                    ) : (
-                        <Navigate to="/login" />
-                    )}
-                />
-                <Route path="/mis-guias" element={<MisGuias/>}/>
-                <Route path="/crear-guia" element={<CrearGuia/>}/>
-                <Route path="/editar-guia" element={<EditarGuia/>}/>
-                <Route path="/perfil" element={<Profile/>}/>
-                <Route path="/busqueda" element={<Search/>}/>
-                
-            </Routes>
+                </Routes>
+            </DndProvider>
+            <Footer />
         </Router>
     );
-}export default App;
+}
+
+export default App;
