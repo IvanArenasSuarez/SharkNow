@@ -4,17 +4,45 @@ import { BellIcon } from "lucide-react";
 
 export default function Navbar() {
   const navigate = useNavigate();
+  const [notificationsVisible, setNotificationsVisible] = useState(false);
+
+  const notifications = [
+    {
+      id: 1,
+      message: "Nueva guía de estudio disponible",
+      route: "/mis-guias",
+    },
+    {
+      id: 2,
+      message: "Tienes un mensaje en tu perfil",
+      route: "/perfil",
+    },
+    {
+      id: 3,
+      message: "Configuración de cuenta actualizada",
+      route: "/configuracion",
+    },
+  ];
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     console.log("Token después de logout:", localStorage.getItem("token"));
     window.location.href = "/login";
-  };    
+  };
+
+  const handleNotificationClick = (route) => {
+    setNotificationsVisible(false); // Ocultar notificaciones después de hacer clic
+    navigate(route); // Redirigir a la ruta asociada a la notificación
+  };
+
   return (
     <div className="navbar bg-blue-600 shadow-md px-6">
       <div className="navbar-start">
-        <button onClick={() => navigate("/Home")} className="text-2xl font-bold btn btn-ghost hover:bg-blue-600 transition">
-            SharkNow
+        <button
+          onClick={() => navigate("/Home")}
+          className="text-2xl font-bold btn btn-ghost hover:bg-blue-600 transition"
+        >
+          SharkNow
         </button>
       </div>
 
@@ -31,9 +59,30 @@ export default function Navbar() {
 
       <div className="navbar-end flex items-center gap-4">
         {/* Notificaciones */}
-        <button className="btn btn-ghost btn-circle">
+        <button
+          className="btn btn-ghost btn-circle"
+          onClick={() => setNotificationsVisible(!notificationsVisible)}
+        >
           <BellIcon className="w-6 h-6" />
         </button>
+
+        {notificationsVisible && (
+          <div className="absolute top-16 right-6 w-64 bg-white shadow-lg rounded-md p-4 z-50">
+            <ul className="space-y-2">
+              {notifications.map((notification) => (
+                <li
+                  key={notification.id}
+                  className="text-sm text-gray-700 cursor-pointer hover:bg-gray-200 p-2 rounded flex items-center gap-2"
+                  onClick={() => handleNotificationClick(notification.route)}
+                >
+                  {/* Punto verde */}
+                  <span className="w-2.5 h-2.5 bg-green-500 rounded-full"></span>
+                  {notification.message}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         {/* Perfil */}
         <div className="dropdown dropdown-end">

@@ -3,6 +3,11 @@ import { useNavigate } from "react-router-dom";
 
 export default function Profile() {
     const navigate = useNavigate();
+
+    const gotoAvatar = () => {
+      navigate('/avatar');
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
       <div className="container mx-auto p-6 flex-grow">
@@ -21,7 +26,7 @@ export default function Profile() {
               />
             </div>
             <button
-              onClick={() => navigate("/personalizar")}
+              onClick={gotoAvatar}
               className="mt-4 px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition"
             >
               Personalizar
@@ -29,20 +34,32 @@ export default function Profile() {
           </div>
 
           {/* Lado derecho: Información del usuario */}
-          <div className="w-full md:w-1/2 bg-gray-200 p-6 rounded-lg shadow-md">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">Información del Usuario</h2>
+          <div className="w-full md:w-1/2 p-6 rounded-lg shadow-md">
+            
             <div className="space-y-4">
               <div>
-                <h3 className="text-lg font-medium text-gray-700">Nombre(s)</h3>
-                <p className="text-gray-600">[Nombre del usuario]</p>
+                <h3 className="text-lg font-medium text-white">Nombre(s)</h3>
+                <input
+                  type="text"
+                  placeholder="Nombre del usuario"
+                  className="input input-bordered w-full md:w-2/3 p-3 rounded-lg text-base"
+                />
               </div>
               <div>
-                <h3 className="text-lg font-medium text-gray-700">Apellido(s)</h3>
-                <p className="text-gray-600">[Apellido del usuario]</p>
+                <h3 className="text-lg font-medium text-white">Apellido(s)</h3>
+                <input
+                  type="text"
+                  placeholder="Apellidos del usuario"
+                  className="input input-bordered w-full md:w-2/3 p-3 rounded-lg text-base"
+                />
               </div>
               <div>
-                <h3 className="text-lg font-medium text-gray-700">Descripción</h3>
-                <p className="text-gray-600">[Aquí irá una breve descripción del usuario]</p>
+                <h3 className="text-lg font-medium text-white">Descripción</h3>
+                <textarea
+                  placeholder="Descripción del usuario"
+                  rows="6" 
+                  className="w-full md:w-2/3 p-3 rounded-lg border border-gray-600 resize-y text-base"
+                ></textarea>
               </div>
             </div>
 
@@ -55,9 +72,6 @@ export default function Profile() {
           </div>
         </div>
       </div>
-
-      {/* Footer */}
-      <Footer />
     </div>
   );
 }
