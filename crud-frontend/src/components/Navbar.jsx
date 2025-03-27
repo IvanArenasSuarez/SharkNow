@@ -39,7 +39,7 @@ export default function Navbar() {
     <div className="navbar bg-blue-600 shadow-md px-6">
       <div className="navbar-start">
         <button
-          onClick={() => navigate("/Home")}
+          onClick={() => navigate("/")}
           className="text-2xl font-bold btn btn-ghost hover:bg-blue-600 transition"
         >
           SharkNow
