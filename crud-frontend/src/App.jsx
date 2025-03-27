@@ -14,6 +14,7 @@ import Profile from "./components/Profile";
 import UserProfile from "./components/UserProfile";
 import Reporte from "./components/Reporte";
 import Avatar from "./components/Avatar";
+import UserProfileAdmin from "./components/UserProfileAdmin";
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -147,6 +148,7 @@ function App() {
                 <Route path="/perfil/usuario" element={<UserProfile />} />
                 <Route path="/reporte" element={<Reporte />} />
                 <Route path="/avatar" element={<Avatar />} />
+                <Route path="/admin/perfil" element={<UserProfileAdmin />} />
             </Routes>
         </Router>
     );
