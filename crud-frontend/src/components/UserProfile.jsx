@@ -2,7 +2,6 @@ import { useState } from "react";
 import Footer from "../components/Footer";
 
 export default function UserProfile() {
-  
   // Estados para el tipo de cuenta y la característica de academia del usuario que visualizamos
   const [tipoCuenta, setTipoCuenta] = useState(2);
   const [tieneCaracteristicaAcademia, setTieneCaracteristicaAcademia] = useState(false);
@@ -13,10 +12,10 @@ export default function UserProfile() {
   return (
     <div className="flex flex-col min-h-screen">
       <div className="container mx-auto p-6 flex-grow">
-        
+
         {/* Contenedor principal en dos columnas */}
         <div className="flex flex-col md:flex-row gap-10">
-          
+
           {/* Lado izquierdo (Perfil del usuario) */}
           <div className="bg-gray-800 w-full md:w-1/3 flex flex-col items-center p-6 rounded-lg shadow-md">
             <h1 className="text-3xl font-bold text-white text-center mb-6">
@@ -47,7 +46,6 @@ export default function UserProfile() {
                 <h3 className="text-lg font-medium text-white">Descripción</h3>
                 <p className="text-gray-300">[Descripción del usuario]</p>
               </div>
-              
               {/* Botón para transferir característica de academia */}
               {tipoCuenta === 2 && tieneCaracteristicaAcademia === false && tipoCuenta2 === 2 && tieneCaracteristicaAcademia2 && (
                 <button className="btn bg-blue-600 text-white px-5 py-2 rounded-lg shadow-md hover:bg-blue-700 transition">
@@ -98,9 +96,6 @@ export default function UserProfile() {
           </div>
         </div>
       </div>
-
-      {/* Footer */}
-      <Footer />
     </div>
   );
 }
