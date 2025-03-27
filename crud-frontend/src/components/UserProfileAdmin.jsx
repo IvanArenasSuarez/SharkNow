@@ -12,7 +12,7 @@ export default function UserProfileAdmin() {
   // Estado para el usuario al que restringiremos la cuenta
   const [tieneRestriccion, setTieneRestriccion] = useState(false);
 
-  // Estado para manejar la alerta de confirmación de eliminación
+  // Estado para manejar la alerta de confirmación de eliminaciónes
   const [isDeleteAlertVisible, setIsDeleteAlertVisible] = useState(false);
   const [isRestrictAlertVisible, setIsRestrictAlertVisible] = useState(false);
   const [isRestoreAlertVisible, setIsRestoreAlertVisible] = useState(false);
