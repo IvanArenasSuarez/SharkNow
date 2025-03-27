@@ -21,8 +21,10 @@ import Registro from "./components/Registro";
 import RecuperarContraseña from "./components/RecuperarContraseña";
 import VerGuiaSeguida from "./components/VerGuiaSeguida";
 import UserProfile from "./components/UserProfile";
+import UserProfileAdmin from "./components/UserProfile";
 import Reporte from "./components/Reporte";
 import Avatar from "./components/Avatar";
+
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -120,6 +122,7 @@ function App() {
                             <Route path="/perfil/usuario" element={<UserProfile />} />
                             <Route path="/reporte" element={<Reporte />} />
                             <Route path="/avatar" element={<Avatar />} />
+                            <Route path="/perfil/admin" element={<UserProfileAdmin />} />
                         </>
                     ) : (
                         <Route path="*" element={<Navigate to="/login" />} />

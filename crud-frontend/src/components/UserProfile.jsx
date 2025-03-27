@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Footer from "../components/Footer";
+
 
 export default function UserProfile() {
   // Estados para el tipo de cuenta y la característica de academia del usuario que visualizamos

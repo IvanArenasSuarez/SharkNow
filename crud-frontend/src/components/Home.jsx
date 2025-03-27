@@ -1,4 +1,4 @@
-import Footer from "../components/Footer";
+
 import { useNavigate } from "react-router-dom";
 
 export default function Home() {
