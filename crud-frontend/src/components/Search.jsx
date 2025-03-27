@@ -1,5 +1,4 @@
 import { useState } from "react";
-import Footer from "../components/Footer";
 
 export default function Search() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -108,9 +107,6 @@ export default function Search() {
           </ul>
         </div>
       </div>
-
-      {/* Footer */}
-      <Footer />
     </div>
   );
 }

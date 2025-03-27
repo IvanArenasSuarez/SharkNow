@@ -107,9 +107,6 @@ export default function Reporte() {
           </button>
         </div>
       </div>
-
-      {/* Footer */}
-      <Footer />
     </div>
   );
 }
