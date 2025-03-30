@@ -8,6 +8,7 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import Home from "./components/Home";
 import CrearGuia from "./components/CrearGuia";
 import Navbar from "./components/Navbar";
+import NavbarAdmin from "./components/NavbarAdmin";
 import Login_Form from "./components/Login_Form";
 import Login_Carrusel from "./components/Login_Carrusel";
 import MisGuias from "./components/MisGuias";
@@ -21,7 +22,7 @@ import Registro from "./components/Registro";
 import RecuperarContraseña from "./components/RecuperarContraseña";
 import VerGuiaSeguida from "./components/VerGuiaSeguida";
 import UserProfile from "./components/UserProfile";
-import UserProfileAdmin from "./components/UserProfile";
+import UserProfileAdmin from "./components/UserProfileAdmin";
 import Reporte from "./components/Reporte";
 import Avatar from "./components/Avatar";
 
@@ -108,6 +109,8 @@ function App() {
                     />
                             <Route path="/registro" element={<Registro />} />
                             <Route path="/recuperar-contraseña" element={<RecuperarContraseña />} />
+                            <Route path="/perfil/admin" element={<UserProfileAdmin />} />
+                            <Route path="/perfil/usuario" element={<UserProfile />} />
                     {isAuthenticated ? (
                         <>
                             <Route path="/" element={<Home />} />
@@ -119,10 +122,9 @@ function App() {
                             <Route path="/busqueda" element={<Search />} />
                             <Route path="/quiz-guia" element={<QuizGuia />} />
                             <Route path="/ver-guia-seguida" element={<VerGuiaSeguida />} />7
-                            <Route path="/perfil/usuario" element={<UserProfile />} />
                             <Route path="/reporte" element={<Reporte />} />
                             <Route path="/avatar" element={<Avatar />} />
-                            <Route path="/perfil/admin" element={<UserProfileAdmin />} />
+                            
                         </>
                     ) : (
                         <Route path="*" element={<Navigate to="/login" />} />

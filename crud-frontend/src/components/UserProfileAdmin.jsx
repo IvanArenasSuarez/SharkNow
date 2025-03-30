@@ -4,13 +4,13 @@ import { useState } from "react";
 export default function UserProfileAdmin() {
   // Estados para el usuario visualizado
   const [tipoCuenta, setTipoCuenta] = useState(2);
-  const [tieneCaracteristicaAcademia, setTieneCaracteristicaAcademia] = useState(false);
+  const [tieneCaracteristicaAcademia, setTieneCaracteristicaAcademia] = useState(true);
 
   // Ya esta asignada la característica de academia
   const [alguienTieneCaracteristicaAcademia, setAlguienTieneCaracteristicaAcademia] = useState(false);
 
   // Estado para el usuario al que restringiremos la cuenta
-  const [tieneRestriccion, setTieneRestriccion] = useState(false);
+  const [tieneRestriccion, setTieneRestriccion] = useState(true);
 
   // Estado para manejar la alerta de confirmación de eliminaciónes
   const [isDeleteAlertVisible, setIsDeleteAlertVisible] = useState(false);
