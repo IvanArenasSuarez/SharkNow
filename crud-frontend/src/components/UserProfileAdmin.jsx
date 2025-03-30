@@ -1,3 +1,4 @@
+import { isCancel } from "axios";
 import { useState } from "react";
 
 
@@ -16,6 +17,8 @@ export default function UserProfileAdmin() {
   const [isDeleteAlertVisible, setIsDeleteAlertVisible] = useState(false);
   const [isRestrictAlertVisible, setIsRestrictAlertVisible] = useState(false);
   const [isRestoreAlertVisible, setIsRestoreAlertVisible] = useState(false);
+  const [isAsignacionAlertVisible, setIsAsignacionAlertVisible] = useState(false);
+  const [isQuitarAlertVisible, setIsQuitarAlertVisible] = useState(false);
 
   // Función para mostrar la alerta de eliminación
   const handleDeleteAccount = () => {
@@ -68,6 +71,40 @@ export default function UserProfileAdmin() {
     setIsRestoreAlertVisible(false);
   };
 
+  // Función para mostrar la alerta de asignar característica
+  const handleAsignacionCaracteristica = () => {
+    setIsAsignacionAlertVisible(true);
+  };
+
+  // Función para confirmar la asignacion de característica
+  const handleConfirmAsignacion = () => {
+    // Aquí puedes agregar la operación de asigancion en la base de datos
+    console.log("Característica asignada");
+    setIsAsignacionAlertVisible(false);
+  };
+
+  // Función para cancelar la asigancion
+  const handleCancelAsignacion = () => {
+    setIsAsignacionAlertVisible(false);
+  };
+
+  // Función para mostrar la alerta de quitar característica
+  const handleQuitarCaracteristica = () => {
+    setIsQuitarAlertVisible(true);
+  };
+
+  // Función para confirmar quitar de característica
+  const handleConfirmQuitar = () => {
+    // Aquí puedes agregar la operación de quitar en la base de datos
+    console.log("Característica asignada");
+    setIsQuitarAlertVisible(false);
+  };
+
+  // Función para cancelar quitar característica
+  const handleCancelQuitar = () => {
+    setIsQuitarAlertVisible(false);
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-gray-900 text-white">
       <div className="container mx-auto p-6 flex-grow">
@@ -105,10 +142,10 @@ export default function UserProfileAdmin() {
                   <li><a onClick={handleDeleteAccount}>Eliminar cuenta</a></li>
                   
                   {tipoCuenta === 2 && tieneCaracteristicaAcademia === false && alguienTieneCaracteristicaAcademia === false && ( 
-                    <li><a href="#">Asignar característica</a></li>
+                    <li><a onClick={handleAsignacionCaracteristica}>Asignar característica</a></li>
                   )}
                   {tipoCuenta === 2 && tieneCaracteristicaAcademia === true && ( 
-                    <li><a href="#">Quitar característica</a></li>
+                    <li><a onClick={handleQuitarCaracteristica}>Quitar característica</a></li>
                   )}
                 </ul>
               </div>
@@ -234,7 +271,31 @@ export default function UserProfileAdmin() {
         </div>
       )}
 
-      
+      {isAsignacionAlertVisible && (
+        <div className="fixed inset-0 bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white text-black p-6 rounded-lg shadow-lg">
+            <h3 className="text-xl font-semibold mb-4">¡Atención!</h3>
+            <p>Esta a punto de asignar la característica de academia a este usuario. ¿Estás seguro?</p>
+            <div className="mt-4 flex justify-end gap-4">
+                <button className="btn bg-blue-600 text-white px-6 py-2 rounded-lg shadow-md hover:bg-blue-700 transition" onClick={handleConfirmAsignacion}>Aceptar</button>
+                <button className="btn bg-red-600 text-white px-6 py-2 rounded-lg shadow-md hover:bg-red-700 transition" onClick={handleCancelAsignacion}>Cancelar</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isQuitarAlertVisible && (
+        <div className="fixed inset-0 bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white text-black p-6 rounded-lg shadow-lg">
+            <h3 className="text-xl font-semibold mb-4">¡Atención!</h3>
+            <p>Esta a punto de quitar la característica de academia a este usuario. ¿Estás seguro?</p>
+            <div className="mt-4 flex justify-end gap-4">
+                <button className="btn bg-blue-600 text-white px-6 py-2 rounded-lg shadow-md hover:bg-blue-700 transition" onClick={handleConfirmQuitar}>Aceptar</button>
+                <button className="btn bg-red-600 text-white px-6 py-2 rounded-lg shadow-md hover:bg-red-700 transition" onClick={handleCancelQuitar}>Cancelar</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
