@@ -8,7 +8,28 @@ export default function UserProfile() {
   // Estados para el tipo de cuenta y la característica de academia del usuario actual
   const [tipoCuenta2, setTipoCuenta2] = useState(2);
   const [tieneCaracteristicaAcademia2, setTieneCaracteristicaAcademia2] = useState(true);
-
+  
+  //Alerta de transferir característica de academia
+  const [isTransferirAlertVisible, setIsTransferirAlertVisible] = useState(false);
+   
+    // Función para mostrar la alerta de asignar característica
+    const handleTransferirCaracteristica = () => {
+      setIsTransferirAlertVisible(true);
+    };
+  
+    // Función para confirmar la asignacion de característica
+    const handleConfirmTransferir = () => {
+      // Aquí puedes agregar la operación de asigancion en la base de datos
+      console.log("Característica asignada");
+      setIsTransferirAlertVisible(false);
+    };
+  
+    // Función para cancelar la asigancion
+    const handleCancelTransferir = () => {
+      setIsTransferirAlertVisible(false);
+    };
+  
+     
   return (
     <div className="flex flex-col min-h-screen">
       <div className="container mx-auto p-6 flex-grow">
@@ -48,7 +69,7 @@ export default function UserProfile() {
               </div>
               {/* Botón para transferir característica de academia */}
               {tipoCuenta === 2 && tieneCaracteristicaAcademia === false && tipoCuenta2 === 2 && tieneCaracteristicaAcademia2 && (
-                <button className="btn bg-blue-600 text-white px-5 py-2 rounded-lg shadow-md hover:bg-blue-700 transition">
+                <button onClick={handleTransferirCaracteristica} className="btn bg-blue-600 text-white px-5 py-2 rounded-lg shadow-md hover:bg-blue-700 transition">
                   Transferir característica de academia
                 </button>
               )}
@@ -96,6 +117,18 @@ export default function UserProfile() {
           </div>
         </div>
       </div>
+      {isTransferirAlertVisible && (
+        <div className="fixed inset-0 bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white text-black p-6 rounded-lg shadow-lg">
+            <h3 className="text-xl font-semibold mb-4">¡Atención!</h3>
+            <p>Esta a punto de transferir la característica de academia a este usuario. ¿Estás seguro?</p>
+            <div className="mt-4 flex justify-end gap-4">
+                <button className="btn bg-blue-600 text-white px-6 py-2 rounded-lg shadow-md hover:bg-blue-700 transition" onClick={handleConfirmTransferir}>Aceptar</button>
+                <button className="btn bg-red-600 text-white px-6 py-2 rounded-lg shadow-md hover:bg-red-700 transition" onClick={handleCancelTransferir}>Cancelar</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
