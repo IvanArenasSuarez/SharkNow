@@ -1,16 +1,9 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-export default function MisGuias() {
-
+export default function MisGuiasProf() {
     const navigate = useNavigate();
-
-    const gotoCrearGuias = () => {
-        navigate('/crear-guia');
-    };
-    const gotoVerGuiaSeguida = () => {
-        navigate('/ver-guia-seguida');
-    };
+    const gotoCrearGuias = () => navigate('/crear-guia');
 
     return (
         <div className="min-h-screen flex flex-col items-center px-6 py-6">
@@ -74,57 +67,32 @@ export default function MisGuias() {
 
                     <button onClick= {gotoCrearGuias}className="btn btn-primary w-1/3 mx-auto">Crear Guía de Estudio</button>
                 </div>
-
-                {/* Guías Seguidas */}
+                
+                {/* Guías para Academia */}
                 <div className="p-6 rounded-lg shadow-lg w-full lg:w-[600px] flex flex-col gap-6">
-                    <h1 className="text-2xl font-bold text-center">Guías Seguidas</h1>
-
-                    <div className="flex items-center gap-2">
-                        <label className="input flex-[3] flex items-center border rounded-lg px-3 py-1">
-                            <svg className="h-5 opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                <g strokeLinejoin="round" strokeLinecap="round" strokeWidth="2.5" fill="none" stroke="currentColor">
-                                    <circle cx="11" cy="11" r="8"></circle>
-                                    <path d="m21 21-4.3-4.3"></path>
-                                </g>
-                            </svg>
-                            <input type="search" className="grow ml-2 outline-none" placeholder="Buscar" />
-                        </label>
-                        <select defaultValue="Filtros" className="select border rounded-lg p-2 flex-[1]">
-                            <option disabled>Filtros</option>
-                            <option>Nombre</option>
-                            <option>Materia</option>
-                        </select>
-                    </div>
-
-                    <ul className="bg-base-100 rounded-box shadow-md max-h-[calc(4*100px)] overflow-y-auto">
-                        <li className="p-4 text-xs opacity-60 tracking-wide">Lista de guías seguidas</li>
-                        {[...Array(5)].map((_, index) => (
-                            <li key={index} className="flex items-center gap-4 h-25 px-3 border-b">
-                                <img className="w-12 h-12 rounded-full" src="https://img.daisyui.com/images/profile/demo/1@94.webp" alt="Perfil" />
-                                <div className="flex flex-col flex-grow">
-                                    <div className="font-semibold text-lg">Guía {index + 1}</div>
-                                    <p className="text-sm text-gray-600">
-                                        This guide is a valuable resource for students seeking academic excellence.
-                                    </p>
-                                </div>
-                                <div className="flex gap-2">
+                    <h1 className="text-2xl font-bold text-center">Guías para Academia</h1>
+                    <ul className="bg-base-100 rounded-box shadow-md max-h-[calc(5*100px)] overflow-y-auto">
+                        <li className="p-4 text-xs opacity-60 tracking-wide"></li>
+                        {[...Array(5)].map((_, index) => {
+                            const estados = ["Aceptada", "Rechazada", "En Revisión"];
+                            const estado = estados[index % estados.length];
+                            return (
+                                <li key={index} className="flex items-center gap-4 h-25 px-3 border-b">
+                                    <img className="w-12 h-12 rounded-full" src="https://img.daisyui.com/images/profile/demo/1@94.webp" alt="Perfil" />
+                                    <div className="flex flex-col flex-grow">
+                                        <div className="font-semibold text-lg">Guía {index + 1}</div>
+                                        <p className="text-sm text-gray-600">Estado: <span className={`font-bold ${estado === 'Aceptada' ? 'text-green-500' : estado === 'Rechazada' ? 'text-red-500' : 'text-yellow-500'}`}>{estado}</span></p>
+                                    </div>
                                     <button className="btn btn-square btn-ghost">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
-                                        </svg>
-                                    </button>
-                                    <button 
-                                    onClick={() => navigate("/quiz-guia")}
-                                    className="btn btn-square btn-ghost">
                                         <svg className="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                             <g strokeLinejoin="round" strokeLinecap="round" strokeWidth="2" fill="none" stroke="currentColor">
                                                 <path d="m4.5 12.75 6 6 9-13.5"></path>
                                             </g>
                                         </svg>
                                     </button>
-                                </div>
-                            </li>
-                        ))}
+                                </li>
+                            );
+                        })}
                     </ul>
                 </div>
             </div>

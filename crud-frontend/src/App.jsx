@@ -11,6 +11,7 @@ import Navbar from "./components/Navbar";
 import Login_Form from "./components/Login_Form";
 import Login_Carrusel from "./components/Login_Carrusel";
 import MisGuias from "./components/MisGuias";
+import MisGuiasProf from "./components/MisGuiasProf";
 import EditarGuia from "./components/EditarGuia";
 import EditarPregunta from "./components/EditarPregunta";
 import Search from "./components/Search";
@@ -20,6 +21,7 @@ import Footer from "./components/Footer";
 import Registro from "./components/Registro";
 import RecuperarContraseña from "./components/RecuperarContraseña";
 import VerGuiaSeguida from "./components/VerGuiaSeguida";
+import GuiaSinSeguir from "./components/GuiaSinSeguir";
 import UserProfile from "./components/UserProfile";
 import Reporte from "./components/Reporte";
 import Avatar from "./components/Avatar";
@@ -106,10 +108,13 @@ function App() {
                     />
                             <Route path="/registro" element={<Registro />} />
                             <Route path="/recuperar-contraseña" element={<RecuperarContraseña />} />
+                            <Route path="/guia-sin-seguir" element={<GuiaSinSeguir/>} />
+                            <Route path="/mis-guias-prof" element={<MisGuiasProf />} />
                     {isAuthenticated ? (
                         <>
                             <Route path="/" element={<Home />} />
                             <Route path="/mis-guias" element={<MisGuias />} />
+                           
                             <Route path="/crear-guia" element={<CrearGuia />} />
                             <Route path="/editar-guia" element={<EditarGuia />} />
                             <Route path="/editar-pregunta" element={<EditarPregunta />} />                            
