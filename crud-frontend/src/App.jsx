@@ -25,7 +25,8 @@ import UserProfile from "./components/UserProfile";
 import UserProfileAdmin from "./components/UserProfileAdmin";
 import Reporte from "./components/Reporte";
 import Avatar from "./components/Avatar";
-
+import MisGuiasAcad from "./components/MisGuiasAcad";
+import GuiaSeguida from "./components/GuiaSeguida";
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -111,6 +112,8 @@ function App() {
                             <Route path="/recuperar-contraseña" element={<RecuperarContraseña />} />
                             <Route path="/perfil/admin" element={<UserProfileAdmin />} />
                             <Route path="/perfil/usuario" element={<UserProfile />} />
+                            <Route path="/mis-guias-academia" element={<MisGuiasAcad />} />
+                            <Route path="/guia-seguida" element={<GuiaSeguida />} />
                     {isAuthenticated ? (
                         <>
                             <Route path="/" element={<Home />} />
