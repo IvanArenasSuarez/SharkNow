@@ -8,9 +8,11 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import Home from "./components/Home";
 import CrearGuia from "./components/CrearGuia";
 import Navbar from "./components/Navbar";
+import NavbarAdmin from "./components/NavbarAdmin";
 import Login_Form from "./components/Login_Form";
 import Login_Carrusel from "./components/Login_Carrusel";
 import MisGuias from "./components/MisGuias";
+import MisGuiasProf from "./components/MisGuiasProf";
 import EditarGuia from "./components/EditarGuia";
 import EditarPregunta from "./components/EditarPregunta";
 import Search from "./components/Search";
@@ -20,13 +22,21 @@ import Footer from "./components/Footer";
 import Registro from "./components/Registro";
 import RecuperarContraseña from "./components/RecuperarContraseña";
 import VerGuiaSeguida from "./components/VerGuiaSeguida";
+import GuiaSinSeguir from "./components/GuiaSinSeguir";
 import UserProfile from "./components/UserProfile";
+import UserProfileAdmin from "./components/UserProfileAdmin";
 import Reporte from "./components/Reporte";
 import Avatar from "./components/Avatar";
+import Reportes from "./components/Reportes";
+import VerReporte from "./components/VerReporte";
+import Estadisticas from "./components/Estadisticas";
+import RecompensaPopup from './components/RecompensaPopup';
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [userData, setUserData] = useState(null);
+    const [recompensas, setRecompensas] = useState([]);
+    const [mostrarPopup, setMostrarPopup] = useState(false);
 
     const getStoredToken = () => localStorage.getItem("token");
 
@@ -59,6 +69,22 @@ function App() {
         }
     }, []);
 
+    useEffect(() => {
+        // Simulación de obtención de recompensas desde el backend
+        const datosRecompensas = [
+          { tipo: 'sombreros', nombre: 'Sombrero de Aprendiz', imagen: 'sombrero_aprendiz.png' },
+          { tipo: 'marcos', nombre: 'Marco Dorado', imagen: 'marco_dorado.png' },
+          { tipo: 'insignias', nombre: 'Insignia de Maestro', imagen: 'insignia_maestro.png' },
+        ];
+        setRecompensas(datosRecompensas);
+        setMostrarPopup(true);
+      }, []);
+    
+      useEffect(() => {
+        const rutasConPopup = ['/mis-guias'];
+        setMostrarPopup(rutasConPopup.includes(location.pathname));
+    }, [location]);
+
     const handleLogin = async (credentials) => {
         try {
             const response = await axios.post("http://localhost:4000/login", credentials);
@@ -88,6 +114,7 @@ function App() {
         <Router>
             <DndProvider backend={HTML5Backend}>
                 {isAuthenticated && <Navbar userData={userData} onLogout={handleLogout} />}
+                {mostrarPopup && <RecompensaPopup recompensas={recompensas} onCerrar={() => setMostrarPopup(false)} />}
                 <Routes>
                     <Route
                         path="/login"
@@ -106,18 +133,24 @@ function App() {
                     />
                             <Route path="/registro" element={<Registro />} />
                             <Route path="/recuperar-contraseña" element={<RecuperarContraseña />} />
+                            <Route path="/reportes" element={<Reportes />} />
+                            <Route path="/ver-reporte" element={<VerReporte />} />
+                            <Route path="/editar-guia" element={<EditarGuia />} />
+                            <Route path="/estadisticas" element={<Estadisticas />} />
+                            <Route path="/perfil/admin" element={<UserProfileAdmin />} />
+                            <Route path="/perfil/usuario" element={<UserProfile />} />
+                            <Route path="/guia-sin-seguir" element={<GuiaSinSeguir/>} />
+                            <Route path="/mis-guias-prof" element={<MisGuiasProf />} />
                     {isAuthenticated ? (
                         <>
                             <Route path="/" element={<Home />} />
                             <Route path="/mis-guias" element={<MisGuias />} />
                             <Route path="/crear-guia" element={<CrearGuia />} />
-                            <Route path="/editar-guia" element={<EditarGuia />} />
                             <Route path="/editar-pregunta" element={<EditarPregunta />} />                            
                             <Route path="/perfil" element={<Profile />} />
                             <Route path="/busqueda" element={<Search />} />
                             <Route path="/quiz-guia" element={<QuizGuia />} />
-                            <Route path="/ver-guia-seguida" element={<VerGuiaSeguida />} />7
-                            <Route path="/perfil/usuario" element={<UserProfile />} />
+                            <Route path="/ver-guia-seguida" element={<VerGuiaSeguida />} />
                             <Route path="/reporte" element={<Reporte />} />
                             <Route path="/avatar" element={<Avatar />} />
                         </>

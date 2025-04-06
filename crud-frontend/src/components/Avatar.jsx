@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Footer from "../components/Footer";
+
 
 export default function Avatar() {
   const navigate = useNavigate();
@@ -62,10 +62,10 @@ export default function Avatar() {
               <img
                 src={selectedCharacter || "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"}
                 alt="Avatar del usuario"
-                className="w-full h-full object-cover"
+                className="w-full h-full z-20 object-cover"
               />
-              {selectedHat && <img src={selectedHat} className="absolute top-0 w-20" alt="Sombrero" />}
-              {selectedBadge && <img src={selectedBadge} className="absolute bottom-0 w-14 mb-1 z-20" alt="Insignia" />}
+              {selectedHat && <img src={selectedHat} className="absolute top-0 w-20 z-30" alt="Sombrero" />}
+              {selectedBadge && <img src={selectedBadge} className="absolute bottom-0 w-14 mb-1 z-40" alt="Insignia" />}
               {selectedFrame && (
                 <img src={selectedFrame} className="absolute inset-0 w-full h-full z-10" alt="Marco" />
               )}

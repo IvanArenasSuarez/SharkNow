@@ -15,7 +15,7 @@ export default function CrearGuia() {
     const [tipoGuia, setTipoGuia] = React.useState("curricular");
     return (
         <div className="p-6 max-w-4xl mx-auto">
-            <h1 className="text-2xl font-bold text-center mb-6">Crear Guía de Estudio</h1>
+            <h1 className="text-4xl font-bold text-center mb-6">Crear Guía de Estudio</h1>
 
             {/* Contenedor principal con distribución 1 - 2 - 1 */}
             <div className="flex flex-col gap-8">
