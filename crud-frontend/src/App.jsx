@@ -114,6 +114,8 @@ function App() {
                             <Route path="/perfil/usuario" element={<UserProfile />} />
                             <Route path="/mis-guias-academia" element={<MisGuiasAcad />} />
                             <Route path="/guia-seguida" element={<GuiaSeguida />} />
+                            
+                            
                     {isAuthenticated ? (
                         <>
                             <Route path="/" element={<Home />} />

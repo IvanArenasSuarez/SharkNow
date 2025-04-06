@@ -57,7 +57,7 @@ export default function Avatar() {
           {/* Lado izquierdo (Previsualización del avatar) */}
           <div className="w-full md:w-1/3 flex flex-col items-center bg-gray-800 p-6 rounded-lg shadow-md">
             <h1 className="text-3xl font-bold text-center mb-6">Personalizar Avatar</h1>
-            <div className="relative w-56 h-56 rounded-full overflow-hidden border-4 border-gray-300 shadow-lg bg-gray-700 flex items-center justify-center">
+            <div className="relative w-56 h-56 rounded-full overflow-hidden shadow-lg bg-gray-700 flex items-center justify-center">
               {/* Imagen base del avatar (Personaje seleccionado) */}
               <img
                 src={selectedCharacter || "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"}

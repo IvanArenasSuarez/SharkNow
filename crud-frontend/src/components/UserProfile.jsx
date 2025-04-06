@@ -38,7 +38,7 @@ export default function UserProfile() {
         <div className="flex flex-col md:flex-row gap-10">
 
           {/* Lado izquierdo (Perfil del usuario) */}
-          <div className="bg-gray-800 w-full md:w-1/3 flex flex-col items-center p-6 rounded-lg shadow-md">
+          <div className="bg-gray-800 w-full md:w-1/4 flex flex-col items-center p-6 rounded-lg shadow-md">
             <h1 className="text-3xl font-bold text-white text-center mb-6">
                 {tipoCuenta === 1 ? "Alumno" : "Profesor"}
             </h1>
@@ -53,19 +53,19 @@ export default function UserProfile() {
             <div className="mt-6 space-y-4 w-full text-center">
               <div>
                 <h3 className="text-lg font-medium text-white">Nombre(s)</h3>
-                <p className="text-gray-300">[Nombre del usuario]</p>
+                <p className="text-gray-300">Salvador Iván</p>
               </div>
               <div>
                 <h3 className="text-lg font-medium text-white">Apellido(s)</h3>
-                <p className="text-gray-300">[Apellido del usuario]</p>
+                <p className="text-gray-300">Arredondo Moguel</p>
               </div>
               <div>
                 <h3 className="text-lg font-medium text-white">Correo electrónico</h3>
-                <p className="text-gray-300">[Correo del usuario]</p>
+                <p className="text-gray-300">arredondo@ipn.mx</p>
               </div>
               <div>
                 <h3 className="text-lg font-medium text-white">Descripción</h3>
-                <p className="text-gray-300">[Descripción del usuario]</p>
+                <p className="text-gray-300">Profesor de la materia de Algoritmia y Programación, me ubico en el salón 4201.</p>
               </div>
               {/* Botón para transferir característica de academia */}
               {tipoCuenta === 2 && tieneCaracteristicaAcademia === false && tipoCuenta2 === 2 && tieneCaracteristicaAcademia2 && (
@@ -77,7 +77,7 @@ export default function UserProfile() {
           </div>
 
           {/* Lado derecho (Lista de guías) */}
-          <div className="w-full md:w-2/3 p-6 rounded-lg shadow-lg ">
+          <div className="w-full md:w-3/4 p-6 rounded-lg shadow-lg ">
             <h1 className="text-2xl font-bold text-white mb-4">Guías del Usuario</h1>
 
             {/* Lista con scroll */}
@@ -90,9 +90,9 @@ export default function UserProfile() {
                     alt="Perfil"
                   />
                   <div className="flex flex-col flex-grow">
-                    <div className="font-semibold text-lg text-white">Guía {index + 1}</div>
+                    <div className="font-semibold text-lg text-white">Lógica básica de algoritmia {index + 1}</div>
                     <p className="text-sm text-gray-400">
-                      Esta es una breve descripción de la guía publicada por el usuario.
+                      Guía de estudio que contiene preguntas básicas para desarrollar la lógica de los algoritmos.
                     </p>
                   </div>
 

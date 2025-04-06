@@ -24,6 +24,7 @@ export default function Search() {
       `Resultado 3 para "${searchQuery}" con filtro: ${selectedFilter}`,
       `Resultado 4 para "${searchQuery}" con filtro: ${selectedFilter}`,
       `Resultado 5 para "${searchQuery}" con filtro: ${selectedFilter}`,
+      `Resultado 6 para "${searchQuery}" con filtro: ${selectedFilter}`,
     ]);
   };
 
@@ -70,7 +71,7 @@ export default function Search() {
           <h2 className="text-xl font-semibold text-white mb-2">Resultados</h2>
 
           {/* Lista de resultados con tamaño fijo y scroll */}
-          <ul className="bg-base-100 rounded-box shadow-md max-h-[calc(4*100px)] overflow-y-auto">
+          <ul className="bg-base-100 rounded-box shadow-md max-h-[calc(5*100px)] overflow-y-auto">
             {results.length > 0 ? (
               results.map((result, index) => (
                 <li key={index} className="flex items-center gap-4 h-25 px-3 border-b">
@@ -80,8 +81,8 @@ export default function Search() {
                     alt="Resultado"
                   />
                   <div className="flex flex-col flex-grow">
-                    <div className="font-semibold text-lg">Resultado {index + 1}</div>
-                    <p className="text-sm text-gray-600">{result}</p>
+                    <div className="font-semibold text-lg">Lógica básica de algoritmia {index + 1}</div>
+                    <p className="text-sm text-gray-300">{result}</p>
                   </div>
                   
                   {/* Icono de estrella y número */}
