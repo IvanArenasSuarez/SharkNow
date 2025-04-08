@@ -118,7 +118,7 @@ export default function UserProfile() {
         </div>
       </div>
       {isTransferirAlertVisible && (
-        <div className="fixed inset-0 bg-opacity-50 flex justify-center items-center z-50">
+        <div className="bg-gray-800 fixed inset-0 bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white text-black p-6 rounded-lg shadow-lg">
             <h3 className="text-xl font-semibold mb-4">¡Atención!</h3>
             <p>Esta a punto de transferir la característica de academia a este usuario. ¿Estás seguro?</p>

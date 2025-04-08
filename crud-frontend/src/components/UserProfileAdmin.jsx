@@ -233,7 +233,7 @@ export default function UserProfileAdmin() {
 
       {/* Alerta de confirmación */}
       {isDeleteAlertVisible && (
-        <div className="fixed inset-0 bg-opacity-50 flex justify-center items-center z-50">
+        <div className="bg-gray-800 fixed inset-0 bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white text-black p-6 rounded-lg shadow-lg">
             <h3 className="text-xl font-semibold mb-4">¡Atención!</h3>
             <p>Este cambio es permanente. ¿Estás seguro de que deseas eliminar la cuenta?</p>
@@ -246,7 +246,7 @@ export default function UserProfileAdmin() {
       )}
 
       {isRestrictAlertVisible && (
-        <div className="fixed inset-0 bg-opacity-50 flex justify-center items-center z-50">
+        <div className="bg-gray-800 fixed inset-0 bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white text-black p-6 rounded-lg shadow-lg">
             <h3 className="text-xl font-semibold mb-4">¡Atención!</h3>
             <p>Este cambio restringirá el acceso del usuario. ¿Estás seguro?</p>
@@ -259,7 +259,7 @@ export default function UserProfileAdmin() {
       )}
 
       {isRestoreAlertVisible && (
-        <div className="fixed inset-0 bg-opacity-50 flex justify-center items-center z-50">
+        <div className="bg-gray-800 fixed inset-0 bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white text-black p-6 rounded-lg shadow-lg">
             <h3 className="text-xl font-semibold mb-4">¡Atención!</h3>
             <p>Este cambio restaurará el acceso del usuario. ¿Estás seguro?</p>
@@ -272,7 +272,7 @@ export default function UserProfileAdmin() {
       )}
 
       {isAsignacionAlertVisible && (
-        <div className="fixed inset-0 bg-opacity-50 flex justify-center items-center z-50">
+        <div className="bg-gray-800 fixed inset-0 bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white text-black p-6 rounded-lg shadow-lg">
             <h3 className="text-xl font-semibold mb-4">¡Atención!</h3>
             <p>Esta a punto de asignar la característica de academia a este usuario. ¿Estás seguro?</p>
@@ -285,7 +285,7 @@ export default function UserProfileAdmin() {
       )}
 
       {isQuitarAlertVisible && (
-        <div className="fixed inset-0 bg-opacity-50 flex justify-center items-center z-50">
+        <div className="bg-gray-800 fixed inset-0 bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white text-black p-6 rounded-lg shadow-lg">
             <h3 className="text-xl font-semibold mb-4">¡Atención!</h3>
             <p>Esta a punto de quitar la característica de academia a este usuario. ¿Estás seguro?</p>
