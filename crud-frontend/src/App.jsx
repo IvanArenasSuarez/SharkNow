@@ -91,7 +91,14 @@ function App() {
     return (
         <Router>
             <DndProvider backend={HTML5Backend}>
-                {isAuthenticated && <Navbar userData={userData} onLogout={handleLogout} />}
+                {isAuthenticated && (
+                userData?.tipo_de_cuenta === 3 ? (
+                    <NavbarAdmin userData={userData} onLogout={handleLogout} />
+                ) : (
+                    <Navbar userData={userData} onLogout={handleLogout} />
+                )
+                )}
+                
                 <Routes>
                     <Route
                         path="/login"
@@ -110,7 +117,6 @@ function App() {
                     />
                             <Route path="/registro" element={<Registro />} />
                             <Route path="/recuperar-contraseña" element={<RecuperarContraseña />} />
-                            <Route path="/perfil/admin" element={<UserProfileAdmin />} />
                             <Route path="/perfil/usuario" element={<UserProfile />} />
                             <Route path="/mis-guias-academia" element={<MisGuiasAcad />} />
                             <Route path="/guia-seguida" element={<GuiaSeguida />} />
@@ -130,6 +136,14 @@ function App() {
                             <Route path="/reporte" element={<Reporte />} />
                             <Route path="/avatar" element={<Avatar />} />
                             
+                            {userData?.tipo_de_cuenta === 3 && (
+                            <>
+                                <Route path="/perfil/admin" element={<UserProfileAdmin />} />
+
+                            </>
+                            )}
+
+
                         </>
                     ) : (
                         <Route path="*" element={<Navigate to="/login" />} />
