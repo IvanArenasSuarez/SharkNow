@@ -1,83 +1,38 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 function RecompensaPopup({ recompensas, onCerrar }) {
-  const [indiceActual, setIndiceActual] = useState(0);
+  const [recompensaIndex, setRecompensaIndex] = useState(0);
 
-  useEffect(() => {
-    if (recompensas.length === 0) return;
-    setIndiceActual(0); // Reinicia al primera recompensa cuando la lista de recompensas cambie
-  }, [recompensas]);
-
-  if (recompensas.length === 0) return null;
-
-  const recompensa = recompensas[indiceActual];
-  const imagenPath = `/assets/${recompensa.tipo}/${recompensa.imagen}`;
-
-  const handleSiguiente = () => {
-    setIndiceActual((prevIndice) => (prevIndice + 1) % recompensas.length);
-  };
-
-  const handleCerrar = () => {
-    onCerrar();
+  const manejarSiguiente = () => {
+    if (recompensaIndex < recompensas.length - 1) {
+      setRecompensaIndex(recompensaIndex + 1);
+    } else {
+      onCerrar();
+    }
   };
 
   return (
-    <div
-      style={{
-        position: 'fixed',
-        bottom: '30px',
-        right: '30px',
-        backgroundColor: '#fff',
-        color: '#333',
-        padding: '16px 24px',
-        borderRadius: '12px',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
-        display: 'flex',
-        alignItems: 'center',
-        zIndex: 1000,
-        width: '300px',
-        justifyContent: 'space-between',
-      }}
-    >
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-        <img
-          src={imagenPath}
-          alt={recompensa.nombre}
-          style={{ width: '50px', height: '50px', marginRight: '16px' }}
-        />
-        <div>
-          <strong>¡Nueva recompensa desbloqueada!</strong>
-          <div>{recompensa.nombre}</div>
+    <div className="fixed top-0 left-0 w-full h-full bg-gray-900 bg-opacity-50 flex justify-center items-center">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-3/4 md:w-1/3">
+        <h2 className="text-2xl font-bold text-blue-600 mb-4">¡Recompensa Desbloqueada!</h2>
+        <div className="flex flex-col items-center">
+          {/* Mostrar la recompensa actual */}
+          <img
+            src={`/src/assets/${recompensas[recompensaIndex].tipo}/${recompensas[recompensaIndex].id}.png`}
+            alt={recompensas[recompensaIndex].nombre}
+            className="w-32 h-32 mb-4 rounded-lg"
+          />
+          <h3 className="text-xl font-semibold text-gray-800">{recompensas[recompensaIndex].nombre}</h3>
+          <p className="text-gray-600">{recompensas[recompensaIndex].tipo}</p>
         </div>
-      </div>
-      <div>
-        <button
-          onClick={handleSiguiente}
-          style={{
-            padding: '8px 16px',
-            margin: '0 8px',
-            backgroundColor: '#4CAF50',
-            color: '#fff',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
-          }}
-        >
-          Siguiente
-        </button>
-        <button
-          onClick={handleCerrar}
-          style={{
-            padding: '8px 16px',
-            backgroundColor: '#f44336',
-            color: '#fff',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
-          }}
-        >
-          Cerrar
-        </button>
+        <div className="mt-6 flex justify-between">
+          <button
+            onClick={manejarSiguiente}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+          >
+            {recompensaIndex < recompensas.length - 1 ? 'Siguiente' : 'Cerrar'}
+          </button>
+        </div>
       </div>
     </div>
   );

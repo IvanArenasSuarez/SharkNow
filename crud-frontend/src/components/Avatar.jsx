@@ -20,14 +20,51 @@ export default function Avatar() {
   const maxVisibleImages = 5; // Máximo de imágenes visibles a la vez
 
   // Lista de imágenes de prueba (En el futuro vendrán de la base de datos)
-  const sampleImages = [
+  const sombrerosImages = [
     "src/assets/1.jpg",
     "src/assets/2.jpg",
     "src/assets/3.jpg",
     "src/assets/4.jpg",
     "src/assets/fondo.jpg",
-    "src/assets/reward1.jpg",
-    "src/assets/reward2.jpg",
+    "src/assets/A_Sombrero_1-B.png",
+    "src/assets/B_Xoc-Xoc_1_B.png",
+    "src/assets/C_Olas_1_B.png",
+    "src/assets/MARCO.png",
+    "src/assets/MARCO2.png",
+  ];
+  const personajeImages = [
+    "src/assets/1.jpg",
+    "src/assets/2.jpg",
+    "src/assets/3.jpg",
+    "src/assets/4.jpg",
+    "src/assets/fondo.jpg",
+    "src/assets/A_Sombrero_1-B.png",
+    "src/assets/B_Xoc-Xoc_1_B.png",
+    "src/assets/C_Olas_1_B.png",
+    "src/assets/MARCO.png",
+    "src/assets/MARCO2.png",
+  ];
+  const marcosImages = [
+    "src/assets/1.jpg",
+    "src/assets/2.jpg",
+    "src/assets/3.jpg",
+    "src/assets/4.jpg",
+    "src/assets/fondo.jpg",
+    "src/assets/A_Sombrero_1-B.png",
+    "src/assets/B_Xoc-Xoc_1_B.png",
+    "src/assets/C_Olas_1_B.png",
+    "src/assets/MARCO.png",
+    "src/assets/MARCO2.png",
+  ];
+  const insigniasImages = [
+    "src/assets/1.jpg",
+    "src/assets/2.jpg",
+    "src/assets/3.jpg",
+    "src/assets/4.jpg",
+    "src/assets/fondo.jpg",
+    "src/assets/A_Sombrero_1-B.png",
+    "src/assets/B_Xoc-Xoc_1_B.png",
+    "src/assets/C_Olas_1_B.png",
     "src/assets/MARCO.png",
     "src/assets/MARCO2.png",
   ];
@@ -57,14 +94,14 @@ export default function Avatar() {
           {/* Lado izquierdo (Previsualización del avatar) */}
           <div className="w-full md:w-1/3 flex flex-col items-center bg-gray-800 p-6 rounded-lg shadow-md">
             <h1 className="text-3xl font-bold text-center mb-6">Personalizar Avatar</h1>
-            <div className="relative w-56 h-56 rounded-full overflow-hidden border-4 border-gray-300 shadow-lg bg-gray-700 flex items-center justify-center">
+            <div className="relative w-56 h-56 rounded-full overflow-hidden shadow-lg bg-gray-700 flex items-center justify-center">
               {/* Imagen base del avatar (Personaje seleccionado) */}
               <img
                 src={selectedCharacter || "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"}
                 alt="Avatar del usuario"
                 className="w-full h-full z-20 object-cover"
               />
-              {selectedHat && <img src={selectedHat} className="absolute top-0 w-20 z-30" alt="Sombrero" />}
+              {selectedHat && <img src={selectedHat} className="absolute top-0 w-full h-full z-30" alt="Sombrero" />}
               {selectedBadge && <img src={selectedBadge} className="absolute bottom-0 w-14 mb-1 z-40" alt="Insignia" />}
               {selectedFrame && (
                 <img src={selectedFrame} className="absolute inset-0 w-full h-full z-10" alt="Marco" />
@@ -94,10 +131,10 @@ export default function Avatar() {
 
             {/* Secciones de personalización con carruseles centrados */}
             {[
-              { title: "Personaje", images: sampleImages, state: selectedCharacter, setState: setSelectedCharacter, index: characterIndex, setIndex: setCharacterIndex },
-              { title: "Insignia", images: sampleImages, state: selectedBadge, setState: setSelectedBadge, index: badgeIndex, setIndex: setBadgeIndex },
-              { title: "Marco", images: sampleImages, state: selectedFrame, setState: setSelectedFrame, index: frameIndex, setIndex: setFrameIndex },
-              { title: "Sombrero", images: sampleImages, state: selectedHat, setState: setSelectedHat, index: hatIndex, setIndex: setHatIndex },
+              { title: "Sombrero", images: sombrerosImages, state: selectedHat, setState: setSelectedHat, index: hatIndex, setIndex: setHatIndex },
+              { title: "Tiburón", images: personajeImages, state: selectedCharacter, setState: setSelectedCharacter, index: characterIndex, setIndex: setCharacterIndex },
+              { title: "Marco", images: marcosImages, state: selectedFrame, setState: setSelectedFrame, index: frameIndex, setIndex: setFrameIndex },
+              { title: "Insignia", images: insigniasImages, state: selectedBadge, setState: setSelectedBadge, index: badgeIndex, setIndex: setBadgeIndex },
             ].map(({ title, images, state, setState, index, setIndex }) => (
               <div key={title} className="mb-6">
                 <h3 className="text-lg font-semibold mb-2 text-center">{title}</h3>

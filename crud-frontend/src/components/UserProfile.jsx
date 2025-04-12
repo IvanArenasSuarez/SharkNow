@@ -1,35 +1,34 @@
 import { useState } from "react";
-import Footer from "../components/Footer";
 
 export default function UserProfile() {
-
   // Estados para el tipo de cuenta y la característica de academia del usuario que visualizamos
   const [tipoCuenta, setTipoCuenta] = useState(2);
   const [tieneCaracteristicaAcademia, setTieneCaracteristicaAcademia] = useState(false);
   // Estados para el tipo de cuenta y la característica de academia del usuario actual
   const [tipoCuenta2, setTipoCuenta2] = useState(2);
   const [tieneCaracteristicaAcademia2, setTieneCaracteristicaAcademia2] = useState(true);
-
+  
   //Alerta de transferir característica de academia
   const [isTransferirAlertVisible, setIsTransferirAlertVisible] = useState(false);
-
+   
     // Función para mostrar la alerta de asignar característica
     const handleTransferirCaracteristica = () => {
       setIsTransferirAlertVisible(true);
     };
-
+  
     // Función para confirmar la asignacion de característica
     const handleConfirmTransferir = () => {
       // Aquí puedes agregar la operación de asigancion en la base de datos
       console.log("Característica asignada");
       setIsTransferirAlertVisible(false);
     };
-
+  
     // Función para cancelar la asigancion
     const handleCancelTransferir = () => {
       setIsTransferirAlertVisible(false);
     };
-
+  
+     
   return (
     <div className="flex flex-col min-h-screen">
       <div className="container mx-auto p-6 flex-grow">
@@ -38,7 +37,7 @@ export default function UserProfile() {
         <div className="flex flex-col md:flex-row gap-10">
 
           {/* Lado izquierdo (Perfil del usuario) */}
-          <div className="bg-gray-800 w-full md:w-1/3 flex flex-col items-center p-6 rounded-lg shadow-md">
+          <div className="bg-gray-800 w-full md:w-1/4 flex flex-col items-center p-6 rounded-lg shadow-md">
             <h1 className="text-3xl font-bold text-white text-center mb-6">
                 {tipoCuenta === 1 ? "Alumno" : "Profesor"}
             </h1>
@@ -53,21 +52,20 @@ export default function UserProfile() {
             <div className="mt-6 space-y-4 w-full text-center">
               <div>
                 <h3 className="text-lg font-medium text-white">Nombre(s)</h3>
-                <p className="text-gray-300">[Nombre del usuario]</p>
+                <p className="text-gray-300">Salvador Iván</p>
               </div>
               <div>
                 <h3 className="text-lg font-medium text-white">Apellido(s)</h3>
-                <p className="text-gray-300">[Apellido del usuario]</p>
+                <p className="text-gray-300">Arredondo Moguel</p>
               </div>
               <div>
                 <h3 className="text-lg font-medium text-white">Correo electrónico</h3>
-                <p className="text-gray-300">[Correo del usuario]</p>
+                <p className="text-gray-300">arredondo@ipn.mx</p>
               </div>
               <div>
                 <h3 className="text-lg font-medium text-white">Descripción</h3>
-                <p className="text-gray-300">[Descripción del usuario]</p>
+                <p className="text-gray-300">Profesor de la materia de Algoritmia y Programación, me ubico en el salón 4201.</p>
               </div>
-
               {/* Botón para transferir característica de academia */}
               {tipoCuenta === 2 && tieneCaracteristicaAcademia === false && tipoCuenta2 === 2 && tieneCaracteristicaAcademia2 && (
                 <button onClick={handleTransferirCaracteristica} className="btn bg-blue-600 text-white px-5 py-2 rounded-lg shadow-md hover:bg-blue-700 transition">
@@ -78,7 +76,7 @@ export default function UserProfile() {
           </div>
 
           {/* Lado derecho (Lista de guías) */}
-          <div className="w-full md:w-2/3 p-6 rounded-lg shadow-lg ">
+          <div className="w-full md:w-3/4 p-6 rounded-lg shadow-lg ">
             <h1 className="text-2xl font-bold text-white mb-4">Guías del Usuario</h1>
 
             {/* Lista con scroll */}
@@ -91,9 +89,9 @@ export default function UserProfile() {
                     alt="Perfil"
                   />
                   <div className="flex flex-col flex-grow">
-                    <div className="font-semibold text-lg text-white">Guía {index + 1}</div>
+                    <div className="font-semibold text-lg text-white">Lógica básica de algoritmia {index + 1}</div>
                     <p className="text-sm text-gray-400">
-                      Esta es una breve descripción de la guía publicada por el usuario.
+                      Guía de estudio que contiene preguntas básicas para desarrollar la lógica de los algoritmos.
                     </p>
                   </div>
 
@@ -119,7 +117,7 @@ export default function UserProfile() {
         </div>
       </div>
       {isTransferirAlertVisible && (
-        <div className="fixed inset-0 bg-opacity-50 flex justify-center items-center z-50">
+        <div className="bg-gray-800 fixed inset-0 bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white text-black p-6 rounded-lg shadow-lg">
             <h3 className="text-xl font-semibold mb-4">¡Atención!</h3>
             <p>Esta a punto de transferir la característica de academia a este usuario. ¿Estás seguro?</p>
