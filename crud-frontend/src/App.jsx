@@ -8,6 +8,7 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import Home from "./components/Home";
 import CrearGuia from "./components/CrearGuia";
 import Navbar from "./components/Navbar";
+import NavbarAdmin from "./components/NavbarAdmin";
 import Login_Form from "./components/Login_Form";
 import Login_Carrusel from "./components/Login_Carrusel";
 import MisGuias from "./components/MisGuias";
@@ -23,8 +24,11 @@ import RecuperarContraseña from "./components/RecuperarContraseña";
 import VerGuiaSeguida from "./components/VerGuiaSeguida";
 import GuiaSinSeguir from "./components/GuiaSinSeguir";
 import UserProfile from "./components/UserProfile";
+import UserProfileAdmin from "./components/UserProfileAdmin";
 import Reporte from "./components/Reporte";
 import Avatar from "./components/Avatar";
+import MisGuiasAcad from "./components/MisGuiasAcad";
+import GuiaSeguida from "./components/GuiaSeguida";
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -89,7 +93,14 @@ function App() {
     return (
         <Router>
             <DndProvider backend={HTML5Backend}>
-                {isAuthenticated && <Navbar userData={userData} onLogout={handleLogout} />}
+                {isAuthenticated && (
+                userData?.tipo_de_cuenta === 3 ? (
+                    <NavbarAdmin userData={userData} onLogout={handleLogout} />
+                ) : (
+                    <Navbar userData={userData} onLogout={handleLogout} />
+                )
+                )}
+                
                 <Routes>
                     <Route
                         path="/login"
@@ -108,8 +119,11 @@ function App() {
                     />
                             <Route path="/registro" element={<Registro />} />
                             <Route path="/recuperar-contraseña" element={<RecuperarContraseña />} />
-                            <Route path="/guia-sin-seguir" element={<GuiaSinSeguir/>} />
-                            <Route path="/mis-guias-prof" element={<MisGuiasProf />} />
+                            <Route path="/perfil/usuario" element={<UserProfile />} />
+                            <Route path="/mis-guias-academia" element={<MisGuiasAcad />} />
+                            <Route path="/guia-seguida" element={<GuiaSeguida />} />
+                            
+                            
                     {isAuthenticated ? (
                         <>
                             <Route path="/" element={<Home />} />
@@ -122,9 +136,17 @@ function App() {
                             <Route path="/busqueda" element={<Search />} />
                             <Route path="/quiz-guia" element={<QuizGuia />} />
                             <Route path="/ver-guia-seguida" element={<VerGuiaSeguida />} />7
-                            <Route path="/perfil/usuario" element={<UserProfile />} />
                             <Route path="/reporte" element={<Reporte />} />
                             <Route path="/avatar" element={<Avatar />} />
+                            
+                            {userData?.tipo_de_cuenta === 3 && (
+                            <>
+                                <Route path="/perfil/admin" element={<UserProfileAdmin />} />
+
+                            </>
+                            )}
+
+
                         </>
                     ) : (
                         <Route path="*" element={<Navigate to="/login" />} />
