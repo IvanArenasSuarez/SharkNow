@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { BellIcon } from "lucide-react";
 
-export default function Navbar() {
+export default function NavbarAdmin() {
   const navigate = useNavigate();
  
   const handleLogout = () => {

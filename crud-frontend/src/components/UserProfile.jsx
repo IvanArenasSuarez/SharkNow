@@ -1,6 +1,5 @@
 import { useState } from "react";
 
-
 export default function UserProfile() {
   // Estados para el tipo de cuenta y la característica de academia del usuario que visualizamos
   const [tipoCuenta, setTipoCuenta] = useState(2);

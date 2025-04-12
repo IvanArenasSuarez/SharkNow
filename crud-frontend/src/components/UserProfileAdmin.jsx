@@ -108,7 +108,7 @@ export default function UserProfileAdmin() {
   return (
     <div className="flex flex-col min-h-screen bg-gray-900 text-white">
       <div className="container mx-auto p-6 flex-grow">
-        <div className="grid grid-cols-1 md:grid-cols-[1fr_2fr_1.2fr] gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           {/* Sección de Perfil */}
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg relative">
             {/* Menú desplegable */}
@@ -165,19 +165,19 @@ export default function UserProfileAdmin() {
               <div className="mt-6 space-y-4 w-full">
                 <div>
                   <h3 className="text-lg font-medium">Nombre(s)</h3>
-                  <p className="text-gray-300">Salvador Iván</p>
+                  <p className="text-gray-300">[Nombre del usuario]</p>
                 </div>
                 <div>
                   <h3 className="text-lg font-medium">Apellido(s)</h3>
-                  <p className="text-gray-300">Arredondo Moguel</p>
+                  <p className="text-gray-300">[Apellido del usuario]</p>
                 </div>
                 <div>
                   <h3 className="text-lg font-medium">Correo electrónico</h3>
-                  <p className="text-gray-300">arredondo@ipn.mx</p>
+                  <p className="text-gray-300">[Correo del usuario]</p>
                 </div>
                 <div>
                   <h3 className="text-lg font-medium">Descripción</h3>
-                  <p className="text-gray-300">Profesor de la materia de Algoritmia y Programación, me ubico en el salón 4201.</p>
+                  <p className="text-gray-300">[Descripción del usuario]</p>
                 </div>
               </div>
             </div>
@@ -186,7 +186,7 @@ export default function UserProfileAdmin() {
           {/* Sección de Guías */}
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
             <h2 className="text-2xl font-bold mb-4">Guías del Usuario</h2>
-            <ul className="rounded-lg shadow-md max-h-[calc(6*100px)] overflow-y-auto">
+            <ul className="rounded-lg shadow-md max-h-[calc(5.5*100px)] overflow-y-auto">
               {[...Array(8)].map((_, index) => (
                 <li key={index} className="flex items-center gap-4 p-4 rounded-lg shadow">
                   <img
@@ -195,8 +195,8 @@ export default function UserProfileAdmin() {
                     alt="Perfil"
                   />
                   <div className="flex-grow">
-                    <h3 className="font-semibold text-lg">Lógica básica de algoritmia {index + 1}</h3>
-                    <p className="text-sm text-gray-400">Guía de estudio que contiene preguntas básicas para desarrollar la lógica de los algoritmos.</p>
+                    <h3 className="font-semibold text-lg">Guía {index + 1}</h3>
+                    <p className="text-sm text-gray-400">Descripción breve de la guía.</p>
                   </div>
                   {/* Icono de estrella y número */}
                   <div className="flex items-center gap-1">
@@ -217,13 +217,13 @@ export default function UserProfileAdmin() {
           </div>
 
           {/* Sección de Reportes Anteriores */}
-          <div className="bg-gray-800 p-6 rounded-lg shadow-lg col-span-1">
+          <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
             <h2 className="text-2xl font-bold mb-4">Reportes Anteriores</h2>
             <ul className="rounded-lg shadow-md max-h-[calc(6*100px)] overflow-y-auto">
               {[...Array(3)].map((_, index) => (
                 <li key={index} className="p-4 rounded-lg shadow">
-                  <h3 className="font-semibold text-lg">Lógica básica de algoritmia {index + 1}</h3>
-                  <p className="text-sm text-gray-400">Contenido ofensivo o discurso de odio</p>
+                  <h3 className="font-semibold text-lg">Reporte {index + 1}</h3>
+                  <p className="text-sm text-gray-400">Descripción breve del reporte.</p>
                 </li>
               ))}
             </ul>
@@ -233,7 +233,7 @@ export default function UserProfileAdmin() {
 
       {/* Alerta de confirmación */}
       {isDeleteAlertVisible && (
-        <div className="bg-gray-800 fixed inset-0 bg-opacity-50 flex justify-center items-center z-50">
+        <div className="fixed inset-0 bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white text-black p-6 rounded-lg shadow-lg">
             <h3 className="text-xl font-semibold mb-4">¡Atención!</h3>
             <p>Este cambio es permanente. ¿Estás seguro de que deseas eliminar la cuenta?</p>
@@ -246,7 +246,7 @@ export default function UserProfileAdmin() {
       )}
 
       {isRestrictAlertVisible && (
-        <div className="bg-gray-800 fixed inset-0 bg-opacity-50 flex justify-center items-center z-50">
+        <div className="fixed inset-0 bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white text-black p-6 rounded-lg shadow-lg">
             <h3 className="text-xl font-semibold mb-4">¡Atención!</h3>
             <p>Este cambio restringirá el acceso del usuario. ¿Estás seguro?</p>
@@ -259,7 +259,7 @@ export default function UserProfileAdmin() {
       )}
 
       {isRestoreAlertVisible && (
-        <div className="bg-gray-800 fixed inset-0 bg-opacity-50 flex justify-center items-center z-50">
+        <div className="fixed inset-0 bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white text-black p-6 rounded-lg shadow-lg">
             <h3 className="text-xl font-semibold mb-4">¡Atención!</h3>
             <p>Este cambio restaurará el acceso del usuario. ¿Estás seguro?</p>
@@ -272,7 +272,7 @@ export default function UserProfileAdmin() {
       )}
 
       {isAsignacionAlertVisible && (
-        <div className="bg-gray-800 fixed inset-0 bg-opacity-50 flex justify-center items-center z-50">
+        <div className="fixed inset-0 bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white text-black p-6 rounded-lg shadow-lg">
             <h3 className="text-xl font-semibold mb-4">¡Atención!</h3>
             <p>Esta a punto de asignar la característica de academia a este usuario. ¿Estás seguro?</p>
@@ -285,7 +285,7 @@ export default function UserProfileAdmin() {
       )}
 
       {isQuitarAlertVisible && (
-        <div className="bg-gray-800 fixed inset-0 bg-opacity-50 flex justify-center items-center z-50">
+        <div className="fixed inset-0 bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white text-black p-6 rounded-lg shadow-lg">
             <h3 className="text-xl font-semibold mb-4">¡Atención!</h3>
             <p>Esta a punto de quitar la característica de academia a este usuario. ¿Estás seguro?</p>
