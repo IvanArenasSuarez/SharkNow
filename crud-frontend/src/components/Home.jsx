@@ -72,8 +72,10 @@ export default function Home() {
               para apoyarlos a memorizar temas de estudio de su interés.
             </p>
             <button
-              onClick={() => navigate("/busqueda")}
+              
+              onClick={() => navigate("/reporte")}
               className="mt-6 px-12 py-5 btn bg-blue-600 text-white justify-center text-xl font-semibold rounded-lg shadow-md hover:bg-blue-700 transition"
+              
             >
               Comenzar ahora
             </button>
