@@ -22,6 +22,7 @@ export default function VerGuiaSeguida() {
         <div className="max-w-6xl mx-auto p-10 space-y-12 text-lg">
             {/* Primera Fila - 2 Columnas */}
             <div className="grid grid-cols-2 gap-10">
+
                 {/* Columna Izquierda - Información de la Guía */}
                 <div className="border border-gray-500 p-8 rounded-lg shadow-xl">
                     <h2 className="text-3xl font-bold mb-6">Información de la Guía</h2>
@@ -48,6 +49,7 @@ export default function VerGuiaSeguida() {
                 {/* Columna Derecha - Formulario de Notificaciones */}
                 <div className="border border-gray-500 p-8 rounded-lg shadow-xl">
                     <h2 className="text-3xl font-bold mb-6">Periodo para realizar la sesión</h2>
+
                     {/* Fechas */}
                     <div className="flex gap-8 mb-6">
                         <div className="space-y-2">
