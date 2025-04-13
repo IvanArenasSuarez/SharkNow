@@ -5,7 +5,7 @@ export default function UserProfile() {
   const [tipoCuenta, setTipoCuenta] = useState(2);
   const [tieneCaracteristicaAcademia, setTieneCaracteristicaAcademia] = useState(false);
   // Estados para el tipo de cuenta y la característica de academia del usuario actual
-  const [tipoCuenta2, setTipoCuenta2] = useState(2);
+  const [tipoCuenta2, setTipoCuenta2] = useState(1);
   const [tieneCaracteristicaAcademia2, setTieneCaracteristicaAcademia2] = useState(true);
   
   //Alerta de transferir característica de academia

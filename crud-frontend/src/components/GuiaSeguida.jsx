@@ -1,6 +1,8 @@
 import { useState } from "react";
+import { useNavigate } from 'react-router-dom';
 
 export default function GuiaSinSeguir() {
+    const navigate = useNavigate();
     const [nombre, setNombre] = useState("Lógica básica de algoritmia");
     const [autor, setAutor] = useState("Salvador Arredondo Carbajal");
     const [materia, setMateria] = useState("Fundamentos de Programación");
@@ -89,8 +91,8 @@ export default function GuiaSinSeguir() {
                         </ul>
                         {/* Botones Finales */}
                         <div className="flex justify-center gap-4 mt-6">
-                            <button className="btn btn-primary btn-lg text-lg">Iniciar Sesión de Estudio</button>
-                            <button className="btn btn-secondary btn-lg text-lg">Dejar de Seguir</button>
+                            <button className="btn btn-primary btn-lg text-lg" onClick={() => navigate('/quiz-guia')}>Iniciar Sesión de Estudio</button>
+                            <button className="btn btn-secondary btn-lg text-lg" onClick={() => navigate('/guia-sin-seguir')}>Dejar de Seguir</button>
                         </div>
                     </div>
                 </div>

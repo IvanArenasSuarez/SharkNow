@@ -67,7 +67,7 @@ export default function VerGuia() {
 
             {/* Imagen del perfil y autor */}
             <div className="flex items-center gap-4 mb-4">
-                <img src="perfil_usuario.jpg" alt="Perfil del usuario" className="w-16 h-16 rounded-full object-cover" />
+                <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" alt="Perfil del usuario" className="w-16 h-16 rounded-full object-cover" />
                 <div>
                     <div className="font-semibold text-lg">Autor: Juan Pérez</div>
                 </div>
@@ -188,7 +188,7 @@ export default function VerGuia() {
                 ) : selectedQuestion.tipo === "Opción Múltiple" ? (
                     <ul className="list-disc pl-5">
                         {selectedQuestion.respuestas.map((respuesta, idx) => (
-                            <li key={idx} className="text-sm text-gray-700">
+                            <li key={idx} className="text-sm text-white">
                                 {respuesta === selectedQuestion.correcta ? (
                                     <span className="font-bold">* {respuesta}</span>
                                 ) : (
@@ -202,7 +202,7 @@ export default function VerGuia() {
                         <p className="font-semibold">Relaciona las siguientes columnas:</p>
                         <ul className="list-disc pl-5">
                             {selectedQuestion.respuestas.map((respuesta, idx) => (
-                                <li key={idx} className="text-sm text-gray-700">
+                                <li key={idx} className="text-sm text-white">
                                     {respuesta.columna1} - {respuesta.columna2}
                                 </li>
                             ))}
