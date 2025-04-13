@@ -31,7 +31,7 @@ export default function Reportes() {
                     <label className="input flex items-center border rounded-lg px-3 py-1">
                         <input type="search" className="grow ml-2 outline-none" placeholder="Buscar usuario" />
                     </label>
-                    <ul className="bg-base-100 rounded-box shadow-md max-h-[calc(4*100px)] overflow-y-auto">
+                    <ul className="bg-base-100 rounded-box shadow-md max-h-[calc(4.5*100px)] overflow-y-auto">
                         <li className="p-4 text-xs opacity-60 tracking-wide">Usuarios en lista negra</li>
                         {listaNegra.map((usuario) => (
                             <li 
@@ -63,7 +63,7 @@ export default function Reportes() {
                             <option disabled>Filtros</option>
                         </select>
                     </div>
-                    <ul className="bg-base-100 rounded-box shadow-md max-h-[calc(4*100px)] overflow-y-auto">
+                    <ul className="bg-base-100 rounded-box shadow-md max-h-[calc(4.5*100px)] overflow-y-auto">
                         <li className="p-4 text-xs opacity-60 tracking-wide">Lista de reportes</li>
                         {reportes.map((reporte) => (
                             <li 
