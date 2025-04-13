@@ -5,7 +5,7 @@ import { BellIcon } from "lucide-react";
 export default function Navbar() {
   const userData = JSON.parse(localStorage.getItem("userData"));
   // Estados para la característica de academia del usuario actual
-  const [tieneCaracteristicaAcademia, setTieneCaracteristicaAcademia] = useState(false);
+  const [tieneCaracteristicaAcademia, setTieneCaracteristicaAcademia] = useState(true);
  
   
   const navigate = useNavigate();
