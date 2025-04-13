@@ -71,7 +71,7 @@ export default function Reportes() {
                                 className="flex items-center gap-4 h-25 px-3 border-b cursor-pointer hover:bg-gray-200"
                                 onClick={() => {navigate(`/ver-reporte`);}}
                             >
-                                //<img className="w-12 h-12 rounded-full" src={reporte.img} alt="Perfil" />
+                                <img className="w-12 h-12 rounded-full" src={reporte.img} alt="Perfil" />
                                 
                                 
                                 <div className="flex flex-col flex-grow">
