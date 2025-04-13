@@ -29,6 +29,8 @@ import MisGuiasAcad from "./components/MisGuiasAcad";
 import GuiaSeguida from "./components/GuiaSeguida";
 import Reportes from "./components/Reportes";
 import VerReporte from "./components/VerReporte";
+import Estadisticas from "./components/Estadisticas";
+import GuiaSinSeguir from "./components/GuiaSinSeguir";
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -126,7 +128,8 @@ function App() {
                     />
                             <Route path="/registro" element={<Registro />} />
                             <Route path="/recuperar-contraseña" element={<RecuperarContraseña />} />
-                            
+                            <Route path="/ver-guia-seguida" element={<VerGuiaSeguida />} />7
+                                <Route path="/guia-seguida" element={<GuiaSeguida />} />
                             
                     {isAuthenticated ? (
                         <>
@@ -142,7 +145,9 @@ function App() {
                                 <Route path="/mis-guias" element={<MisGuias />} />
                                 <Route path="/quiz-guia" element={<QuizGuia />} />
                                 <Route path="/ver-guia-seguida" element={<VerGuiaSeguida />} />7
+                                <Route path="/estadisticas" element={<Estadisticas />} />
                                 <Route path="/guia-seguida" element={<GuiaSeguida />} />
+                                <Route path="/guia-sin-seguir" element={<GuiaSinSeguir />} />
                                 <Route path="/perfil/usuario" element={<UserProfile />} />
                                 <Route path="/crear-guia" element={<CrearGuia />} />
                                 <Route path="/editar-guia" element={<EditarGuia />} />

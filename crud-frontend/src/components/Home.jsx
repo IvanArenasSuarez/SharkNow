@@ -73,7 +73,7 @@ export default function Home() {
             </p>
             <button
               
-              onClick={() => navigate("/reporte")}
+              onClick={() => navigate("/busqueda")}
               className="mt-6 px-12 py-5 btn bg-blue-600 text-white justify-center text-xl font-semibold rounded-lg shadow-md hover:bg-blue-700 transition"
               
             >

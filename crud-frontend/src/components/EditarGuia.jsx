@@ -11,7 +11,7 @@ export default function EditarGuia() {
     "Pregunta 6"
   ]);
 
-  const [esMaestro, setEsMaestro] = useState(true);
+  const [esMaestro, setEsMaestro] = useState(false);
   const [enviarAcademia, setEnviarAcademia] = useState(false);
 
   const [guia, setGuia] = useState({
