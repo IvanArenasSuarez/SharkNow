@@ -132,7 +132,7 @@ function App() {
                             <Route path="/registro" element={<Registro />} />
                             <Route path="/recuperar-contraseña" element={<RecuperarContraseña />} />
                             <Route path="/ver-guia-seguida" element={<VerGuiaSeguida />} />7
-                                <Route path="/guia-seguida" element={<GuiaSeguida />} />
+                            <Route path="/guia-seguida" element={<GuiaSeguida />} />
                             
                     {isAuthenticated ? (
                         <>

@@ -53,13 +53,6 @@ export default function MisGuiasProf() {
                                             </g>
                                         </svg>
                                     </button>
-                                    <button className="btn btn-square btn-ghost">
-                                        <svg className="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                            <g strokeLinejoin="round" strokeLinecap="round" strokeWidth="2" fill="none" stroke="currentColor">
-                                                <path d="m4.5 12.75 6 6 9-13.5"></path>
-                                            </g>
-                                        </svg>
-                                    </button>
                                 </div>
                             </li>
                         ))}
