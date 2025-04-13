@@ -109,7 +109,7 @@ export default function UserProfileAdmin() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-900 text-white">
+    <div className="flex flex-col min-h-screen text-white">
       <div className="container mx-auto p-6 flex-grow">
         <div className="grid grid-cols-1 md:grid-cols-[1fr_1.5fr_1.2fr] gap-5">
           {/* Sección de Perfil */}
