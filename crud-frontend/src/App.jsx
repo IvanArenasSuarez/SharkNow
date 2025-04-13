@@ -33,6 +33,7 @@ import Reportes from "./components/Reportes";
 import VerReporte from "./components/VerReporte";
 import Estadisticas from "./components/Estadisticas";
 import GuiaSinSeguir from "./components/GuiaSinSeguir";
+import MisGuiasProf from "./components/MisGuiasProf";
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -165,7 +166,7 @@ function App() {
                                 <Route path="/" element={<Home />} />
                                 <Route path="/avatar" element={<Avatar />} />
                                 <Route path="/perfil" element={<Profile />} />
-                                <Route path="/mis-guias" element={<MisGuias />} />
+                                <Route path="/mis-guias-profesor" element={<MisGuiasProf />} />
                                 <Route path="/mis-guias-academia" element={<MisGuiasAcad />} />
                                 <Route path="/perfil/usuario" element={<UserProfile />} />
                                 <Route path="/crear-guia" element={<CrearGuia />} />
