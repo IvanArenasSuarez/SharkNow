@@ -79,7 +79,8 @@ export default function MisGuiasProf() {
                               <p className="text-sm text-gray-400">Descripción breve de la guía.</p>
                             </div>
                             
-                            <button className="btn btn-square btn-ghost">
+                            <button className="btn btn-square btn-ghost"
+                            onClick={() => navigate("/guiaAcademia")}>
                               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5c-4.8 0-9 5.6-9 7.5s4.2 7.5 9 7.5 9-5.6 9-7.5-4.2-7.5-9-7.5z" />
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 9a3 3 0 100 6 3 3 0 000-6z" />
