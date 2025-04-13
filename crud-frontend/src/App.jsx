@@ -133,7 +133,6 @@ function App() {
                             <Route path="/ver-guia-seguida" element={<VerGuiaSeguida />} />7
                             <Route path="/guia-seguida" element={<GuiaSeguida />} />
                             
-                            
                     {isAuthenticated ? (
                         <>
                              <Route path="/busqueda" element={<Search />} />
@@ -172,6 +171,7 @@ function App() {
                                 <Route path="/crear-guia" element={<CrearGuia />} />
                                 <Route path="/editar-guia" element={<EditarGuia />} />
                                 <Route path="/editar-pregunta" element={<EditarPregunta />} />                            
+                                <Route path="/guia-seguida" element={<GuiaSeguida />} />
                                 <Route path="/guiaAcademia" element={<AceptarGuiaAcademia />} />
 
                             </>

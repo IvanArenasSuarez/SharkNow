@@ -26,12 +26,12 @@ export default function Reportes() {
             <div className="flex flex-col lg:flex-row justify-between gap-6 w-full max-w-7xl">
                 
                 {/* Lista Negra */}
-                <div className="p-6 rounded-lg shadow-lg w-full lg:w-[400px] flex flex-col gap-6">
+                <div className="p-6 rounded-lg shadow-lg w-full lg:w-[600px] flex flex-col gap-6">
                     <h2 className="text-2xl font-bold text-center">Lista Negra</h2>
                     <label className="input flex items-center border rounded-lg px-3 py-1">
                         <input type="search" className="grow ml-2 outline-none" placeholder="Buscar usuario" />
                     </label>
-                    <ul className="bg-base-100 rounded-box shadow-md max-h-[calc(4*100px)] overflow-y-auto">
+                    <ul className="bg-base-100 rounded-box shadow-md max-h-[calc(4.5*100px)] overflow-y-auto">
                         <li className="p-4 text-xs opacity-60 tracking-wide">Usuarios en lista negra</li>
                         {listaNegra.map((usuario) => (
                             <li 
@@ -63,7 +63,7 @@ export default function Reportes() {
                             <option disabled>Filtros</option>
                         </select>
                     </div>
-                    <ul className="bg-base-100 rounded-box shadow-md max-h-[calc(4*100px)] overflow-y-auto">
+                    <ul className="bg-base-100 rounded-box shadow-md max-h-[calc(4.5*100px)] overflow-y-auto">
                         <li className="p-4 text-xs opacity-60 tracking-wide">Lista de reportes</li>
                         {reportes.map((reporte) => (
                             <li 
@@ -71,7 +71,7 @@ export default function Reportes() {
                                 className="flex items-center gap-4 h-25 px-3 border-b cursor-pointer hover:bg-gray-200"
                                 onClick={() => {navigate(`/ver-reporte`);}}
                             >
-                                //<img className="w-12 h-12 rounded-full" src={reporte.img} alt="Perfil" />
+                                <img className="w-12 h-12 rounded-full" src={reporte.img} alt="Perfil" />
                                 
                                 
                                 <div className="flex flex-col flex-grow">
