@@ -10,7 +10,7 @@ export default function Home() {
 
   const desbloquearRecompensas = () => {
     const recompensasSimuladas = [
-      {
+      /*{
         id: 'A_Sombrero_1-B',
         nombre: 'Gorra blanca',
         tipo: 'Sombreros',
@@ -24,7 +24,7 @@ export default function Home() {
         id: 'C_Insignia_1-D',
         nombre: 'Insignia Épica',
         tipo: 'Insignias',
-      },
+      },*/
     ];
 
     setTimeout(() => {
@@ -72,8 +72,10 @@ export default function Home() {
               para apoyarlos a memorizar temas de estudio de su interés.
             </p>
             <button
+              
               onClick={() => navigate("/busqueda")}
               className="mt-6 px-12 py-5 btn bg-blue-600 text-white justify-center text-xl font-semibold rounded-lg shadow-md hover:bg-blue-700 transition"
+              
             >
               Comenzar ahora
             </button>
@@ -131,7 +133,6 @@ export default function Home() {
           Obtén recompensas para personalizar tu avatar mientras aprendes con SharkNow y
           presúmeselo a todos. 
         </p>
-
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-15">
           {/* Recompensa 1 */}
           <div className="card w-90 h-115 bg-white shadow-lg mx-auto p-4 rounded-lg">

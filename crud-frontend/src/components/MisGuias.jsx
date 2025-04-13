@@ -61,7 +61,7 @@ export default function MisGuias() {
                                         </svg>
                                     </button>
                                     <button 
-                                    onClick={() => navigate("/quiz-guia")}
+                                    onClick={() => navigate("/ver-guia-seguida")}
                                     className="btn btn-square btn-ghost">
                                         <svg className="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                             <g strokeLinejoin="round" strokeLinecap="round" strokeWidth="2" fill="none" stroke="currentColor">
@@ -116,7 +116,7 @@ export default function MisGuias() {
                                         </svg>
                                     </button>
                                     <button 
-                                    onClick={() => navigate("/quiz-guia")}
+                                    onClick={() => navigate("/ver-guia-seguida")}
                                     className="btn btn-square btn-ghost">
                                         <svg className="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                             <g strokeLinejoin="round" strokeLinecap="round" strokeWidth="2" fill="none" stroke="currentColor">

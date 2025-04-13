@@ -1,8 +1,11 @@
 import { isCancel } from "axios";
 import { useState } from "react";
-
+import { useNavigate } from "react-router-dom";
 
 export default function UserProfileAdmin() {
+
+  const navigate = useNavigate();
+
   // Estados para el usuario visualizado
   const [tipoCuenta, setTipoCuenta] = useState(2);
   const [tieneCaracteristicaAcademia, setTieneCaracteristicaAcademia] = useState(true);
@@ -106,9 +109,9 @@ export default function UserProfileAdmin() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-900 text-white">
+    <div className="flex flex-col min-h-screen text-white">
       <div className="container mx-auto p-6 flex-grow">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-[1fr_1.5fr_1.2fr] gap-5">
           {/* Sección de Perfil */}
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg relative">
             {/* Menú desplegable */}
@@ -165,19 +168,19 @@ export default function UserProfileAdmin() {
               <div className="mt-6 space-y-4 w-full">
                 <div>
                   <h3 className="text-lg font-medium">Nombre(s)</h3>
-                  <p className="text-gray-300">[Nombre del usuario]</p>
+                  <p className="text-gray-300">Salvador Yael</p>
                 </div>
                 <div>
                   <h3 className="text-lg font-medium">Apellido(s)</h3>
-                  <p className="text-gray-300">[Apellido del usuario]</p>
+                  <p className="text-gray-300">Arenas</p>
                 </div>
                 <div>
                   <h3 className="text-lg font-medium">Correo electrónico</h3>
-                  <p className="text-gray-300">[Correo del usuario]</p>
+                  <p className="text-gray-300">Espinoza</p>
                 </div>
                 <div>
                   <h3 className="text-lg font-medium">Descripción</h3>
-                  <p className="text-gray-300">[Descripción del usuario]</p>
+                  <p className="text-gray-300">Profesor de la materia de Programación</p>
                 </div>
               </div>
             </div>
@@ -195,8 +198,8 @@ export default function UserProfileAdmin() {
                     alt="Perfil"
                   />
                   <div className="flex-grow">
-                    <h3 className="font-semibold text-lg">Guía {index + 1}</h3>
-                    <p className="text-sm text-gray-400">Descripción breve de la guía.</p>
+                    <h3 className="font-semibold text-lg">Lógica básica de algoritmia {index + 1}</h3>
+                    <p className="text-sm text-gray-400">Guía de estudio que contiene preguntas básicas para desarrollar la lógica de los algoritmos.</p>
                   </div>
                   {/* Icono de estrella y número */}
                   <div className="flex items-center gap-1">
@@ -205,7 +208,7 @@ export default function UserProfileAdmin() {
                     </svg>
                     <span className="text-white font-medium">10</span>
                   </div>
-                  <button className="btn btn-square btn-ghost">
+                  <button className="btn btn-square btn-ghost" onClick={() => navigate("/guia-seguida")}>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5c-4.8 0-9 5.6-9 7.5s4.2 7.5 9 7.5 9-5.6 9-7.5-4.2-7.5-9-7.5z" />
                       <path strokeLinecap="round" strokeLinejoin="round" d="M12 9a3 3 0 100 6 3 3 0 000-6z" />

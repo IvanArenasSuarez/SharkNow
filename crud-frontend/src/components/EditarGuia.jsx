@@ -1,7 +1,11 @@
 import { useState, useRef } from "react";
 import EditarPregunta from "./EditarPregunta";
+import { useNavigate } from 'react-router-dom';
 
 export default function EditarGuia() {
+
+  const navigate = useNavigate();
+
   const [preguntas, setPreguntas] = useState([
     "Pregunta 1",
     "Pregunta 2",
@@ -11,7 +15,7 @@ export default function EditarGuia() {
     "Pregunta 6"
   ]);
 
-  const [esMaestro, setEsMaestro] = useState(true);
+  const [esMaestro, setEsMaestro] = useState(false);
   const [enviarAcademia, setEnviarAcademia] = useState(false);
 
   const [guia, setGuia] = useState({
@@ -196,8 +200,8 @@ const handlePublicarOEnviar = () => {
                     }}>{enviarAcademia ? "Enviar" : "Publicar"}
                   </button>
               )}
-              <button className="btn btn-accent w-1/3 h-14 min-w-[120px]">Guardar y Salir</button>
-              <button className="btn btn-secondary w-1/3 h-14 min-w-[120px]">Eliminar</button>
+              <button className="btn btn-accent w-1/3 h-14 min-w-[120px]" onClick={() => navigate(-1)}>Guardar y Salir</button>
+              <button className="btn btn-secondary w-1/3 h-14 min-w-[120px]" onClick={() => navigate(-1)}>Eliminar</button>
             </div>
         </div>
 

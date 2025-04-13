@@ -1,10 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 
-export default function GuiaSinSeguir() {
+export default function AceptarGuiaAcademia() {
     const navigate = useNavigate();
-    const userData = JSON.parse(localStorage.getItem("userData"));
-
     const [nombre, setNombre] = useState("Lógica básica de algoritmia");
     const [autor, setAutor] = useState("Salvador Arredondo Carbajal");
     const [materia, setMateria] = useState("Fundamentos de Programación");
@@ -13,26 +11,26 @@ export default function GuiaSinSeguir() {
     const [planDEst, setPlanDEst] = useState("ISC(2009)");
     const [version, setVersion] = useState("1");
     const [desc, setDesc] = useState(            
-        "Guía de estudio que contiene preguntas básicas para desarrollar la lógica de los algoritmos."
+        "Guía de estudio que contiene preguntas básicas para desarrollar la lógica de los algoritmos. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec ullamcorper."
     );
     const [tipo, setTipo] = useState("Curricular"); 
     const [preguntas, setPreguntas] = useState([
-        "¿Qué es un algoritmo?",
-        "¿Cuál de los siguientes es un ejemplo de algoritmo de búsqueda?",
-        " ¿Qué estructura de control es esencial en un algoritmo recursivo?",
-        "¿Cuál es la complejidad temporal del algoritmo de ordenación BubbleSort en el peor caso?",
-        "¿Qué técnica utiliza el algoritmo Divide y Vencerás?",
-        "¿Cuál de estos es un algoritmo de recorrido de grafos?"
+        "Pregunta 1",
+        "Pregunta 2",
+        "Pregunta 3",
+        "Pregunta 4",
+        "Pregunta 5",
+        "Pregunta 6"
     ]);
-
-    return (
+    
+    return(
         <>
-            <h1 className="text-4xl font-bold text-center mt-8 mb-6">Vista Previa</h1>
+        <h1 className="text-4xl font-bold text-center mt-8 mb-6">Evaluar Guía de Estudio por Academia</h1>
             <div className="p-4 max-w-5xl mx-auto">
                 <div className="flex flex-col lg:flex-row gap-4">
                     {/* Columna Izquierda - Información de la Guía */}
-                    <div className="w-full lg:w-1/2 border border-gray-500 p-4 rounded-lg shadow-xl ">
-                        <h2 className="text-3xl text-center font-bold mb-4">Información de la Guía</h2>
+                    <div className="w-full lg:w-1/2 border border-gray-500 p-4 rounded-lg shadow-xl">
+                        <h2 className="text-3xl font-bold mb-4">Información de la Guía</h2>
                         <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-gray-300 shadow-lg mx-auto mb-4">
                             <img
                                 src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
@@ -53,35 +51,13 @@ export default function GuiaSinSeguir() {
                                 </>
                             )}
                             <li><strong>Descripción: </strong>
-                                <p className="text-gray-300 max-h-40 overflow-y-auto text-justify">{desc}</p>
+                                <p className="text-gray-300 max-h-40 overflow-y-auto">{desc}</p>
                             </li>
                         </ul>
-                        
                     </div>
                     
                     {/* Columna Derecha - Lista de Preguntas */}
-                    <div className="w-full lg:w-3/4 ">
-                        {userData?.tipo_de_cuenta === 1 &&( 
-                        <div className="flex justify-end mb-2">
-                        <button className="btn btn-sm flex items-center gap-1 bg-transparent hover:bg-transparent">
-                            <svg 
-                                xmlns="http://www.w3.org/2000/svg" 
-                                fill="none" 
-                                viewBox="0 0 24 24" 
-                                strokeWidth="1.5" 
-                                stroke="currentColor" 
-                                className="size-7 text-white hover:fill-yellow-400 hover:text-yellow-400 hover:stroke-yellow-400 transition-colors"
-                            >
-                                <path 
-                                strokeLinecap="round" 
-                                strokeLinejoin="round" 
-                                d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" 
-                                />
-                            </svg>
-                            <span className="text-white text-xl font-medium">¿Te sirvio la guía?</span>
-                        </button>
-                        </div>
-                        )}
+                    <div className="w-full lg:w-1/2">
                         <ul className="bg-base-100 rounded-box shadow-md h-[400px] overflow-y-auto">
                             <li className="p-4 text-xs opacity-60 tracking-wide font-semibold">Lista de Preguntas</li>                
                             {preguntas.map((pregunta, index) => (
@@ -93,18 +69,43 @@ export default function GuiaSinSeguir() {
                                 </li>
                             ))}
                         </ul>
-                        {/* Botones Finales */}
-                        {userData?.tipo_de_cuenta === 1 &&( 
-                            <div className="flex justify-center gap-4 mt-6">
-                                <button className="btn btn-primary btn-lg text-lg" onClick={() => navigate('/quiz-guia')}>Iniciar Sesión de Estudio</button>
-                                <button className="btn btn-secondary btn-lg text-lg" onClick={() => navigate('/guia-sin-seguir')}>Dejar de Seguir</button>
-                            </div>
-                        )}
-
-                     
                     </div>
                 </div>
                 
+                {/* Botones Finales */}
+                <div className="flex justify-center gap-4 mt-6">
+                    <button className="btn btn-primary btn-lg text-lg" onClick={() => navigate('/')}>Aceptar y Publicar</button>
+                    <button className="btn btn-secondary btn-lg text-lg" onClick={()=>document.getElementById('rechazarGuia').showModal()}>Rechazar</button>
+                    <dialog id="rechazarGuia" className="modal">
+                        <div className="modal-box w-full max-w-xl text-center">
+                            <h3 className="font-bold text-2xl mb-4">Rechazar Guía</h3>
+                            <p className="text-lg mb-2">Motivo del rechazo</p>
+
+                            <textarea 
+                                className="textarea textarea-bordered w-full mb-6" 
+                                placeholder="Escriba el motivo aquí..."
+                                rows={4}
+                            ></textarea>
+
+                            <div className="flex justify-center gap-4">
+                                <button 
+                                    className="btn btn-error px-6"
+                                    onClick={() => {
+                                        navigate("/");
+                                        console.log("Rechazado con motivo");
+                                        document.getElementById('rechazarGuia').close();
+                                    }}
+                                >
+                                    Rechazar
+                                </button>
+
+                                <form method="dialog">
+                                    <button className="btn btn-ghost px-6">Cancelar</button>
+                                </form>
+                            </div>
+                        </div>
+                    </dialog>
+                </div>
             </div>
         </>
     );

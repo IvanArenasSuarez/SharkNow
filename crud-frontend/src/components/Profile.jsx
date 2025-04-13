@@ -18,7 +18,7 @@ export default function Profile() {
           
           {/* Lado izquierdo: Avatar y botón de personalización */}
           <div className="flex flex-col items-center">
-            <div className="w-52 h-52 rounded-full overflow-hidden border-4 border-gray-300 shadow-lg">
+            <div className="w-52 h-52 rounded-full overflow-hidden shadow-lg">
               <img
                 src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
                 alt="Avatar del usuario"
