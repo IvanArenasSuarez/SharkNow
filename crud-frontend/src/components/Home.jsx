@@ -10,7 +10,7 @@ export default function Home() {
 
   const desbloquearRecompensas = () => {
     const recompensasSimuladas = [
-      {
+      /*{
         id: 'A_Sombrero_1-B',
         nombre: 'Gorra blanca',
         tipo: 'Sombreros',
@@ -24,7 +24,7 @@ export default function Home() {
         id: 'C_Insignia_1-D',
         nombre: 'Insignia Épica',
         tipo: 'Insignias',
-      },
+      },*/
     ];
 
     setTimeout(() => {

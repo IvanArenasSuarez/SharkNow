@@ -21,37 +21,13 @@ export default function Avatar() {
 
   // Lista de imágenes de prueba (En el futuro vendrán de la base de datos)
   const sombrerosImages = [
-    "src/assets/1.jpg",
-    "src/assets/2.jpg",
-    "src/assets/3.jpg",
-    "src/assets/4.jpg",
-    "src/assets/fondo.jpg",
     "src/assets/A_Sombrero_1-B.png",
-    "src/assets/B_Xoc-Xoc_1_B.png",
-    "src/assets/C_Olas_1_B.png",
-    "src/assets/MARCO.png",
-    "src/assets/MARCO2.png",
+
   ];
   const personajeImages = [
-    "src/assets/1.jpg",
-    "src/assets/2.jpg",
-    "src/assets/3.jpg",
-    "src/assets/4.jpg",
-    "src/assets/fondo.jpg",
-    "src/assets/A_Sombrero_1-B.png",
     "src/assets/B_Xoc-Xoc_1_B.png",
-    "src/assets/C_Olas_1_B.png",
-    "src/assets/MARCO.png",
-    "src/assets/MARCO2.png",
   ];
   const marcosImages = [
-    "src/assets/1.jpg",
-    "src/assets/2.jpg",
-    "src/assets/3.jpg",
-    "src/assets/4.jpg",
-    "src/assets/fondo.jpg",
-    "src/assets/A_Sombrero_1-B.png",
-    "src/assets/B_Xoc-Xoc_1_B.png",
     "src/assets/C_Olas_1_B.png",
     "src/assets/MARCO.png",
     "src/assets/MARCO2.png",
@@ -61,12 +37,7 @@ export default function Avatar() {
     "src/assets/2.jpg",
     "src/assets/3.jpg",
     "src/assets/4.jpg",
-    "src/assets/fondo.jpg",
-    "src/assets/A_Sombrero_1-B.png",
-    "src/assets/B_Xoc-Xoc_1_B.png",
-    "src/assets/C_Olas_1_B.png",
-    "src/assets/MARCO.png",
-    "src/assets/MARCO2.png",
+
   ];
 
   const handleSave = () => {

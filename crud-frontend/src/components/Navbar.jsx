@@ -3,6 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { BellIcon } from "lucide-react";
 
 export default function Navbar() {
+  const userData = JSON.parse(localStorage.getItem("userData"));
+  // Estados para la característica de academia del usuario actual
+  const [tieneCaracteristicaAcademia, setTieneCaracteristicaAcademia] = useState(true);
+ 
+  
   const navigate = useNavigate();
   const [notificationsVisible, setNotificationsVisible] = useState(false);
 
@@ -49,7 +54,19 @@ export default function Navbar() {
       <div className="navbar-center hidden lg:flex">
         <ul className="menu menu-horizontal font-bold px-4 gap-x-20">
           <li>
-            <a onClick={() => navigate("/mis-guias")} className="text-xl">Guías de Estudio</a>
+            <a 
+            onClick={() => {
+              if (userData?.tipo_de_cuenta === 2 && tieneCaracteristicaAcademia === false) {
+                navigate('/mis-guias-profesor');
+              } 
+              if (userData?.tipo_de_cuenta === 2 && tieneCaracteristicaAcademia === true) {
+                navigate('/mis-guias-academia');
+              }
+              if (userData?.tipo_de_cuenta === 1) {
+                navigate('/mis-guias');
+              }
+            }}
+            className="text-xl">Guías de Estudio</a>
           </li>
           <li>
             <a onClick={() => navigate("/busqueda")} className="text-xl">Búsqueda</a>

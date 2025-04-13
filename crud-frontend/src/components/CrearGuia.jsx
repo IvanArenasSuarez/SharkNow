@@ -121,7 +121,7 @@ export default function CrearGuia() {
                 {/* Botones */}
                 <div className="flex justify-center gap-4">
                     <button onClick={gotoEditarGuia} className="btn btn-primary btn-lg text-lg w-40">Crear</button>
-                    <button onClick={gotoMisGuias} className="btn btn-secondary btn-lg text-lg w-40">Cancelar</button>
+                    <button onClick={() => navigate(-1)} className="btn btn-secondary btn-lg text-lg w-40">Cancelar</button>
                 </div>
             </div>
         </div>
