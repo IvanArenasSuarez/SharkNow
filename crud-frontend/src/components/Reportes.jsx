@@ -26,7 +26,7 @@ export default function Reportes() {
             <div className="flex flex-col lg:flex-row justify-between gap-6 w-full max-w-7xl">
                 
                 {/* Lista Negra */}
-                <div className="p-6 rounded-lg shadow-lg w-full lg:w-[400px] flex flex-col gap-6">
+                <div className="p-6 rounded-lg shadow-lg w-full lg:w-[600px] flex flex-col gap-6">
                     <h2 className="text-2xl font-bold text-center">Lista Negra</h2>
                     <label className="input flex items-center border rounded-lg px-3 py-1">
                         <input type="search" className="grow ml-2 outline-none" placeholder="Buscar usuario" />

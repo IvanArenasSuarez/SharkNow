@@ -170,7 +170,7 @@ function App() {
                                 <Route path="/crear-guia" element={<CrearGuia />} />
                                 <Route path="/editar-guia" element={<EditarGuia />} />
                                 <Route path="/editar-pregunta" element={<EditarPregunta />} />                            
-
+                                <Route path="/guia-seguida" element={<GuiaSeguida />} />
 
                             </>
                             )}

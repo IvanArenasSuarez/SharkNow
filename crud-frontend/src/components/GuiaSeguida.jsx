@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 
 export default function GuiaSinSeguir() {
     const navigate = useNavigate();
+    const userData = JSON.parse(localStorage.getItem("userData"));
+
     const [nombre, setNombre] = useState("Lógica básica de algoritmia");
     const [autor, setAutor] = useState("Salvador Arredondo Carbajal");
     const [materia, setMateria] = useState("Fundamentos de Programación");
@@ -59,6 +61,7 @@ export default function GuiaSinSeguir() {
                     
                     {/* Columna Derecha - Lista de Preguntas */}
                     <div className="w-full lg:w-3/4 ">
+                        {userData?.tipo_de_cuenta === 1 &&( 
                         <div className="flex justify-end mb-2">
                         <button className="btn btn-sm flex items-center gap-1 bg-transparent hover:bg-transparent">
                             <svg 
@@ -78,6 +81,7 @@ export default function GuiaSinSeguir() {
                             <span className="text-white text-xl font-medium">¿Te sirvio la guía?</span>
                         </button>
                         </div>
+                        )}
                         <ul className="bg-base-100 rounded-box shadow-md h-[400px] overflow-y-auto">
                             <li className="p-4 text-xs opacity-60 tracking-wide font-semibold">Lista de Preguntas</li>                
                             {preguntas.map((pregunta, index) => (
@@ -90,10 +94,14 @@ export default function GuiaSinSeguir() {
                             ))}
                         </ul>
                         {/* Botones Finales */}
-                        <div className="flex justify-center gap-4 mt-6">
-                            <button className="btn btn-primary btn-lg text-lg" onClick={() => navigate('/quiz-guia')}>Iniciar Sesión de Estudio</button>
-                            <button className="btn btn-secondary btn-lg text-lg" onClick={() => navigate('/guia-sin-seguir')}>Dejar de Seguir</button>
-                        </div>
+                        {userData?.tipo_de_cuenta === 1 &&( 
+                            <div className="flex justify-center gap-4 mt-6">
+                                <button className="btn btn-primary btn-lg text-lg" onClick={() => navigate('/quiz-guia')}>Iniciar Sesión de Estudio</button>
+                                <button className="btn btn-secondary btn-lg text-lg" onClick={() => navigate('/guia-sin-seguir')}>Dejar de Seguir</button>
+                            </div>
+                        )}
+
+                     
                     </div>
                 </div>
                 
