@@ -211,7 +211,7 @@ const EditarPregunta = forwardRef(({id, title, modo, preguntaData = null}, ref) 
 
 
                         <div className="flex justify-end gap-4 mt-4">
-                            <button className="btn btn-primary">{modo === "editar" ? "Editar" : "Agregar Pregunta"}</button>
+                            <button className="btn btn-primary" type="button" onClick={handleClose}>{modo === "editar" ? "Editar" : "Agregar Pregunta"  }</button>
                             <button className="btn btn-secondary" type="button" onClick={handleClose}>
                                 Cerrar
                             </button>

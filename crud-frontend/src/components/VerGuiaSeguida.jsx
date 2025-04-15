@@ -1,6 +1,8 @@
 import { useState } from "react";
+import { useNavigate } from 'react-router-dom';
 
 export default function VerGuiaSeguida() {
+    const navigate = useNavigate();
     const [nombre, setNombre] = useState("Lógica básica de algoritmia");
     const [autor, setAutor] = useState("Salvador Arredondo Carbajal");
     const [materia, setMateria] = useState("Fundamentos de Programación");
@@ -15,7 +17,7 @@ export default function VerGuiaSeguida() {
 
     const horas = Array.from({ length: 25 }, (_, i) => i);
     const minutos = Array.from({ length: 60 }, (_, i) => i);
-
+    
     return (
         <div className="max-w-6xl mx-auto p-10 space-y-12 text-lg">
             {/* Primera Fila - 2 Columnas */}
@@ -40,7 +42,7 @@ export default function VerGuiaSeguida() {
                         </li>
                     </ul>
                     {/* Botón de Estadísticas */}
-                    <button className="btn btn-outline btn-accent mt-6 w-full">📊 Ver Estadísticas</button>
+                    <button className="btn btn-outline btn-accent mt-6 w-full"  onClick={() => navigate('/estadisticas')}>📊 Ver Estadísticas</button>
                 </div>
 
                 {/* Columna Derecha - Formulario de Notificaciones */}
@@ -122,9 +124,9 @@ export default function VerGuiaSeguida() {
 
             {/* Segunda Fila - Botones de Acción */}
             <div className="flex justify-center gap-8 mt-12">
-                <button className="btn btn-lg btn-primary">Comenzar Sesión</button>
-                <button className="btn btn-lg btn-accent">Salir y Guardar</button>
-                <button className="btn btn-lg btn-error">Reportar</button>
+                <button className="btn btn-lg btn-primary " onClick={() => navigate('/quiz-guia')}>Comenzar Sesión</button>
+                <button className="btn btn-lg btn-accent" onClick={() => navigate('/mis-guias')}>Salir y Guardar</button>
+                <button className="btn btn-lg btn-error" onClick={() => navigate('/reporte')}>Reportar</button>
             </div>
         </div>
     );
