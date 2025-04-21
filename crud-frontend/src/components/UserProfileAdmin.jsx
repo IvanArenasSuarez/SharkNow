@@ -23,6 +23,7 @@ export default function UserProfileAdmin() {
   const [isAsignacionAlertVisible, setIsAsignacionAlertVisible] = useState(false);
   const [isQuitarAlertVisible, setIsQuitarAlertVisible] = useState(false);
 
+  
   // Función para mostrar la alerta de eliminación
   const handleDeleteAccount = () => {
     setIsDeleteAlertVisible(true);
@@ -226,7 +227,9 @@ export default function UserProfileAdmin() {
               {[...Array(3)].map((_, index) => (
                 <li key={index} className="p-4 rounded-lg shadow">
                   <h3 className="font-semibold text-lg">Reporte {index + 1}</h3>
-                  <p className="text-sm text-gray-400">Descripción breve del reporte.</p>
+                  <p className="text-sm text-gray-200">Guía: Lógica básica de algoritmia {index + 1}</p>
+                  <p className="text-sm text-gray-400">Razón: Disonancia de Contenido</p>
+
                 </li>
               ))}
             </ul>
