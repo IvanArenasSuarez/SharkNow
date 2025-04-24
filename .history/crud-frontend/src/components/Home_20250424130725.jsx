@@ -97,38 +97,21 @@ export default function Home() {
       <section className="bg-blue-900 py-16 px-10">
         <div className="container mx-auto flex flex-col md:flex-row items-center justify-between">
           
-      {/* Lado izquierdo: Carrusel de imágenes */}
-        <div className="md:w-1/2 flex justify-center">
-        <div className="carousel w-full rounded-lg shadow-lg">
-      {/* Slide 1 */}
-        <div id="slide1" className="carousel-item relative w-full">
-          <img src="/src/assets/sharknow1.jpeg" className="w-full object-cover" alt="Slide 1" />
-          <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-            <a href="#slide3" className="btn btn-circle">❮</a>
-            <a href="#slide2" className="btn btn-circle">❯</a>
+          {/* Lado izquierdo: Carrusel de imágenes */}
+          <div className="md:w-1/2 flex justify-center">
+            <div className="carousel w-full rounded-lg shadow-lg">
+              {/* Carrusel de imágenes */}
+              <div id="slide1" className="carousel-item relative w-full">
+                <img src="/src/assets/sharknow1.jpeg" className="w-full" alt="Slide 1" />
+              </div>
+              <div id="slide2" className="carousel-item relative w-full">
+                <img src="/src/assets/sharknow2.jpeg" className="w-full" alt="Slide 2" />
+              </div>
+              <div id="slide3" className="carousel-item relative w-full">
+                <img src="/src/assets/sharknow3.jpeg" className="w-full" alt="Slide 3" />
+              </div>
+            </div>
           </div>
-        </div>
-
-      {/* Slide 2 */}
-        <div id="slide2" className="carousel-item relative w-full">
-          <img src="/src/assets/sharknow2.jpeg" className="w-full object-cover" alt="Slide 2" />
-          <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-            <a href="#slide1" className="btn btn-circle">❮</a>
-            <a href="#slide3" className="btn btn-circle">❯</a>
-          </div>
-        </div>
-
-      {/* Slide 3 */}
-        <div id="slide3" className="carousel-item relative w-full">
-          <img src="/src/assets/sharknow3.jpeg" className="w-full object-cover" alt="Slide 3" />
-          <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-            <a href="#slide2" className="btn btn-circle">❮</a>
-            <a href="#slide1" className="btn btn-circle">❯</a>
-          </div>
-        </div>
-      </div>
-      </div>
-
 
           {/* Lado derecho: Texto */}
           <div className="md:w-1/2 text-right">

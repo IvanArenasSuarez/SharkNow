@@ -22,14 +22,14 @@ export default function Navbar() {
     },
     {
       id: 3,
-      type: 1,
+      type: 2,
       message: "Validación de academia aceptada",
       level: "3",
       route: "/mis-guias-profesor",
     },
     {
       id: 4,
-      type: 1,
+      type: 2,
       message: "Se te ha transferido la característica de Academia",
       route: "/mis-guias-academia",
     },
@@ -134,7 +134,9 @@ const getDotColor = (type) => {
                       className="flex items-start gap-2 cursor-pointer w-full"
                       onClick={() => handleNotificationClick(notification.route)}
                     >
-                      <span className={`inline-block w-2.5 h-2.5 rounded-full ${getDotColor(notification.type)} flex-shrink-0`}></span>
+                      <span
+                        className={`inline-block w-2.5 h-2.5 rounded-full ${getDotColor(notification.type)}`}
+                      />
                       <span className="text-sm text-gray-800">{notification.message}</span>
                     </div>
                     <button

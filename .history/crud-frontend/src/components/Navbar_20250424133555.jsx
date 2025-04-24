@@ -22,14 +22,14 @@ export default function Navbar() {
     },
     {
       id: 3,
-      type: 1,
+      type: 2,
       message: "Validación de academia aceptada",
       level: "3",
       route: "/mis-guias-profesor",
     },
     {
       id: 4,
-      type: 1,
+      type: 2,
       message: "Se te ha transferido la característica de Academia",
       route: "/mis-guias-academia",
     },
