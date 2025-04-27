@@ -1,52 +1,93 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
 
 export default function Avatar() {
   const navigate = useNavigate();
+  const userData = JSON.parse(localStorage.getItem("userData"));
 
-  // Estado de personalización del avatar
   const [selectedCharacter, setSelectedCharacter] = useState(null);
   const [selectedBadge, setSelectedBadge] = useState(null);
-  const [selectedFrame, setSelectedFrame] = useState(null); // Marco
+  const [selectedFrame, setSelectedFrame] = useState(null);
   const [selectedHat, setSelectedHat] = useState(null);
 
-  // Estado para el desplazamiento de los carruseles
   const [characterIndex, setCharacterIndex] = useState(0);
   const [badgeIndex, setBadgeIndex] = useState(0);
   const [frameIndex, setFrameIndex] = useState(0);
   const [hatIndex, setHatIndex] = useState(0);
 
-  const maxVisibleImages = 5; // Máximo de imágenes visibles a la vez
+  const [characters, setCharacters] = useState([]);
+  const [badges, setBadges] = useState([]);
+  const [frames, setFrames] = useState([]);
+  const [hats, setHats] = useState([]);
 
-  // Lista de imágenes de prueba (En el futuro vendrán de la base de datos)
-  const sombrerosImages = [
-    "src/assets/A_Sombrero_1-B.png",
+  const maxVisibleImages = 5;
 
-  ];
-  const personajeImages = [
-    "src/assets/B_Xoc-Xoc_1_B.png",
-  ];
-  const marcosImages = [
-    "src/assets/C_Olas_1_B.png",
-    "src/assets/MARCO.png",
-    "src/assets/MARCO2.png",
-  ];
-  const insigniasImages = [
-    "src/assets/1.jpg",
-    "src/assets/2.jpg",
-    "src/assets/3.jpg",
-    "src/assets/4.jpg",
+  useEffect(() => {
+    const fetchRecompensasYSeleccion = async () => {
+      try {
+        const res = await fetch("http://localhost:4000/avatar/opciones", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id_usuario: userData.id_usuario })
+        });
+        const data = await res.json();
+  
+        setHats(data.sombreros);
+        setCharacters(data.tiburones);
+        setFrames(data.marcos);
+        setBadges(data.insignias);
+  
+        // Luego de cargar las imágenes, obtener la selección actual del usuario
+        const resSeleccion = await fetch(`http://localhost:4000/avatar/seleccion?id_usuario=${userData.id_usuario}`);
+        if (!resSeleccion.ok) return;
+  
+        const seleccion = await resSeleccion.json();
+  
+        // Buscar la recompensa correspondiente por ID
+        const buscarPorId = (array, id) => array.find(item => item.id === id);
+  
+        setSelectedHat(buscarPorId(data.sombreros, seleccion.id_sombrero));
+        setSelectedCharacter(buscarPorId(data.tiburones, seleccion.id_tiburon));
+        setSelectedFrame(buscarPorId(data.marcos, seleccion.id_marco));
+        setSelectedBadge(buscarPorId(data.insignias, seleccion.id_insignia));
+  
+      } catch (error) {
+        console.error("Error al cargar recompensas o selección:", error);
+      }
+    };
+  
+    fetchRecompensasYSeleccion();
+  }, [userData.id_usuario]);
+  
 
-  ];
+  const handleSave = async () => {
+    const id_usuario = userData.id_usuario;
 
-  const handleSave = () => {
-    console.log("Avatar guardado con:", { selectedCharacter, selectedBadge, selectedFrame, selectedHat });
-    alert("Avatar actualizado correctamente.");
-    navigate(-1);
+    try {
+      const avatarData = {
+        id_usuario,
+        id_sombrero: selectedHat?.id || null,
+        id_marco: selectedFrame?.id || null,
+        id_insignia: selectedBadge?.id || null,
+        id_tiburon: selectedCharacter?.id || null
+      };
+
+      const response = await fetch("http://localhost:4000/avatar/guardar-imagen", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(avatarData)
+      });
+
+      if (!response.ok) throw new Error("Fallo al guardar");
+
+      alert("Avatar actualizado correctamente.");
+      window.dispatchEvent(new Event("avatarActualizado"));
+      navigate(-1);
+    } catch (error) {
+      console.error("Error al guardar el avatar:", error);
+    }
   };
 
-  // Función para mover el carrusel correctamente
   const moveCarousel = (setIndex, currentIndex, images, direction) => {
     if (direction === "left" && currentIndex > 0) {
       setIndex(currentIndex - 1);
@@ -55,31 +96,62 @@ export default function Avatar() {
     }
   };
 
+  const renderCarousel = (title, images, selected, setSelected, index, setIndex) => (
+    <div className="mb-6">
+      <h3 className="text-lg font-semibold mb-2 text-center">{title}</h3>
+      <div className="flex items-center justify-center gap-3">
+        <button
+          className={`btn btn-circle ${index === 0 ? "opacity-50 cursor-not-allowed" : ""}`}
+          onClick={() => moveCarousel(setIndex, index, images, "left")}
+          disabled={index === 0}
+        >
+          ❮
+        </button>
+
+        <div className="flex gap-3 overflow-hidden w-[600px] justify-center">
+          {images.slice(index, index + maxVisibleImages).map((img, i) => (
+            <img
+              key={img.id}
+              src={img.archivo}
+              onError={() => console.error("Error cargando imagen:", img)}
+              className={`cursor-pointer w-24 h-24 rounded-lg border-2 transition ${
+                selected?.id === img.id ? "border-blue-500" : "border-gray-500"
+              }`}
+              onClick={() => setSelected(img)}
+              alt={title}
+            />
+          ))}
+        </div>
+
+        <button
+          className={`btn btn-circle ${index + maxVisibleImages >= images.length ? "opacity-50 cursor-not-allowed" : ""}`}
+          onClick={() => moveCarousel(setIndex, index, images, "right")}
+          disabled={index + maxVisibleImages >= images.length}
+        >
+          ❯
+        </button>
+      </div>
+    </div>
+  );
+
   return (
     <div className="flex flex-col min-h-screen text-white">
       <div className="container mx-auto p-8 flex-grow">
-        
-        {/* Contenedor principal en 2 columnas */}
         <div className="flex flex-col md:flex-row gap-10 items-center">
-          
-          {/* Lado izquierdo (Previsualización del avatar) */}
+          {/* Previsualización */}
           <div className="w-full md:w-1/3 flex flex-col items-center bg-gray-800 p-6 rounded-lg shadow-md">
             <h1 className="text-3xl font-bold text-center mb-6">Personalizar Avatar</h1>
             <div className="relative w-56 h-56 rounded-full overflow-hidden shadow-lg bg-gray-700 flex items-center justify-center">
-              {/* Imagen base del avatar (Personaje seleccionado) */}
               <img
-                src={selectedCharacter || "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"}
-                alt="Avatar del usuario"
+                src={selectedCharacter?.archivo || "/src/assets/Shark1.png"}
+                alt="Base"
                 className="w-full h-full z-20 object-cover"
               />
-              {selectedHat && <img src={selectedHat} className="absolute top-0 w-full h-full z-30" alt="Sombrero" />}
-              {selectedBadge && <img src={selectedBadge} className="absolute bottom-0 w-14 mb-1 z-40" alt="Insignia" />}
-              {selectedFrame && (
-                <img src={selectedFrame} className="absolute inset-0 w-full h-full z-10" alt="Marco" />
-              )}
+              {selectedHat && <img src={selectedHat.archivo} className="absolute top-0 w-full h-full z-30" alt="Sombrero" />}
+              {selectedBadge && <img src={selectedBadge.archivo} className="absolute bottom-0 w-14 mb-1 z-40" alt="Insignia" />}
+              {selectedFrame && <img src={selectedFrame.archivo} className="absolute inset-0 w-full h-full z-10" alt="Marco" />}
             </div>
 
-            {/* Botones debajo del avatar */}
             <div className="flex flex-col sm:flex-row gap-3 mt-6 w-full justify-center">
               <button
                 onClick={handleSave}
@@ -96,55 +168,13 @@ export default function Avatar() {
             </div>
           </div>
 
-          {/* Lado derecho (Opciones de personalización) */}
+          {/* Carruseles */}
           <div className="w-full md:w-2/3 p-6 rounded-lg shadow-lg">
             <h2 className="text-2xl font-bold mb-6 text-center">Selecciona tus elementos</h2>
-
-            {/* Secciones de personalización con carruseles centrados */}
-            {[
-              { title: "Sombrero", images: sombrerosImages, state: selectedHat, setState: setSelectedHat, index: hatIndex, setIndex: setHatIndex },
-              { title: "Tiburón", images: personajeImages, state: selectedCharacter, setState: setSelectedCharacter, index: characterIndex, setIndex: setCharacterIndex },
-              { title: "Marco", images: marcosImages, state: selectedFrame, setState: setSelectedFrame, index: frameIndex, setIndex: setFrameIndex },
-              { title: "Insignia", images: insigniasImages, state: selectedBadge, setState: setSelectedBadge, index: badgeIndex, setIndex: setBadgeIndex },
-            ].map(({ title, images, state, setState, index, setIndex }) => (
-              <div key={title} className="mb-6">
-                <h3 className="text-lg font-semibold mb-2 text-center">{title}</h3>
-                <div className="flex items-center justify-center gap-3">
-                  {/* Botón izquierdo */}
-                  <button
-                    className={`btn btn-circle ${index === 0 ? "opacity-50 cursor-not-allowed" : ""}`}
-                    onClick={() => moveCarousel(setIndex, index, images, "left")}
-                    disabled={index === 0}
-                  >
-                    ❮
-                  </button>
-
-                  {/* Contenedor del carrusel con imágenes más grandes y centradas */}
-                  <div className="flex gap-3 overflow-hidden w-[600px] justify-center">
-                    {images.slice(index, index + maxVisibleImages).map((img, i) => (
-                      <img
-                        key={i}
-                        src={img}
-                        className={`cursor-pointer w-24 h-24 rounded-lg border-2 transition ${
-                          state === img ? "border-blue-500" : "border-gray-500"
-                        }`}
-                        onClick={() => setState(img)}
-                        alt={title}
-                      />
-                    ))}
-                  </div>
-
-                  {/* Botón derecho */}
-                  <button
-                    className={`btn btn-circle ${index + maxVisibleImages >= images.length ? "opacity-50 cursor-not-allowed" : ""}`}
-                    onClick={() => moveCarousel(setIndex, index, images, "right")}
-                    disabled={index + maxVisibleImages >= images.length}
-                  >
-                    ❯
-                  </button>
-                </div>
-              </div>
-            ))}
+            {renderCarousel("Sombrero", hats, selectedHat, setSelectedHat, hatIndex, setHatIndex)}
+            {renderCarousel("Tiburón", characters, selectedCharacter, setSelectedCharacter, characterIndex, setCharacterIndex)}
+            {renderCarousel("Marco", frames, selectedFrame, setSelectedFrame, frameIndex, setFrameIndex)}
+            {renderCarousel("Insignia", badges, selectedBadge, setSelectedBadge, badgeIndex, setBadgeIndex)}
           </div>
         </div>
       </div>

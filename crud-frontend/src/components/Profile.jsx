@@ -1,12 +1,33 @@
-import Footer from "../components/Footer";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function Profile() {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+  const [avatarUrl, setAvatarUrl] = useState(null);
 
-    const gotoAvatar = () => {
-      navigate('/avatar');
+  const gotoAvatar = () => {
+    navigate("/avatar");
   };
+
+  useEffect(() => {
+    const fetchAvatar = async () => {
+      try {
+        const userData = JSON.parse(localStorage.getItem("userData"));
+        if (!userData || !userData.id_usuario) return;
+
+        const response = await fetch(`http://localhost:4000/avatar/imagen?id_usuario=${userData.id_usuario}`);
+        if (!response.ok) throw new Error("No se pudo cargar la imagen");
+
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        setAvatarUrl(url);
+      } catch (error) {
+        console.error("Error al cargar el avatar:", error);
+      }
+    };
+
+    fetchAvatar();
+  }, []);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -18,9 +39,12 @@ export default function Profile() {
           
           {/* Lado izquierdo: Avatar y botón de personalización */}
           <div className="flex flex-col items-center">
-            <div className="w-52 h-52 rounded-full overflow-hidden shadow-lg">
+            <div className="w-52 h-52 rounded-full overflow-hidden shadow-lg bg-gray-700">
               <img
-                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                src={
+                  avatarUrl ||
+                  "/src/assets/Shark1.png"
+                }
                 alt="Avatar del usuario"
                 className="w-full h-full object-cover"
               />
@@ -35,7 +59,6 @@ export default function Profile() {
 
           {/* Lado derecho: Información del usuario */}
           <div className="w-full md:w-1/2 p-6 rounded-lg shadow-md">
-            
             <div className="space-y-4">
               <div>
                 <h3 className="text-lg font-medium text-white">Nombre(s)</h3>
@@ -57,7 +80,7 @@ export default function Profile() {
                 <h3 className="text-lg font-medium text-white">Descripción</h3>
                 <textarea
                   placeholder="Descripción del usuario"
-                  rows="6" 
+                  rows="6"
                   className="w-full md:w-2/3 p-3 rounded-lg border border-gray-600 resize-y text-base"
                 ></textarea>
               </div>

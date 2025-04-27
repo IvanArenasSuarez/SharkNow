@@ -4,11 +4,11 @@ import { BellIcon } from "lucide-react";
 
 export default function Navbar() {
   const userData = JSON.parse(localStorage.getItem("userData"));
+  const navigate = useNavigate();
+  const [avatarURL, setAvatarURL] = useState(null);
+
   // Estados para la característica de academia del usuario actual
   const [tieneCaracteristicaAcademia, setTieneCaracteristicaAcademia] = useState(true);
- 
-  
-  const navigate = useNavigate();
   const [notificationsVisible, setNotificationsVisible] = useState(false);
 
   const notifications = [
@@ -29,6 +29,36 @@ export default function Navbar() {
     },
   ];
 
+  useEffect(() => {
+    const fetchAvatarImage = async () => {
+      try {
+        const res = await fetch(`http://localhost:4000/avatar/imagen?id_usuario=${userData.id_usuario}`);
+        const blob = await res.blob();
+  
+        if (blob.type.startsWith("image/")) {
+          const imageURL = URL.createObjectURL(blob);
+          setAvatarURL(imageURL);
+        }
+      } catch (error) {
+        console.error("Error al obtener imagen del avatar:", error);
+      }
+    };
+  
+    if (userData?.id_usuario) {
+      fetchAvatarImage();
+    }
+  
+    // Escuchar evento global y recargar imagen cuando se actualice
+    const handleAvatarUpdate = () => fetchAvatarImage();
+    window.addEventListener("avatarActualizado", handleAvatarUpdate);
+  
+    // Limpieza del listener
+    return () => {
+      window.removeEventListener("avatarActualizado", handleAvatarUpdate);
+    };
+  }, []);
+  
+  
   const handleLogout = () => {
     localStorage.removeItem("token");
     console.log("Token después de logout:", localStorage.getItem("token"));
@@ -106,8 +136,9 @@ export default function Navbar() {
           <div tabIndex={0} role="button" className="avatar btn btn-ghost btn-circle">
             <div className="w-10 rounded-full">
               <img
-                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                src={avatarURL || "/src/assets/Shark1.png"}
                 alt="Perfil"
+                className="object-cover w-full h-full"
               />
             </div>
           </div>
