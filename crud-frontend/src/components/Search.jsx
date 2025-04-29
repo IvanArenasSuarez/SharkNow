@@ -1,132 +1,160 @@
-import { useState } from "react";
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export default function Search() {
-  const userData = JSON.parse(localStorage.getItem("userData"));
   const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedFilter, setSelectedFilter] = useState(""); // Cambio a un solo filtro
-  const [results, setResults] = useState([]);
+  const userData = JSON.parse(localStorage.getItem("userData"));
+  
+  const [busqueda, setBusqueda] = useState('');
+  const [filtro, setFiltro] = useState('');
 
-  const filterOptions = [
-    "Materia",
-    "Autor",
-    "Academia",
-    "Plan de estudios",
-    "Más 'Me sirve'",
-    "Más Seguidores",
+  const resultados = [
+    {
+      id: 1,
+      nombre: "Guía Historia de México",
+      materia: "Historia",
+      autor: "Pedro Sánchez",
+      academia: "Academia Historia",
+      descripcion: "Explora la historia de México desde la época precolombina hasta la actualidad.",
+      mesirve: "40",
+      seguidores: "60",
+      imagen: "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp",
+      descripcionAutor: "Especialista en historia nacional con más de 20 años de experiencia.",
+    },
+    {
+      id: 2,
+      nombre: "Guía Matemáticas Avanzadas",
+      materia: "Matemáticas",
+      autor: "Lucía Fernández",
+      academia: "Academia Matemáticas",
+      descripcion: "Guía completa de matemáticas avanzadas.",
+      mesirve: "50",
+      seguidores: "50",
+      imagen: "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp",
+      descripcionAutor: "Profesora experta en álgebra y cálculo diferencial.",
+    },
+    {
+      id: 3,
+      nombre: "Guía Biología Molecular",
+      materia: "Biología",
+      autor: "Andrea Torres",
+      academia: "Academia Biología",
+      descripcion: "Introducción a los conceptos de biología molecular moderna.",
+      mesirve: "30",
+      seguidores: "30",
+      imagen: "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp",
+      descripcionAutor: "Doctora en genética con enfoque en biotecnología.",
+    },
   ];
 
-  const handleSearch = () => {
-    console.log("Buscando:", searchQuery);
-    console.log("Filtro aplicado:", selectedFilter);
+  const autoresUnicos = [...new Map(resultados.map(item => [item.autor, item])).values()];
 
-    setResults([
-      `Resultado 1 para "${searchQuery}" con filtro: ${selectedFilter}`,
-      `Resultado 2 para "${searchQuery}" con filtro: ${selectedFilter}`,
-      `Resultado 3 para "${searchQuery}" con filtro: ${selectedFilter}`,
-      `Resultado 4 para "${searchQuery}" con filtro: ${selectedFilter}`,
-      `Resultado 5 para "${searchQuery}" con filtro: ${selectedFilter}`,
-      `Resultado 6 para "${searchQuery}" con filtro: ${selectedFilter}`,
-    ]);
-  };
+  const resultadosFiltrados =
+    filtro === "autor"
+      ? autoresUnicos.filter((item) =>
+          item.autor.toLowerCase().includes(busqueda.toLowerCase())
+        )
+      : resultados.filter((item) => {
+          if (filtro === "materia") {
+            return item.materia.toLowerCase().includes(busqueda.toLowerCase());
+          } else if (filtro === "academia") {
+            return item.academia.toLowerCase().includes(busqueda.toLowerCase());
+          } else {
+            return item.nombre.toLowerCase().includes(busqueda.toLowerCase());
+          }
+        });
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <div className="container mx-auto p-6 flex-grow">
-        {/* Título */}
-        <h1 className="text-4xl font-bold text-white text-center mb-6">Búsqueda</h1>
+    <div className="min-h-screen flex flex-col items-center px-6 py-6">
+      <h1 className="text-4xl font-bold text-center mb-6 w-full">Buscar Guías</h1>
 
-        {/* Barra de búsqueda, filtros y botón */}
-        <div className="flex flex-col md:flex-row items-center justify-center gap-4 mb-6">
-          
+      {/* Input de búsqueda y filtros */}
+      <div className="flex items-center gap-2 mb-4 w-full max-w-5xl">
+        <label className="input flex-[3] flex items-center border rounded-lg px-3 py-1">
           <input
             type="search"
-            placeholder="Escribe aquí tu búsqueda..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="input input-bordered w-full md:w-2/3 p-3 rounded-lg"
+            className="grow ml-2 outline-none"
+            placeholder="Buscar"
+            value={busqueda}
+            onChange={(e) => setBusqueda(e.target.value)}
           />
-                    
-          {/* Select de filtros */}
-          <select
-            value={selectedFilter}
-            onChange={(e) => setSelectedFilter(e.target.value)}
-            className="select select-bordered p-2 w-full md:w-1/6 rounded-lg"
-          >
-            <option value="" disabled>Filtros</option>
-            {filterOptions.map((filter) => (
-              <option key={filter} value={filter}>{filter}</option>
-            ))}
-          </select>
+        </label>
 
-          {/* Botón de búsqueda */}
-          <button
-            onClick={handleSearch}
-            className="btn bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition"
-          >
-            Buscar
-          </button>
-        </div>
+        <select
+          value={filtro}
+          onChange={(e) => setFiltro(e.target.value)}
+          className="select border rounded-lg p-2 flex-[1]"
+        >
+          <option value="">Filtros</option>
+          <option value="materia">Materia</option>
+          <option value="autor">Autor</option>
+          <option value="academia">Academia</option>
+        </select>
+      </div>
 
-        {/* Contenedor de resultados */}
-        <div className="p-6 rounded-lg shadow-lg">
-          <h2 className="text-xl font-semibold text-white mb-2">Resultados</h2>
+      {/* Lista de resultados con tamaño fijo y scroll */}
+      <div className="w-full max-w-5xl bg-base-100 rounded-box shadow-md max-h-[calc(6.5*100px)] overflow-y-auto">
+        <ul>
+          <li className="p-4 text-xs opacity-60 tracking-wide">Resultados encontrados</li>
 
-          {/* Lista de resultados con tamaño fijo y scroll */}
-          <ul className="bg-base-100 rounded-box shadow-md max-h-[calc(5*100px)] overflow-y-auto">
-            {results.length > 0 ? (
-              results.map((result, index) => (
-                <li key={index} className="flex items-center gap-4 h-25 px-3 border-b">
-                  <img
-                    className="w-12 h-12 rounded-full"
-                    src="https://img.daisyui.com/images/profile/demo/1@94.webp"
-                    alt="Resultado"
-                  />
-                  <div className="flex flex-col flex-grow">
-                    <div className="font-semibold text-lg">Lógica básica de algoritmia {index + 1}</div>
-                    <p className="text-sm text-gray-300">{result}</p>
-                  </div>
-                  
-                  {/* Icono de estrella y número */}
-                  <div className="flex items-center gap-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="yellow" viewBox="0 0 24 24" strokeWidth="1.5" stroke="black" className="size-5">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
-                    </svg>
-                    <span className="text-white font-medium">10</span>
-                  </div>
+          {resultadosFiltrados.length > 0 ? (
+            resultadosFiltrados.map((resultado) => (
+              <li
+                key={resultado.id}
+                className="flex items-center gap-4 h-25 px-3 border-b cursor-pointer hover:bg-gray-200"
+                onClick={() =>
+                  filtro === "autor" 
+                    ? userData?.tipo_de_cuenta === 3 
+                      ? navigate('/perfil/admin') 
+                      : navigate('/perfil/usuario')
+                    : navigate('/guia-sin-seguir')
+                }
+              >
+                <img
+                  src={resultado.imagen}
+                  alt={resultado.nombre}
+                  className="w-12 h-12 rounded-full"
+                />
 
-                  {/* Botón de acción (Icono de ojo) */}
-                  <button className="btn btn-square btn-ghost"   
-                  onClick={() => {
-                      if (userData?.tipo_de_cuenta === 3) {
-                        navigate('/perfil/admin');
-                      } else {
-                        navigate('/perfil/usuario');
-                      }
-                    }}>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5c-4.8 0-9 5.6-9 7.5s4.2 7.5 9 7.5 9-5.6 9-7.5-4.2-7.5-9-7.5z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 9a3 3 0 100 6 3 3 0 000-6z" />
-                    </svg>
-                  </button>
+                <div className="flex flex-col flex-grow">
+                  {filtro === "autor" ? (
+                    <>
+                      <div className="font-semibold text-lg">{resultado.autor}</div>
+                      <p className="text-sm text-gray-400 truncate">{resultado.descripcionAutor}</p>
+                    </>
+                  ) : (
+                    <>
+                      <div className="font-semibold text-lg">{resultado.nombre}</div>
+                      <p className="text-sm text-gray-300">Autor: {resultado.autor}</p>
+                      <p className="text-sm text-gray-400 truncate">{resultado.descripcion}</p>
+                    </>
+                  )}
+                </div>
 
-                  <button 
-                    onClick={() => navigate("/guia-seguida")}
-                    className="btn btn-square btn-ghost">
-                        <svg className="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                            <g strokeLinejoin="round" strokeLinecap="round" strokeWidth="2" fill="none" stroke="currentColor">
-                                <path d="m4.5 12.75 6 6 9-13.5"></path>
-                            </g>
-                        </svg>
-                    </button>
-                </li>
-              ))
-            ) : (
-              <li className="p-4 text-gray-500 text-center">No hay resultados.</li>
-            )}
-          </ul>
-        </div>
+                {filtro !== "autor" && (
+                  <>
+                    <div className="flex items-center gap-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="cyan" viewBox="0 0 24 24" strokeWidth="0.5" stroke="black" className="size-5">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                      </svg>
+                      <span className="font-medium">{resultado.seguidores}</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="yellow" viewBox="0 0 24 24" strokeWidth="1.5" stroke="black" className="size-5">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
+                      </svg>
+                      <span className="text-white font-medium">{resultado.mesirve}</span>
+                    </div>
+                  </>
+                )}
+              </li>
+            ))
+          ) : (
+            <li className="p-6 text-center text-gray-400">
+              No se encontraron resultados.
+            </li>
+          )}
+        </ul>
       </div>
     </div>
   );
