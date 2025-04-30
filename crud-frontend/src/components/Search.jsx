@@ -107,7 +107,7 @@ export default function Search() {
                     ? userData?.tipo_de_cuenta === 3 
                       ? navigate('/perfil/admin') 
                       : navigate('/perfil/usuario')
-                    : navigate('/guia-sin-seguir')
+                    : navigate('/guia-seguida')
                 }
               >
                 <img

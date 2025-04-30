@@ -44,7 +44,7 @@ export default function NavbarAdmin() {
           <div tabIndex={0} role="button" className="avatar btn btn-ghost btn-circle">
             <div className="w-10 rounded-full">
               <img
-                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                src="/src/assets/Shark1.png"
                 alt="Perfil"
               />
             </div>
