@@ -1,5 +1,4 @@
-import { isCancel } from "axios";
-import { useState } from "react";
+import { useState , useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function UserProfileAdmin() {
@@ -7,8 +6,9 @@ export default function UserProfileAdmin() {
   const navigate = useNavigate();
 
   // Estados para el usuario visualizado
-  const [tipoCuenta, setTipoCuenta] = useState(2);
-  const [tieneCaracteristicaAcademia, setTieneCaracteristicaAcademia] = useState(true);
+  const [datosUsuario, setDatosUsuario] = useState(null);
+
+  const [tieneCaracteristicaAcademia, setTieneCaracteristicaAcademia] = useState(false);
 
   // Ya esta asignada la característica de academia
   const [alguienTieneCaracteristicaAcademia, setAlguienTieneCaracteristicaAcademia] = useState(false);
@@ -23,7 +23,56 @@ export default function UserProfileAdmin() {
   const [isAsignacionAlertVisible, setIsAsignacionAlertVisible] = useState(false);
   const [isQuitarAlertVisible, setIsQuitarAlertVisible] = useState(false);
 
+  const guiasUsuario = [
+    {
+      id: 1,
+      titulo: "Estructuras de datos básicas",
+      descripcion: "Guía sobre listas, pilas, colas y árboles.",
+      imagen: "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp",
+      seguidores: 124,
+      meSirve: 56,
+    },
+    {
+      id: 2,
+      titulo: "Introducción a programación en C",
+      descripcion: "Explicación paso a paso para entender los fundamentos de C.",
+      imagen: "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp",
+      seguidores: 98,
+      meSirve: 47,
+    },
+    {
+      id: 3,
+      titulo: "Algoritmos de búsqueda y ordenamiento",
+      descripcion: "Guía completa sobre algoritmos de búsqueda y ordenamiento.",
+      imagen: "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp",
+      seguidores: 200,
+      meSirve: 150,
+    },
+    {
+      id: 4,
+      titulo: "Programación orientada a objetos en Java",
+      descripcion: "Todo lo que necesitas saber sobre POO en Java.",
+      imagen: "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp",
+      seguidores: 75,
+      meSirve: 30,
+    },
+  ];
   
+  useEffect(() => {
+      const autor = JSON.parse(localStorage.getItem("autorSeleccionado"));
+         
+      if (autor?.id) {
+        fetch(`http://localhost:4000/perfil/datos?id_usuario=${autor.id}`)
+          .then(res => res.json())
+          .then(data => {
+            setDatosUsuario(data);
+          })
+          .catch(err => {
+            console.error("Error al cargar datos del perfil:", err);
+          });
+      }
+    }, []);
+
   // Función para mostrar la alerta de eliminación
   const handleDeleteAccount = () => {
     setIsDeleteAlertVisible(true);
@@ -145,10 +194,10 @@ export default function UserProfileAdmin() {
                   {/* Opción de Eliminar cuenta */}
                   <li><a onClick={handleDeleteAccount}>Eliminar cuenta</a></li>
                   
-                  {tipoCuenta === 2 && tieneCaracteristicaAcademia === false && alguienTieneCaracteristicaAcademia === false && ( 
+                  {datosUsuario?.tipo === 2  && tieneCaracteristicaAcademia === false && alguienTieneCaracteristicaAcademia === false && ( 
                     <li><a onClick={handleAsignacionCaracteristica}>Asignar característica</a></li>
                   )}
-                  {tipoCuenta === 2 && tieneCaracteristicaAcademia === true && ( 
+                  {datosUsuario?.tipo === 2  && tieneCaracteristicaAcademia === true && ( 
                     <li><a onClick={handleQuitarCaracteristica}>Quitar característica</a></li>
                   )}
                 </ul>
@@ -157,31 +206,31 @@ export default function UserProfileAdmin() {
 
             <div className="flex flex-col items-center text-center">
               <h1 className="text-3xl font-bold mb-4">
-                {tipoCuenta === 1 ? "Alumno" : "Profesor"}
+                {datosUsuario?.tipo === 1 ? "Alumno" : "Profesor"}
               </h1>
-              <div className="w-44 h-44 rounded-full overflow-hidden border-4 border-gray-400 shadow-lg">
+              <div className="w-44 h-44 rounded-full overflow-hidden shadow-lg">
                 <img
-                  src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                  src={`http://localhost:4000/avatar/imagen?id_usuario=${JSON.parse(localStorage.getItem("autorSeleccionado"))?.id}`}
                   alt="Avatar del usuario"
                   className="w-full h-full object-cover"
                 />
               </div>
               <div className="mt-6 space-y-4 w-full">
                 <div>
-                  <h3 className="text-lg font-medium">Nombre(s)</h3>
-                  <p className="text-gray-300">Salvador Yael</p>
+                  <h3 className="text-lg font-medium text-white">Nombre(s)</h3>
+                  <p className="text-gray-300">{datosUsuario?.nombre}</p>
                 </div>
                 <div>
-                  <h3 className="text-lg font-medium">Apellido(s)</h3>
-                  <p className="text-gray-300">Arenas</p>
+                  <h3 className="text-lg font-medium text-white">Apellido(s)</h3>
+                  <p className="text-gray-300">{datosUsuario?.apellidos}</p>
                 </div>
                 <div>
-                  <h3 className="text-lg font-medium">Correo electrónico</h3>
-                  <p className="text-gray-300">Espinoza</p>
+                  <h3 className="text-lg font-medium text-white">Correo electrónico</h3>
+                  <p className="text-gray-300">{datosUsuario?.correo}</p>
                 </div>
                 <div>
-                  <h3 className="text-lg font-medium">Descripción</h3>
-                  <p className="text-gray-300">Profesor de la materia de Programación</p>
+                  <h3 className="text-lg font-medium text-white">Descripción</h3>
+                  <p className="text-gray-300">{datosUsuario?.descripcion || "Sin descripción."}</p>
                 </div>
               </div>
             </div>
@@ -190,34 +239,25 @@ export default function UserProfileAdmin() {
           {/* Sección de Guías */}
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
             <h2 className="text-2xl font-bold mb-4">Guías del Usuario</h2>
-            <ul className="rounded-lg shadow-md max-h-[calc(5.5*100px)] overflow-y-auto">
-              {[...Array(8)].map((_, index) => (
-                <li key={index} className="flex items-center gap-4 p-4 rounded-lg shadow">
-                  <img
-                    className="w-12 h-12 rounded-full"
-                    src="https://img.daisyui.com/images/profile/demo/1@94.webp"
-                    alt="Perfil"
-                  />
-                  <div className="flex-grow">
-                    <h3 className="font-semibold text-lg">Lógica básica de algoritmia {index + 1}</h3>
-                    <p className="text-sm text-gray-400">Guía de estudio que contiene preguntas básicas para desarrollar la lógica de los algoritmos.</p>
+            <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2">
+              {guiasUsuario.map((guia) => (
+                <div
+                key={guia.id}
+                onClick={() => navigate("/guia-seguida")}
+                className="cursor-pointer rounded-lg p-4 flex items-center gap-4 shadow hover:bg-gray-700 transition"
+              >
+                <img src={guia.imagen} alt={guia.titulo} className="w-20 h-20 rounded-full object-cover" />
+                <div className="flex-1">
+                  <h2 className="text-lg font-semibold text-white">{guia.titulo}</h2>
+                  <p className="text-sm text-gray-300">{guia.descripcion}</p>
+                  <div className="flex gap-4 mt-2 text-gray-300 text-sm">
+                    <span>👥 {guia.seguidores} seguidores</span>
+                    <span>⭐ {guia.meSirve} me sirve</span>
                   </div>
-                  {/* Icono de estrella y número */}
-                  <div className="flex items-center gap-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="yellow" viewBox="0 0 24 24" strokeWidth="1.5" stroke="black" className="size-5">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
-                    </svg>
-                    <span className="text-white font-medium">10</span>
-                  </div>
-                  <button className="btn btn-square btn-ghost" onClick={() => navigate("/guia-seguida")}>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5c-4.8 0-9 5.6-9 7.5s4.2 7.5 9 7.5 9-5.6 9-7.5-4.2-7.5-9-7.5z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 9a3 3 0 100 6 3 3 0 000-6z" />
-                    </svg>
-                  </button>
-                </li>
+                </div>
+              </div>             
               ))}
-            </ul>
+            </div>
           </div>
 
           {/* Sección de Reportes Anteriores */}
