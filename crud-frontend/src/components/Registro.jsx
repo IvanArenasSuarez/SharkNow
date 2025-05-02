@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from 'axios';
 
 export default function Registro() {
     const navigate = useNavigate();
+    const userData = JSON.parse(localStorage.getItem("userData"));
 
     const [nombre, setNombre] = useState("");
     const [apellidos, setApellidos] = useState("");
@@ -42,13 +44,35 @@ export default function Registro() {
     };
 
     const validarContra = (cunt) => {
-        const regex = /^(?=.*[0-9])(?=.*[\W_]).{8,}$/; 
+        const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}$/;
         return regex.test(cunt);
     };
+
+    async function verificarCorreoExistente(correo){
+        try{
+            const response = await fetch(`http://localhost:4000/verificarCorreo/${encodeURIComponent(correo)}`);
+            if(!response.ok) {
+                throw new Error("Error al verificar el correo");
+            }
+
+            const data = await response.json();
+            return data.existe;
+        }
+        catch(err){
+            console.error("Error: ", err);
+            return false;
+        }
+    }
 
     const handleRegistro = async () => {
         setError(null);
         let errores = [];
+        
+        if(!nombre.trim()) errores.push("El nombre no puede estar vacio");
+        if(!apellidos.trim()) errores.push("Los apellidos no pueden estar vacios");
+        if(!correo.trim()) errores.push("El correo no puede estar vacio");
+        if(!cunt) errores.push("La contraseña no puede estar vacia");
+        if(!reCunt) errores.push("Debe confirmar la contraseña");
 
         const { esValido, tipo: nuevoTipo } = validarCorreo(correo);
 
@@ -56,8 +80,20 @@ export default function Registro() {
             errores.push("El correo ingresado no es válido.");
         }
 
+        if(esValido) {
+            try {
+                const correoExiste = await verificarCorreoExistente(correo);
+                if(correoExiste) {
+                    errores.push("El correo ya está registrado");
+                }
+            } catch (err) {
+                console.error("Error verificando correo:", err);
+                errores.push("Error al verificar disponibilidad del correo");
+            }
+        }
+
         if (!validarContra(cunt)) {
-            errores.push("La contraseña debe tener al menos 8 caracteres, incluir un número y un símbolo.");
+            errores.push("La contraseña debe tener al menos 8 caracteres, incluir letras minusculas, mayúsculas y números");
         }
 
         if (cunt !== reCunt) {
@@ -74,6 +110,27 @@ export default function Registro() {
         try {
             console.table(new usuario(nombre, apellidos, correo, nuevoTipo, cunt, reCunt));
             setValidationErrors([]);
+            const info = {
+                nombre: nombre.trim(),
+                apellidos: apellidos.trim(),
+                correo: correo.trim(),
+                tipo: nuevoTipo,
+                contrasena: cunt,
+            }
+
+            const response = await fetch("http://localhost:4000/cuenta", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(info)
+            });
+
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status}`);
+            }
+
+            alert("Usuario Registrado Correctamente.");
+            window.dispatchEvent(new Event("avatarActualizado"));
+            navigate(-1);
         } catch (ina) {
             setError("Error al recibir la información.");
         }
