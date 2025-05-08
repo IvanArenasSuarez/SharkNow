@@ -8,40 +8,113 @@ export default function Search() {
   const [busqueda, setBusqueda] = useState('');
   const [filtro, setFiltro] = useState('');
   const [resultadosUsuarios, setResultadosUsuarios] = useState([]);
-  const [resultadosGuias, setResultadosGuias] = useState([]); // Para uso futuro
+  const [resultadosGuias, setResultadosGuias] = useState([]);
 
-  // Consulta dinámica de usuarios tipo 1 y 2
+  // Fetch para autores (tipo 1 y 2)
   useEffect(() => {
     const fetchAutores = async () => {
       if (filtro === "autor") {
         try {
+          const id_usuario = userData?.id_usuario;
           const url = busqueda.trim()
-            ? `http://localhost:4000/usuarios/autores?busqueda=${encodeURIComponent(busqueda)}`
-            : `http://localhost:4000/usuarios/autores`;
-  
+            ? `http://localhost:4000/usuarios/autores?busqueda=${encodeURIComponent(busqueda)}&id_usuario=${id_usuario}`
+            : `http://localhost:4000/usuarios/autores?id_usuario=${id_usuario}`;
           const res = await fetch(url);
           const data = await res.json();
-  
           setResultadosUsuarios(data.map(usuario => ({
             id: usuario.id_usuario,
             autor: `${usuario.nombre} ${usuario.apellidos}`,
             descripcionAutor: usuario.descripcion || "Sin descripción.",
-            imagen: "http://localhost:4000/avatar/imagen?id_usuario=" + usuario.id_usuario,
+            imagen: `http://localhost:4000/avatar/imagen?id_usuario=${usuario.id_usuario}`,
           })));
         } catch (error) {
           console.error("Error al buscar autores:", error);
           setResultadosUsuarios([]);
         }
       } else {
-        setResultadosUsuarios([]); // Limpiar resultados si cambia el filtro
+        setResultadosUsuarios([]);
       }
     };
-  
+
     fetchAutores();
   }, [busqueda, filtro]);
-  
 
-  // Lista de resultados a renderizar
+  // Fetch para guías por nombre (sin filtro aplicado)
+  useEffect(() => {
+    const fetchGuias = async () => {
+      if (!filtro) {
+        try {
+          const id_usuario = userData?.id_usuario;
+          const url = busqueda.trim()
+            ? `http://localhost:4000/guias/buscar?busqueda=${encodeURIComponent(busqueda)}&id_usuario=${id_usuario}`
+            : `http://localhost:4000/guias/buscar?id_usuario=${id_usuario}`;
+
+          const res = await fetch(url);
+          const data = await res.json();
+          setResultadosGuias(data.map(guia => ({
+            id: guia.id_gde,
+            nombre: guia.nombre,
+            descripcion: guia.descripcion,
+            autor: `${guia.nombre_autor} ${guia.apellidos_autor}`,
+            id_autor: guia.id_usuario,
+            tipo_autor: guia.tipo_autor, // Nuevo campo
+            seguidores: guia.num_seguidores,
+            mesirve: guia.num_mesirve,
+            materia: guia.nombre_materia,
+            imagen: `http://localhost:4000/avatar/imagen?id_usuario=${guia.id_usuario}`
+          })));
+          
+        } catch (error) {
+          console.error("Error al buscar guías por nombre:", error);
+          setResultadosGuias([]);
+        }
+      } else {
+        setResultadosGuias([]);
+      }
+    };
+
+    fetchGuias();
+  }, [busqueda, filtro]);
+
+  // Fetch para guías por materia (filtro: "materia")
+  useEffect(() => {
+    const fetchGuiasPorMateria = async () => {
+      if (filtro === "materia") {
+        try {
+          const id_usuario = userData?.id_usuario;
+          const url = busqueda.trim()
+            ? `http://localhost:4000/guias/buscar-por-materia?nombre_materia=${encodeURIComponent(busqueda)}&id_usuario=${id_usuario}`
+            : null;
+
+          if (url) {
+            const res = await fetch(url);
+            const data = await res.json();
+            setResultadosGuias(data.map(guia => ({
+              id: guia.id_gde,
+              nombre: guia.nombre,
+              descripcion: guia.descripcion,
+              autor: `${guia.nombre_autor} ${guia.apellidos_autor}`,
+              id_autor: guia.id_usuario,
+              tipo_autor: guia.tipo_autor,
+              seguidores: guia.num_seguidores,
+              mesirve: guia.num_mesirve,
+              materia: guia.nombre_materia,
+              imagen: `http://localhost:4000/avatar/imagen?id_usuario=${guia.id_usuario}`
+            })));
+          } else {
+            setResultadosGuias([]);
+          }
+        } catch (error) {
+          console.error("Error al buscar guías por materia:", error);
+          setResultadosGuias([]);
+        }
+      }
+    };
+
+    fetchGuiasPorMateria();
+  }, [busqueda, filtro]);
+
+
   const resultadosFiltrados = filtro === "autor" ? resultadosUsuarios : resultadosGuias;
 
   return (
@@ -72,7 +145,7 @@ export default function Search() {
         </select>
       </div>
 
-      {/* Lista de resultados con tamaño fijo y scroll */}
+      {/* Resultados */}
       <div className="w-full max-w-5xl bg-base-100 rounded-box shadow-md max-h-[calc(6.5*100px)] overflow-y-auto">
         <ul>
           <li className="p-4 text-xs opacity-60 tracking-wide">Resultados encontrados</li>
@@ -81,11 +154,10 @@ export default function Search() {
             resultadosFiltrados.map((resultado) => (
               <li
                 key={resultado.id}
-                className="flex items-center gap-4 h-25 px-3 border-b cursor-pointer hover:bg-gray-200"
+                className="flex items-center gap-4 px-3 py-4 border-b cursor-pointer hover:bg-gray-200"
                 onClick={() => {
                   if (filtro === "autor") {
                     localStorage.setItem("autorSeleccionado", JSON.stringify(resultado));
-                
                     if (userData?.tipo_de_cuenta === 3) {
                       navigate("/perfil/admin");
                     } else {
@@ -97,24 +169,39 @@ export default function Search() {
                 }}
               >
                 <img
-                  src={resultado.imagen} 
+                  src={resultado.imagen}
                   alt={resultado.nombre || resultado.autor}
-                  className="w-12 h-12 rounded-full"
+                  className="w-16 h-16 rounded-full object-cover"
                 />
 
                 <div className="flex flex-col flex-grow">
-                  {filtro === "autor" ? (
-                    <>
-                      <div className="font-semibold text-lg">{resultado.autor}</div>
-                      <p className="text-sm text-gray-400 truncate">{resultado.descripcionAutor}</p>
-                    </>
-                  ) : (
-                    <>
-                      <div className="font-semibold text-lg">{resultado.nombre}</div>
-                      <p className="text-sm text-gray-300">Autor: {resultado.autor}</p>
-                      <p className="text-sm text-gray-400 truncate">{resultado.descripcion}</p>
-                    </>
-                  )}
+                {filtro === "autor" ? (
+                  <>
+                    <div className="font-semibold text-lg">{resultado.autor}</div>
+                    <p className="text-sm text-gray-400 truncate">{resultado.descripcionAutor}</p>
+                  </>
+                ) : (
+                  <>
+                    <div className="font-semibold text-lg flex items-center gap-2">
+                      {resultado.nombre}
+                      {resultado.tipo_autor === 2 && (
+                        <img
+                          src="/src/assets/SharkCheck.png" // Imagen default de DaisyUI
+                          alt="SharkCheck"
+                          className="inline w-15 h-10 rounded-full"
+                        />
+                      )}
+                    </div>
+                    <p className="text-sm text-gray-300">Autor: {resultado.autor}</p>
+                    <p className="text-sm text-gray-400 truncate">{resultado.descripcion}</p>
+                    <div className="flex items-center gap-3 mt-1 text-sm text-gray-400">
+                      <span>📚 {resultado.materia}</span>
+                      <span>👥 {resultado.seguidores}</span>
+                      <span>⭐ {resultado.mesirve}</span>
+                    </div>
+                  </>
+                )}
+
                 </div>
               </li>
             ))
