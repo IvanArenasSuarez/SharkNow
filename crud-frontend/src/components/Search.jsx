@@ -155,7 +155,7 @@ export default function Search() {
               <li
                 key={resultado.id}
                 className="flex items-center gap-4 px-3 py-4 border-b cursor-pointer hover:bg-gray-200"
-                onClick={() => {
+                onClick={async () => {
                   if (filtro === "autor") {
                     localStorage.setItem("autorSeleccionado", JSON.stringify(resultado));
                     if (userData?.tipo_de_cuenta === 3) {
@@ -164,9 +164,26 @@ export default function Search() {
                       navigate("/perfil/usuario");
                     }
                   } else {
-                    navigate("/guia-sin-seguir");
+                    try {
+                      // Guardamos la guía seleccionada
+                      localStorage.setItem("guiaSeleccionada", JSON.stringify(resultado));
+                
+                      // Consultamos si el usuario sigue la guía
+                      const res = await fetch(`http://localhost:4000/guias/sigue?id_usuario=${userData.id_usuario}&id_gde=${resultado.id}`);
+                      const data = await res.json();
+                
+                      if (data.sigue || userData?.tipo_de_cuenta === 3 || userData?.tipo_de_cuenta === 2) {
+                        navigate("/guia-seguida");
+                      } else {
+                        navigate("/guia-sin-seguir");
+                      }
+                    } catch (error) {
+                      console.error("Error al verificar si sigue la guía:", error);
+                      navigate("/guia-sin-seguir"); 
+                    }
                   }
                 }}
+                
               >
                 <img
                   src={resultado.imagen}
