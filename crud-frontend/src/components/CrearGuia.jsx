@@ -6,7 +6,7 @@ export default function CrearGuia() {
     const [tipoGuia, setTipoGuia] = React.useState("curricular");
 
     const [datosGuia, setDatosGuia] = React.useState({
-        id: null,
+        id: 0,
         tipo: "curricular",
         materia: "",
         plan: "",
