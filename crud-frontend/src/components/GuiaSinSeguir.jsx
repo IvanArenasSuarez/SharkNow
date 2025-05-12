@@ -25,7 +25,7 @@ export default function GuiaSinSeguir() {
 
     return (
         <>
-            <h1 className="text-4xl font-bold text-center mt-8 mb-6">Vista Previa</h1>
+            <h1 className="text-4xl font-bold text-center mt-8 mb-6">Vista de Guía</h1>
             <div className="p-4 max-w-5xl mx-auto">
                 <div className="flex flex-col lg:flex-row gap-4">
                     {/* Columna Izquierda - Información de la Guía */}
