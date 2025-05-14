@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export default function CrearGuia() {
@@ -17,6 +17,53 @@ export default function CrearGuia() {
         seguidores: 0,
     });
 
+    const [opciones, setOpciones] = useState({
+        materias: [],
+        academias: [],
+        planes: []
+    });
+
+    const [filtros, setFiltros] = useState({
+        plan: "",
+        academia: ""
+    });
+
+    const materiasFiltradas = opciones.materias.filter(m => 
+        (!filtros.plan || m.id_pde === parseInt(filtros.plan)) &&
+        (!filtros.academia || m.id_academia === parseInt(filtros.academia))
+    );
+
+    const handleFiltroChange = (e) => {
+        const { name, value } = e.target;
+        setFiltros(prev => ({ ...prev, [name]: value}));
+        setDatosGuia(prev => ({ ...prev, [name]: value}));
+
+        if (name === 'plan' || name === 'academia') {
+            setDatosGuia(prev => ({ ...prev, materia: ""}));
+        }
+    };
+
+    useEffect(() => {
+        async function cargarOpciones() {
+            try {
+                const response = await fetch('http://localhost:4000/guias/parametros');
+                if (!response.ok) throw new Error("Error al obtener las opciones");
+
+                const data = await response.json();
+                setOpciones({
+                    materias: data.materias,
+                    academias: data.academias,
+                    planes: data.plan
+                });
+            }
+            catch(err) {
+                console.error("Error cargando opciones: ", err);
+            }
+        }
+
+        cargarOpciones();
+    },[]);
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setDatosGuia(prev => ({ ...prev, [name]: value }));
@@ -24,7 +71,7 @@ export default function CrearGuia() {
 
     const handleCrear = () => {
         localStorage.setItem("guia", JSON.stringify(datosGuia));
-        
+        console.table(datosGuia);
         navigate('/editar-guia');
     };
 
@@ -68,24 +115,57 @@ export default function CrearGuia() {
                 <div className="flex flex-col lg:flex-row gap-8">
                     {tipoGuia === "curricular" && (
                         <div className="w-full lg:w-[50%] flex flex-col gap-6">
-                            {["materia", "academia", "departamento", "programa", "plan"].map(field => (
-                                <fieldset key={field}>
-                                    <legend className="font-semibold mb-2 text-lg">
-                                        {field.charAt(0).toUpperCase() + field.slice(1)}
-                                    </legend>
-                                    <select
-                                        className="select text-lg"
-                                        name={field}
-                                        value={datosGuia[field]}
-                                        onChange={handleChange}
-                                    >
-                                        <option value="">Seleccione una opción</option>
-                                        <option>1</option>
-                                        <option>2</option>
-                                        <option>3</option>
-                                    </select>
-                                </fieldset>
-                            ))}
+                            <fieldset>
+                                <legend className='font-semibold mb-2 text-lg'>Plan</legend>
+                                <select
+                                    className='select text-lg'
+                                    name='plan'
+                                    value={filtros.plan}
+                                    onChange={handleFiltroChange}
+                                >
+                                    <option value="">Seleccione un plan</option>
+                                        {opciones.planes.map(plan => (
+                                            <option key={plan.id_pde} value={plan.id_pde}>
+                                                {plan.nombre}
+                                            </option>
+                                        ))}
+                                </select>
+                            </fieldset>
+
+                            <fieldset>
+                                <legend className='font-semibold mb-2 text-lg'>Academia</legend>
+                                <select
+                                    className='select text-lg'
+                                    name='academia'
+                                    value={filtros.academia}
+                                    onChange={handleFiltroChange}
+                                >
+                                    <option value="">Seleccione una academia</option>
+                                    {opciones.academias.map(aca => (
+                                        <option key={aca.id_academia} value={aca.id_academia}>
+                                            {aca.nombre}
+                                        </option>
+                                    ))}
+                                </select>
+                            </fieldset>
+
+                            <fieldset>
+                                <legend className='font-semibold mb-2 text-lg'>Materia</legend>
+                                <select
+                                    className='select text-lg'
+                                    name='materia'
+                                    value={datosGuia.materia}
+                                    onChange={handleChange}
+                                    disabled={materiasFiltradas.length === 0}
+                                >
+                                    <option value="">Seleccione una materia</option>
+                                    {materiasFiltradas.map(mat => (
+                                        <option key={mat.id_materias} value={mat.id_materias}>
+                                            {mat.nombre}
+                                        </option>
+                                    ))}
+                                </select>
+                            </fieldset>
                         </div>
                     )}
 

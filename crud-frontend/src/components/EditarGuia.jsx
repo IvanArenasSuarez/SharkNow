@@ -154,6 +154,8 @@ useEffect(() => {
   // 1. Lee *ahora* la guía y las preguntas
   const guiaStorage = JSON.parse(localStorage.getItem('guia')) || guia;
   const preguntasStorage = JSON.parse(localStorage.getItem('preguntas'));
+  console.table(guiaStorage);
+  console.table(guia);
 
   console.log("Enviando estos datos:", guiaStorage, preguntasStorage);
   const token = localStorage.getItem("token");
@@ -166,6 +168,7 @@ useEffect(() => {
     .then(res => res.json())
     .then(data => {
       console.log('Guía guardada correctamente:', data);
+      console.table(data);
       // 2. Sólo aquí, tras recibir respuesta, navegamos y permitimos al cleanup borrar el storage
       navigate('/mis-guias');
     })
@@ -229,13 +232,6 @@ useEffect(() => {
             <legend className="font-semibold mb-2 text-lg">Academia</legend>
             <select className="select w-full" disabled={guia.publicada}>
               <option>{guia.academia}</option>
-            </select>
-          </fieldset>
-          )}
-          {guia.tipo === "c" &&(<fieldset>
-            <legend className="font-semibold mb-2 text-lg">Departamento</legend>
-            <select className="select w-full" disabled={guia.publicada}>
-              <option>{guia.departamento}</option>
             </select>
           </fieldset>
           )}
