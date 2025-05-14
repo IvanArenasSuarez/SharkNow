@@ -38,7 +38,16 @@ export default function GuiaSinSeguir() {
 
   return (
     <>
-      <h1 className="text-4xl font-bold text-center mt-8 mb-6">Vista de Guía</h1>
+      <h1 className="text-4xl font-bold text-center mt-8 mb-6">Vista de Guía
+         {guiaSeleccionada.tipo_autor === 2 && (
+          <img
+            src="/src/assets/SharkCheck.png" // Imagen de Check
+            alt="SharkCheck"
+            className="inline w-25 h-15 rounded-full"
+          />
+          )}
+      </h1>
+       
       <div className="p-4 max-w-5xl mx-auto">
         <div className="flex flex-col lg:flex-row gap-4">
           {/* Columna Izquierda - Información de la Guía */}

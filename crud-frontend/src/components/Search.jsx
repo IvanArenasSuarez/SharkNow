@@ -141,7 +141,7 @@ export default function Search() {
           <option value="">Filtros</option>
           <option value="materia">Materia</option>
           <option value="autor">Autor</option>
-          <option value="academia">Academia</option>
+          
         </select>
       </div>
 
@@ -203,7 +203,7 @@ export default function Search() {
                       {resultado.nombre}
                       {resultado.tipo_autor === 2 && (
                         <img
-                          src="/src/assets/SharkCheck.png" // Imagen default de DaisyUI
+                          src="/src/assets/SharkCheck.png" // Imagen de Check
                           alt="SharkCheck"
                           className="inline w-15 h-10 rounded-full"
                         />
