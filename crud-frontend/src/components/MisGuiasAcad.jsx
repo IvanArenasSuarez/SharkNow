@@ -7,7 +7,7 @@ export default function MisGuiasProf() {
 
     return (
         <div className="min-h-screen flex flex-col items-center px-6 py-6">
-            <h1 className="text-4xl font-bold text-center mb-6 w-full">Guias de Estudio</h1>
+            <h1 className="text-4xl font-bold text-center mb-6 w-full">Guías de Estudio</h1>
             <div className="flex flex-col lg:flex-row justify-between gap-6 w-full max-w-7xl">
                 {/* Mis Guías */}
                 <div className="p-6 rounded-lg shadow-lg w-full lg:w-[600px] flex flex-col gap-6">

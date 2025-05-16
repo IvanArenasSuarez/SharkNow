@@ -44,7 +44,7 @@ export default function Reportes() {
                                 <img className="w-12 h-12 rounded-full" src={usuario.img} alt="Perfil" />
                                 <div className="flex flex-col flex-grow">
                                     <div className="font-semibold text-lg">{usuario.nombre}</div>
-                                    <p className="text-sm text-gray-600">{usuario.descripcion}</p>
+                                    <p className="text-sm text-gray-300">{usuario.descripcion}</p>
                                     <span className="text-sm font-bold">Reportes: {usuario.reportes}</span>
                                 </div>
                             </li>
@@ -76,7 +76,7 @@ export default function Reportes() {
                                 
                                 <div className="flex flex-col flex-grow">
                                     <div className="font-semibold text-lg">{reporte.guia}</div>
-                                    <p className="text-sm text-gray-600">Usuario: {reporte.usuario}</p>
+                                    <p className="text-sm text-gray-300">Usuario: {reporte.usuario}</p>
                                     <p className="text-sm text-red-500">Razón: {reporte.razon}</p>
                                 </div>
                             </li>

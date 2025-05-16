@@ -26,9 +26,8 @@ export default function EditarGuia() {
     } else {
         preguntas = JSON.parse(preguntas);
     }
-    console.log(JSON.stringify(preguntas, null, 2));
-}, []);
-    
+  }, []);
+
   const [guia, setGuia] = useState(() => {
     const guiaGuardada = localStorage.getItem('guia');
     if (guiaGuardada) {
@@ -37,7 +36,63 @@ export default function EditarGuia() {
     return {};
   });
 
+  const handleChange = (e) => {
+        const { name, value } = e.target;
+        setGuia(prev => ({ ...prev, [name]: value }));
+        localStorage.setItem("guia", JSON.stringify(guia));
+    };
 
+  useEffect(() => {
+    async function cargarOpciones() {
+        try {
+            const response = await fetch('http://localhost:4000/guias/parametros');
+            if (!response.ok) throw new Error("Error al obtener las opciones");
+            const data = await response.json();
+            setOpciones({
+                materias: data.materias,
+                academias: data.academias,
+                planes: data.plan
+            });
+
+            // Actualizar academia si la materia ya está seleccionada
+            const materiaSeleccionada = data.materias.find(m => m.id_materias === guia.materia);
+
+            if (materiaSeleccionada) {
+                setGuia(prev => ({ ...prev, academia: materiaSeleccionada.id_academia }));
+            }
+            
+        }
+        catch (err) {
+            console.error("Error cargando opciones: ", err);
+        }
+    }
+    cargarOpciones();
+  }, []);
+
+    const [opciones, setOpciones] = useState({
+        materias: [],
+        academias: [],
+        planes: []
+    });
+
+    const [filtros, setFiltros] = useState({
+        plan: "",
+        academia: ""
+    });
+
+    const materiasFiltradas = opciones.materias.filter(m => 
+        (!filtros.plan || m.id_pde === parseInt(filtros.plan)) &&
+        (!filtros.academia || m.id_academia === parseInt(filtros.academia))
+    );
+
+    const handleFiltroChange = (e) => {
+        const { name, value } = e.target;
+        setFiltros(prev => ({ ...prev, [name]: value}));
+        setGuia(prev => ({ ...prev, [name]: value}));
+        if (name === 'plan' || name === 'academia') {
+            setGuia(prev => ({ ...prev, materia: ""}));
+        }
+    };
 
   const [preguntas, setPreguntas] = useState(() => {
     const guardadas = localStorage.getItem("preguntas");
@@ -55,7 +110,7 @@ export default function EditarGuia() {
   });
 
   const mostrarPopupSiNecesario = () => {
-    if (guia.publicada && guia.seguidores > 0 && !popupShown) {
+    if (guia.estado==="P" && guia.seguidores > 0 && !popupShown) {
       setShowPopup(true);
     }
   };
@@ -64,7 +119,7 @@ export default function EditarGuia() {
     setGuia((prev) => ({
       ...prev,
       version: prev.version + 1,
-    publicada: false,
+    estado: "N",
     seguidores: 0
     }));
     setShowPopup(false);
@@ -95,6 +150,29 @@ const abrirModalEditar = (pregunta) => {
     title: "Editar pregunta"
   });
 };
+
+const handleEliminarGuia = async () => {
+    if (guia.estado === 'N' || (guia.estado === 'P' && guia.seguidores === 0)) {
+        try {
+            const token = localStorage.getItem('token'); // si usas autenticación con JWT
+            const response = await fetch(`http://localhost:4000/guias/eliminar/${guia.id}`, {
+                method: 'GET',
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            if (!response.ok) throw new Error('No se pudo eliminar la guía');
+            alert('Guía eliminada correctamente');
+            navigate(-1);
+        } catch (err) {
+            console.error('Error al eliminar la guía:', err);
+            alert('Error al eliminar la guía');
+        }
+    } else {
+        alert('No se puede eliminar esta guía porque está publicada y tiene seguidores.');
+    }
+};
+
 
 useEffect(() => {
     async function obtenerPreguntas() {
@@ -154,8 +232,6 @@ useEffect(() => {
   // 1. Lee *ahora* la guía y las preguntas
   const guiaStorage = JSON.parse(localStorage.getItem('guia')) || guia;
   const preguntasStorage = JSON.parse(localStorage.getItem('preguntas'));
-
-  console.log("Enviando estos datos:", guiaStorage, preguntasStorage);
   const token = localStorage.getItem("token");
   fetch('http://localhost:4000/guias/guardar', {
     method: 'POST',
@@ -165,14 +241,13 @@ useEffect(() => {
   })
     .then(res => res.json())
     .then(data => {
-      console.log('Guía guardada correctamente:', data);
       // 2. Sólo aquí, tras recibir respuesta, navegamos y permitimos al cleanup borrar el storage
       navigate('/mis-guias');
     })
     .catch(error => {
       console.error('Error al guardar la guía:', error);
     });
-};
+  };
   // Tras cargar o editar la guía:
 useEffect(() => {
   localStorage.setItem('guia', JSON.stringify(guia));
@@ -215,40 +290,69 @@ useEffect(() => {
         <div className="w-full lg:w-1/2 flex flex-col gap-6 min-h-[500px]">
           <fieldset>
             <legend className="font-semibold mb-2 text-lg">Nombre de la guía</legend>
-            <input type="text" className="input text-lg w-full" defaultValue={guia.nombre} />
+            <input name="nombre" type="text" className="input text-lg w-full" defaultValue={guia.nombre} onChange={handleChange} />
           </fieldset>
 
-          {guia.tipo === "c" &&(<fieldset>
-            <legend className="font-semibold mb-2 text-lg">Materia</legend>
-            <select className="select w-full" disabled={guia.publicada}>
-              <option>{guia.materia}</option>
-            </select>
-          </fieldset>
-          )}
-          {guia.tipo === "c" &&(<fieldset>
-            <legend className="font-semibold mb-2 text-lg">Academia</legend>
-            <select className="select w-full" disabled={guia.publicada}>
-              <option>{guia.academia}</option>
-            </select>
-          </fieldset>
-          )}
-          {guia.tipo === "c" &&(<fieldset>
-            <legend className="font-semibold mb-2 text-lg">Departamento</legend>
-            <select className="select w-full" disabled={guia.publicada}>
-              <option>{guia.departamento}</option>
-            </select>
-          </fieldset>
-          )}
-          {guia.tipo === "c" &&(<fieldset>
-            <legend className="font-semibold mb-2 text-lg">Plan de Estudios</legend>
-            <select className="select w-full" disabled={guia.publicada}>
-              <option>{guia.plan}</option>
-            </select>
-          </fieldset>
+          {guia.tipo === "c" &&(
+
+            <div className="w-full  flex flex-col gap-6">
+                            <fieldset>
+                                <legend className='font-semibold mb-2 text-lg'>Plan</legend>
+                                <select
+                                    className='select text-lg'
+                                    name='plan'
+                                    value={guia.plan}
+                                    onChange={(e) => {handleChange(e); handleFiltroChange(e); }}
+                                >
+                                    <option value="">Seleccione un plan</option>
+                                        {opciones.planes.map(plan => (
+                                            <option key={plan.id_pde} value={parseInt(plan.id_pde)}>
+                                                {plan.nombre}
+                                            </option>
+                                        ))}
+                                </select>
+                            </fieldset>
+
+                            <fieldset>
+                                <legend className='font-semibold mb-2 text-lg'>Academia</legend>
+                                <select
+                                    className='select text-lg'
+                                    name='academia'
+                                    value={guia.academia}
+                                    onChange={handleFiltroChange}
+                                >
+                                    <option value="">Seleccione una academia</option>
+                                    {opciones.academias.map(aca => (
+                                        <option key={aca.id_academia} value={aca.id_academia}>
+                                            {aca.nombre}
+                                        </option>
+                                    ))}
+                                </select>
+                            </fieldset>
+
+                            <fieldset>
+                                <legend className='font-semibold mb-2 text-lg'>Materia</legend>
+                                <select
+                                    className='select text-lg'
+                                    name='materia'
+                                    value={guia.materia}
+                                    onChange={handleChange}
+                                    disabled={materiasFiltradas.length === 0}
+                                >
+                                    <option value="">Seleccione una materia</option>
+                                    {materiasFiltradas.map(mat => (
+                                        <option key={mat.id_materias} value={parseInt(mat.id_materias)}>
+                                            {mat.nombre}
+                                        </option>
+                                    ))}
+                                </select>
+                            </fieldset>
+                        </div>
+
           )}
           <fieldset>
             <legend className="font-semibold mb-2 text-lg">Versión</legend>
-            <select className="select w-full" disabled={guia.publicada}>
+            <select className="select w-full" disabled={guia.estado==="P"} >
               <option>{guia.version}</option>
             </select>
           </fieldset>
@@ -268,16 +372,16 @@ useEffect(() => {
 
           <fieldset>
             <legend className="font-semibold mb-2 text-lg">Descripción</legend>
-            <textarea className="textarea text-lg flex-1 min-h-[150px] w-full" placeholder="Escribe una descripción">{guia.descripcion}</textarea>
+            <textarea name="descripcion" className="textarea text-lg flex-1 min-h-[150px] w-full" placeholder="Escribe una descripción" onChange={handleChange}>{guia.descripcion}</textarea>
           </fieldset>
 
             <div className="flex justify-between gap-4">
-              {((!guia.publicada) || (guia.publicada && guia.seguidores > 0 && enviarAcademia)
+              {((guia.estado==="N") || (guia.estado==="P" && guia.seguidores > 0 && enviarAcademia)
                 ) && (
                   <button 
                     className="btn btn-primary w-1/3 h-14 min-w-[120px]"
                     onClick={() => {
-                      if (guia.publicada && guia.seguidores > 0 && !popupShown) {
+                      if (guia.estado==="P" && guia.seguidores > 0 && !popupShown) {
                         setShowPopup(true);
                           } else {
                         handlePublicarOEnviar();
@@ -286,7 +390,7 @@ useEffect(() => {
                   </button>
               )}
               <button className="btn btn-accent w-1/3 h-14 min-w-[120px]" onClick={handlePublicarOEnviar}>Guardar y Salir</button>
-              <button className="btn btn-secondary w-1/3 h-14 min-w-[120px]" onClick={() => navigate(-1)}>Eliminar</button>
+              <button className="btn btn-secondary w-1/3 h-14 min-w-[120px]" onClick={handleEliminarGuia}>Eliminar</button>
             </div>
         </div>
 
