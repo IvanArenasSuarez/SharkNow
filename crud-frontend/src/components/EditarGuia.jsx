@@ -7,11 +7,14 @@ export default function EditarGuia() {
   const navigate = useNavigate();
   const [esMaestro, setEsMaestro] = useState(false);
   const [enviarAcademia, setEnviarAcademia] = useState(false);  
+  const [modalEnviar, setModalEnviar] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [popupShown, setPopupShown] = useState(false);
   const checkIcon = "m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125";
   const deleteIcon = "m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5m6 4.125 2.25 2.25m0 0 2.25 2.25M12 13.875l2.25-2.25M12 13.875l-2.25 2.25M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z";
   
+  const userData = JSON.parse(localStorage.getItem("userData"));
+
   useEffect(() => {
     let preguntas = localStorage.getItem("preguntas");
     if (!preguntas) {
@@ -37,7 +40,15 @@ export default function EditarGuia() {
     return {};
   });
 
-
+  useEffect(() => {
+    if(userData?.tipo_de_cuenta === 2){
+      setEsMaestro(true);
+      console.log("El usuario es un profesor");
+    }
+    else {
+      setEsMaestro(false);
+    }
+  }, []);
 
   const [preguntas, setPreguntas] = useState(() => {
     const guardadas = localStorage.getItem("preguntas");
@@ -149,8 +160,8 @@ useEffect(() => {
       ...preguntasStorage.editadas
     ]);
   };
-  
-  const handlePublicarOEnviar = () => {
+
+const handleGuardarGuía = () => {
   // 1. Lee *ahora* la guía y las preguntas
   const guiaStorage = JSON.parse(localStorage.getItem('guia')) || guia;
   const preguntasStorage = JSON.parse(localStorage.getItem('preguntas'));
@@ -170,7 +181,11 @@ useEffect(() => {
       console.log('Guía guardada correctamente:', data);
       console.table(data);
       // 2. Sólo aquí, tras recibir respuesta, navegamos y permitimos al cleanup borrar el storage
-      navigate('/mis-guias');
+      if(esMaestro) {
+        navigate('/mis-guias-profesor');
+      }
+      else 
+        navigate('/mis-guias');
     })
     .catch(error => {
       console.error('Error al guardar la guía:', error);
@@ -276,14 +291,42 @@ useEffect(() => {
                       if (guia.publicada && guia.seguidores > 0 && !popupShown) {
                         setShowPopup(true);
                           } else {
-                        handlePublicarOEnviar();
+                            if(!enviarAcademia){document.getElementById('publicarModal').showModal();}
+                            else {document.getElementById('enviarModal').showModal();}
                       }
                     }}>{enviarAcademia ? "Enviar" : "Publicar"}
-                  </button>
-              )}
-              <button className="btn btn-accent w-1/3 h-14 min-w-[120px]" onClick={handlePublicarOEnviar}>Guardar y Salir</button>
+                  </button> 
+              )}   
+
+              <dialog id='enviarModal' className="modal">
+                <div className="modal-box">
+                  <h3 className="font-bold text-lg">Enviar a revisión por academia</h3>
+                  <p className="py-4">Solo de Prueba de mientras</p>
+                  <div className="modal-action">
+                    <form method="dialog">
+                      <button className="btn">Enviar</button>
+                      <button className="btn">Cerrar</button>
+                    </form>
+                  </div>
+                </div>
+              </dialog>
+
+              <dialog id='publicarModal' className="modal">
+                <div className="modal-box">
+                  <h3 className="font-bold text-lg">Publicar a revisión por academia</h3>
+                  <p className="py-4">Este modal se muestra antes de publicar</p>
+                  <div className="modal-action">
+                    <form method="dialog">
+                      <button className="btn">Enviar</button>
+                      <button className="btn">Cerrar</button>
+                    </form>
+                  </div>
+                </div>
+              </dialog>
+              <button className="btn btn-accent w-1/3 h-14 min-w-[120px]" onClick={handleGuardarGuía}>Guardar y Salir</button>
               <button className="btn btn-secondary w-1/3 h-14 min-w-[120px]" onClick={() => navigate(-1)}>Eliminar</button>
             </div>
+            
         </div>
 
         {/* Lista de Preguntas */}

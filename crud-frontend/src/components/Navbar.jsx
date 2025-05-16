@@ -6,7 +6,7 @@ export default function Navbar() {
   const navigate = useNavigate();
   const userData = JSON.parse(localStorage.getItem("userData"));
   const [avatarURL, setAvatarURL] = useState(null);
-  const [tieneCaracteristicaAcademia, setTieneCaracteristicaAcademia] = useState(true);
+  const [tieneCaracteristicaAcademia, setTieneCaracteristicaAcademia] = useState(false);
   const [notificationsVisible, setNotificationsVisible] = useState(false);
   const [notifications, setNotifications] = useState([
     {
@@ -70,6 +70,14 @@ export default function Navbar() {
       window.removeEventListener("avatarActualizado", handleAvatarUpdate);
     };
   }, []);
+
+  useEffect(() => {
+    if (userData?.tipo_de_cuenta === 2 && userData?.jefe){
+      setTieneCaracteristicaAcademia(true);
+    } else {
+      setTieneCaracteristicaAcademia(false);
+    }
+  },[]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
