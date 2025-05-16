@@ -1,19 +1,30 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function Reporte() {
   const navigate = useNavigate();
   const [selectedReason, setSelectedReason] = useState("");
   const [description, setDescription] = useState("");
+  const [mensaje, setMensaje] = useState("");
+  const [nombreGuia, setNombreGuia] = useState("");
+
+  const userData = JSON.parse(localStorage.getItem("userData"));
+  const guiaSeleccionada = JSON.parse(localStorage.getItem("guiaSeleccionada"));
+
+  useEffect(() => {
+    if (guiaSeleccionada?.nombre) {
+      setNombreGuia(guiaSeleccionada.nombre);
+    }
+  }, []);
 
   const reportReasons = [
     {
-      value: "contenido_exp",
+      value: "cont_exp",
       title: "Contenido Explícito",
       description: "Material que contiene imágenes, videos o descripciones explícitas no aptas para todo público.",
     },
     {
-      value: "discurso_odio",
+      value: "disc_odio",
       title: "Contenido ofensivo o discurso de odio",
       description: "Material que promueve la discriminación, violencia o lenguaje ofensivo hacia grupos o individuos.",
     },
@@ -29,35 +40,61 @@ export default function Reporte() {
     },
   ];
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!selectedReason) {
-      alert("Por favor, selecciona una razón para el reporte.");
+      setMensaje("Por favor, selecciona una razón para el reporte.");
       return;
     }
 
     if (!description.trim()) {
-      alert("Por favor, describe el problema en el campo de texto.");
+      setMensaje("Por favor, describe el problema en el campo de texto.");
       return;
     }
 
-    console.log("Reporte enviado:", { selectedReason, description });
-    alert("Reporte enviado correctamente.");
-    navigate(-1);
+    try {
+      const res = await fetch("http://localhost:4000/reportes/registrar", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          id_usuario: userData?.id_usuario,
+          id_gde: guiaSeleccionada?.id,
+          categoria: selectedReason,
+          descripcion: description.trim()
+        })
+      });
+
+      if (res.status === 409) {
+        setMensaje("Ya has enviado un reporte con esta categoría para esta guía.");
+      } else if (!res.ok) {
+        throw new Error("Error al enviar el reporte.");
+      } else {
+        setMensaje("");
+        alert("Reporte enviado correctamente.");
+        navigate(-1);
+      }
+    } catch (error) {
+      console.error("Error al enviar reporte:", error);
+      setMensaje("Hubo un error al enviar el reporte.");
+    }
   };
 
   return (
     <div className="flex flex-col min-h-screen">
       <div className="container mx-auto p-8 flex-grow max-w-3xl rounded-lg shadow-lg">
-        
         {/* Título */}
-        <h1 className="text-4xl font-bold text-white text-center mb-6">Reportar Guía</h1>
+        <h1 className="text-4xl font-bold text-white text-center mb-2">Reportar Guía</h1>
+        {nombreGuia && (
+          <p className="text-center text-gray-300 text-lg mb-6">Nombre: <strong>{nombreGuia}</strong></p>
+        )}
 
         {/* Pregunta principal */}
         <p className="text-lg text-gray-300 text-center mb-6">
           ¿Considera que la guía contiene alguna de las siguientes opciones?
         </p>
 
-        {/* Opciones de reporte en 2 columnas */}
+        {/* Opciones de reporte */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-800 p-6 rounded-lg shadow-md">
           {reportReasons.map((reason) => (
             <label key={reason.value} className="flex items-start space-x-3 cursor-pointer p-3 hover:bg-gray-700 rounded-lg transition">
@@ -77,7 +114,7 @@ export default function Reporte() {
           ))}
         </div>
 
-        {/* Campo de texto para descripción adicional */}
+        {/* Campo de texto */}
         <div className="mt-6">
           <label className="block text-white font-medium mb-3">
             Describa el problema de manera general:
@@ -90,7 +127,12 @@ export default function Reporte() {
           />
         </div>
 
-        {/* Botones de acción */}
+        {/* Mensaje de error o advertencia */}
+        {mensaje && (
+          <div className="mt-4 text-center text-red-400 font-semibold">{mensaje}</div>
+        )}
+
+        {/* Botones */}
         <div className="flex justify-center gap-6 mt-6">
           <button
             onClick={handleSubmit}

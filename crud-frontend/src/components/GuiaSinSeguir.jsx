@@ -97,9 +97,22 @@ export default function GuiaSinSeguir() {
           {/* Columna Derecha - Lista de Preguntas */}
           <div className="w-full lg:w-1/2 text-white">
             <div className="flex justify-end mb-2">
-              <button className="btn btn-sm btn-outline border-red-500 text-red-500 hover:bg-red-500 hover:text-white" onClick={() => navigate('/reporte')}>
-                Reportar
-              </button>
+              <button
+              className="btn btn-sm btn-outline border-red-500 text-red-500 hover:bg-red-500 hover:text-white"
+              onClick={() => {
+                // Guardamos los datos necesarios para el reporte
+                localStorage.setItem("reporteData", JSON.stringify({
+                  id_usuario: userData.id_usuario,
+                  id_gde: guiaSeleccionada.id
+                }));
+
+                // Redirigimos a la página de reporte
+                navigate('/reporte');
+              }}
+            >
+              Reportar
+            </button>
+
             </div>
             <ul className="bg-base-100 rounded-box shadow-md h-[400px] overflow-y-auto">
               <li className="p-4 text-xs opacity-60 tracking-wide font-semibold">Lista de Preguntas</li>
