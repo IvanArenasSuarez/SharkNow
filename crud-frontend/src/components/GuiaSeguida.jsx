@@ -84,21 +84,10 @@ export default function GuiaSeguida() {
 
   const dejarDeSeguir = async () => {
     try {
-      // Primero quitar MeSirve si estaba marcado
-      if (meSirve) {
-        await fetch('http://localhost:4000/guias/quitar-mesirve', {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            id_usuario: userData.id_usuario,
-            id_gde: guiaSeleccionada.id
-          })
-        });
-      }
-
-      // Luego eliminar el seguimiento
+          
+      // Cambiar estado de seguimiento de la guía
       await fetch(`http://localhost:4000/guias/dejar-de-seguir`, {
-        method: 'DELETE',
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           id_usuario: userData.id_usuario,
