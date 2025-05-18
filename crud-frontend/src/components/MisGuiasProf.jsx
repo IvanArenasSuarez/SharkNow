@@ -6,6 +6,7 @@ export default function MisGuiasProf() {
     const gotoCrearGuias = () => navigate('/crear-guia');
 
     const [misGuias, setMisGuias] = useState([]);
+    const [solicitudes, setSolicitudes] = useState([]);
 
     useEffect(() => {
             const fetchGuias = async () => {
@@ -29,6 +30,29 @@ export default function MisGuiasProf() {
     
             fetchGuias();
         }, []);
+
+    useEffect(() => {
+        const fetchSolicitudes = async () => {
+            try {
+                const token = localStorage.getItem("token");
+                const response = await fetch("http://localhost:4000/guias/solicitudes/prof", {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    setSolicitudes(data);
+                    console.table(data);
+                } else {
+                    console.error("Error: ", data.message);
+                }
+            } catch (err) {
+                console.error("Error al obtener las solicitudes: ", err);
+            }
+        }
+        fetchSolicitudes();
+    }, []);
 
     return (
         <div className="min-h-screen flex flex-col items-center px-6 py-6">
@@ -116,54 +140,59 @@ export default function MisGuiasProf() {
                 <div className="p-6 rounded-lg shadow-lg w-full lg:w-[600px] flex flex-col gap-6">
                     <h1 className="text-2xl font-bold text-center">Guías para Academia</h1>
                     <ul className="bg-base-100 rounded-box shadow-md max-h-[calc(5*100px)] overflow-y-auto">
-                        <li className="p-4 text-xs opacity-60 tracking-wide"></li>
-                        {[...Array(5)]
-                            .map((_, index) => {
-                                const estados = ["Aceptada", "Rechazada", "En Revisión"];
-                                const estado = estados[index % estados.length];
-                                return {
-                                    nombre: `Guía ${index + 1}`,
-                                    estado,
-                                    motivoRechazo: "Falta de referencias actualizadas", // ejemplo
-                                };
-                            })
-                            .filter(guia => guia.estado !== "Aceptada")
-                            .map((guia, index) => {
-                                const esRechazada = guia.estado === "Rechazada";
+                        {solicitudes.length === 0 ? (
+                            <li className='p-4 text-center text-gray-500'>No hay guías pendientes</li>
+                        ) : (
+                          solicitudes
+                            .filter((solicitud) => solicitud.estado !== 'A')
+                            .map((solicitud) => {
+                                const esRechazada = solicitud.estado === 'R';
+                                const enRevision = solicitud.estado === 'E';
+
                                 const handleClick = () => {
                                     if (esRechazada) {
-                                        navigate("/editar-guia");
+                                        navigate(`/editar-guia/${solicitud.id_gde}`);
                                     }
                                 };
 
                                 return (
                                     <li
-                                        key={index}
+                                        key={solicitud.id_solicitud}
                                         onClick={handleClick}
-                                        className={`flex items-center gap-4 h-auto px-3 py-4 border-b rounded transition 
-                                            ${esRechazada ? 'cursor-pointer hover:bg-red-50' : ''}`}
+                                        className={`flex items-center gap-4 h-auto px-3 py-4 border-b rounded transition ${esRechazada ? 'cursor-pointer hover:bg-red-50' : ''}`}
                                     >
-                                        <img className="w-12 h-12 rounded-full" src="https://img.daisyui.com/images/profile/demo/1@94.webp" alt="Perfil" />
-                                        <div className="flex flex-col flex-grow">
-                                            <div className="font-semibold text-lg">{guia.nombre}</div>
-                                            <p className="text-sm text-gray-600">
+                                        <img className='w-12 h-12 rounded-full'
+                                            src="https://img.daisyui.com/images/profile/demo/1@94.webp" 
+                                            alt='Perfil'
+                                        />
+                                        <div className='flex flex-col flex-grow'>
+                                            <div className='font-semibold text-lg'>
+                                                {solicitud.nombre}
+                                            </div>
+                                            <p className='text-sm text-grau-600'>
                                                 Estado:{" "}
-                                                <span className={`font-bold ${esRechazada ? 'text-red-500' : 'text-yellow-500'}`}>
-                                                    {guia.estado}
+                                                <span className={`font-bold ${
+                                                    esRechazada ? 'text-red-500' : 'text-yellow-500'
+                                                }`}>
+                                                    {esRechazada ? 'Rechazada' : 'En Revisión'}
                                                 </span>
                                                 {esRechazada && (
-                                                    <span className="ml-2 text-xs text-red-500 font-semibold">(Modificar)</span>
+                                                    <span className='ml-2 text-xs text-red-500 font-semibold'>
+                                                        (Modificar)
+                                                    </span>
                                                 )}
                                             </p>
                                             {esRechazada && (
-                                                <p className="text-xs text-red-400 mt-1">
-                                                    📌 Motivo del rechazo: {guia.motivoRechazo}
+                                                <p className='text-xs text-red-400 mt-1'>
+                                                    📌 Motivo del rechazo: {solicitud.motivo_de_rechazo}
                                                 </p>
                                             )}
                                         </div>
                                     </li>
-                                );
-                            })}
+                                )
+                            })  
+                        )}
+                        
                     </ul>
                 </div>
             </div>
