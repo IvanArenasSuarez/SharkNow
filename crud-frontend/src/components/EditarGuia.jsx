@@ -229,9 +229,10 @@ useEffect(() => {
   };
   
   const handlePublicarOEnviar = () => {
-  // 1. Lee *ahora* la guía y las preguntas
   const guiaStorage = JSON.parse(localStorage.getItem('guia')) || guia;
   const preguntasStorage = JSON.parse(localStorage.getItem('preguntas'));
+  console.log(preguntasStorage.nuevas.length);
+  console.log(preguntasStorage.nuevas.length);
   const token = localStorage.getItem("token");
   fetch('http://localhost:4000/guias/guardar', {
     method: 'POST',
@@ -241,7 +242,6 @@ useEffect(() => {
   })
     .then(res => res.json())
     .then(data => {
-      // 2. Sólo aquí, tras recibir respuesta, navegamos y permitimos al cleanup borrar el storage
       navigate('/mis-guias');
     })
     .catch(error => {
@@ -293,7 +293,7 @@ useEffect(() => {
             <input name="nombre" type="text" className="input text-lg w-full" defaultValue={guia.nombre} onChange={handleChange} />
           </fieldset>
 
-          {guia.tipo === "c" &&(
+          {guia.tipo === "C" &&(
 
             <div className="w-full  flex flex-col gap-6">
                             <fieldset>
@@ -384,6 +384,7 @@ useEffect(() => {
                       if (guia.estado==="P" && guia.seguidores > 0 && !popupShown) {
                         setShowPopup(true);
                           } else {
+                        
                         handlePublicarOEnviar();
                       }
                     }}>{enviarAcademia ? "Enviar" : "Publicar"}

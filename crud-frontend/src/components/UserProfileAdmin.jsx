@@ -7,14 +7,18 @@ export default function UserProfileAdmin() {
 
   // Estados para el usuario visualizado
   const [datosUsuario, setDatosUsuario] = useState(null);
-
+  const [guiasDelAutor, setGuiasDelAutor] = useState([]);
   const [tieneCaracteristicaAcademia, setTieneCaracteristicaAcademia] = useState(false);
 
-  // Ya esta asignada la característica de academia
+  // Ya esta asignada la característica de academia para alguna de las academias a las que pertenece el usuario
   const [alguienTieneCaracteristicaAcademia, setAlguienTieneCaracteristicaAcademia] = useState(false);
+  const [academiasDisponibles, setAcademiasDisponibles] = useState([]);
+  const [academiaSeleccionada, setAcademiaSeleccionada] = useState(null);
+  
+  const [academiaAQuitar, setAcademiaAQuitar] = useState(null);
 
   // Estado para el usuario al que restringiremos la cuenta
-  const [tieneRestriccion, setTieneRestriccion] = useState(true);
+  const [tieneRestriccion, setTieneRestriccion] = useState(false);
 
   // Estado para manejar la alerta de confirmación de eliminaciónes
   const [isDeleteAlertVisible, setIsDeleteAlertVisible] = useState(false);
@@ -23,41 +27,7 @@ export default function UserProfileAdmin() {
   const [isAsignacionAlertVisible, setIsAsignacionAlertVisible] = useState(false);
   const [isQuitarAlertVisible, setIsQuitarAlertVisible] = useState(false);
 
-  const guiasUsuario = [
-    {
-      id: 1,
-      titulo: "Estructuras de datos básicas",
-      descripcion: "Guía sobre listas, pilas, colas y árboles.",
-      imagen: "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp",
-      seguidores: 124,
-      meSirve: 56,
-    },
-    {
-      id: 2,
-      titulo: "Introducción a programación en C",
-      descripcion: "Explicación paso a paso para entender los fundamentos de C.",
-      imagen: "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp",
-      seguidores: 98,
-      meSirve: 47,
-    },
-    {
-      id: 3,
-      titulo: "Algoritmos de búsqueda y ordenamiento",
-      descripcion: "Guía completa sobre algoritmos de búsqueda y ordenamiento.",
-      imagen: "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp",
-      seguidores: 200,
-      meSirve: 150,
-    },
-    {
-      id: 4,
-      titulo: "Programación orientada a objetos en Java",
-      descripcion: "Todo lo que necesitas saber sobre POO en Java.",
-      imagen: "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp",
-      seguidores: 75,
-      meSirve: 30,
-    },
-  ];
-  
+ 
   useEffect(() => {
       const autor = JSON.parse(localStorage.getItem("autorSeleccionado"));
          
@@ -72,6 +42,57 @@ export default function UserProfileAdmin() {
           });
       }
     }, []);
+  
+  // Obtener guías del autor seleccionado
+  useEffect(() => {
+  const autor = JSON.parse(localStorage.getItem("autorSeleccionado"));
+  if (autor?.id) {
+    fetch(`http://localhost:4000/guias/por-usuario?id_usuario=${autor.id}`)
+      .then(res => res.json())
+      .then(data => {
+        setGuiasDelAutor(data);
+      })
+      .catch(err => {
+        console.error("Error al obtener guías del autor:", err);
+      });
+  }
+  }, []);
+
+
+  useEffect(() => {
+  const autor = JSON.parse(localStorage.getItem("autorSeleccionado"));
+  if (!autor?.id) return;
+
+  fetch(`http://localhost:4000/perfil/verificar-jefe?id_usuario=${autor.id}`)
+    .then(res => res.json())
+    .then(data => {
+      // ¿Es jefe en alguna academia?
+      const esJefeEnAlguna = data.some(reg => reg.es_jefe);
+      setTieneCaracteristicaAcademia(esJefeEnAlguna);
+
+      // ¿Tiene al menos una academia sin jefe?
+      const puedeSerJefe = data.some(reg => reg.academia_tiene_jefe === false);
+      setAlguienTieneCaracteristicaAcademia(puedeSerJefe);
+    })
+    .catch(err => {
+      console.error("Error al verificar jefe de academia:", err);
+    });
+  }, []);
+
+  const obtenerAcademiasDisponibles = async () => {
+    const autor = JSON.parse(localStorage.getItem("autorSeleccionado"));
+    if (!autor?.id) return;
+
+    try {
+      const res = await fetch(`http://localhost:4000/perfil/verificar-jefe?id_usuario=${autor.id}`);
+      const data = await res.json();
+      const disponibles = data.filter(academia => !academia.yaTieneJefe && !academia.esJefe);
+      setAcademiasDisponibles(disponibles);
+    } catch (error) {
+      console.error("Error al obtener academias disponibles:", error);
+    }
+  };
+
 
   // Función para mostrar la alerta de eliminación
   const handleDeleteAccount = () => {
@@ -126,36 +147,89 @@ export default function UserProfileAdmin() {
 
   // Función para mostrar la alerta de asignar característica
   const handleAsignacionCaracteristica = () => {
+    obtenerAcademiasDisponibles(); // Cargar academias al abrir modal
     setIsAsignacionAlertVisible(true);
   };
 
   // Función para confirmar la asignacion de característica
-  const handleConfirmAsignacion = () => {
-    // Aquí puedes agregar la operación de asigancion en la base de datos
-    console.log("Característica asignada");
-    setIsAsignacionAlertVisible(false);
+  const handleConfirmAsignacion = async () => {
+    const autor = JSON.parse(localStorage.getItem("autorSeleccionado"));
+    if (!autor?.id || !academiaSeleccionada) return;
+
+    try {
+      const res = await fetch("http://localhost:4000/perfil/asignar-jefe", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id_usuario: autor.id,
+          id_academia: academiaSeleccionada
+        }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        alert(`Error: ${data.message}`);
+        return;
+      }
+
+      alert("Característica asignada correctamente.");
+      setIsAsignacionAlertVisible(false);
+      window.location.reload();
+    } catch (error) {
+      console.error("Error al asignar característica:", error);
+      alert("Ocurrió un error al asignar característica.");
+    }
   };
 
-  // Función para cancelar la asigancion
-  const handleCancelAsignacion = () => {
-    setIsAsignacionAlertVisible(false);
-  };
 
   // Función para mostrar la alerta de quitar característica
-  const handleQuitarCaracteristica = () => {
-    setIsQuitarAlertVisible(true);
+  const handleQuitarCaracteristica = async () => {
+    try {
+      const autor = JSON.parse(localStorage.getItem("autorSeleccionado"));
+
+      const res = await fetch(`http://localhost:4000/perfil/verificar-jefe?id_usuario=${autor.id}`);
+      const data = await res.json();
+
+      // Encuentra la academia donde sea jefe
+      const academiaJefe = data.find((a) => a.es_jefe === true);
+      
+
+      if (academiaJefe) {
+        setAcademiaAQuitar(academiaJefe); // Guarda para mostrar y usar en la solicitud
+        setIsQuitarAlertVisible(true);    // Muestra la alerta
+      } else {
+        alert("El usuario no es jefe de ninguna academia.");
+      }
+
+    } catch (err) {
+      console.error("Error al verificar jefatura:", err);
+    }
+    
   };
+
 
   // Función para confirmar quitar de característica
-  const handleConfirmQuitar = () => {
-    // Aquí puedes agregar la operación de quitar en la base de datos
-    console.log("Característica asignada");
-    setIsQuitarAlertVisible(false);
-  };
+  const handleConfirmQuitar = async () => {
+    try {
+      const autor = JSON.parse(localStorage.getItem("autorSeleccionado"));
 
-  // Función para cancelar quitar característica
-  const handleCancelQuitar = () => {
-    setIsQuitarAlertVisible(false);
+      const res = await fetch("http://localhost:4000/perfil/quitar-jefe", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id_usuario: autor.id, id_academia: academiaAQuitar.id_academia }),
+
+      });
+
+      if (!res.ok) throw new Error("No se pudo quitar la característica.");
+
+      alert("Se ha quitado correctamente la característica de academia.");
+      window.location.reload();
+    } catch (err) {
+      console.error("Error al quitar característica:", err);
+      alert("Ocurrió un error al quitar la característica.");
+    } finally {
+      setIsQuitarAlertVisible(false);
+    }
   };
 
   return (
@@ -185,6 +259,17 @@ export default function UserProfileAdmin() {
                   </svg>
                 </button>
                 <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-gray-700 rounded-box w-40">
+                  {datosUsuario?.tipo === 2 &&
+                    !tieneCaracteristicaAcademia &&
+                    alguienTieneCaracteristicaAcademia &&
+                    !tieneRestriccion && (
+                      <li><a onClick={handleAsignacionCaracteristica}>Asignar característica</a></li>
+                  )}
+
+                  {datosUsuario?.tipo === 2  && tieneCaracteristicaAcademia === true&&( 
+                    <li><a onClick={handleQuitarCaracteristica}>Quitar característica</a></li>
+                  )}
+                  
                   {tieneRestriccion === false && ( 
                     <li><a onClick={handleRestrictAccess}>Restringir acceso</a></li>
                   )}
@@ -194,12 +279,6 @@ export default function UserProfileAdmin() {
                   {/* Opción de Eliminar cuenta */}
                   <li><a onClick={handleDeleteAccount}>Eliminar cuenta</a></li>
                   
-                  {datosUsuario?.tipo === 2  && tieneCaracteristicaAcademia === false && alguienTieneCaracteristicaAcademia === false && ( 
-                    <li><a onClick={handleAsignacionCaracteristica}>Asignar característica</a></li>
-                  )}
-                  {datosUsuario?.tipo === 2  && tieneCaracteristicaAcademia === true && ( 
-                    <li><a onClick={handleQuitarCaracteristica}>Quitar característica</a></li>
-                  )}
                 </ul>
               </div>
             </div>
@@ -240,23 +319,56 @@ export default function UserProfileAdmin() {
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
             <h2 className="text-2xl font-bold mb-4">Guías del Usuario</h2>
             <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2">
-              {guiasUsuario.map((guia) => (
-                <div
-                key={guia.id}
-                onClick={() => navigate("/guia-seguida")}
-                className="cursor-pointer rounded-lg p-4 flex items-center gap-4 shadow hover:bg-gray-700 transition"
-              >
-                <img src={guia.imagen} alt={guia.titulo} className="w-20 h-20 rounded-full object-cover" />
-                <div className="flex-1">
-                  <h2 className="text-lg font-semibold text-white">{guia.titulo}</h2>
-                  <p className="text-sm text-gray-300">{guia.descripcion}</p>
-                  <div className="flex gap-4 mt-2 text-gray-300 text-sm">
-                    <span>👥 {guia.seguidores} seguidores</span>
-                    <span>⭐ {guia.meSirve} me sirve</span>
+                {guiasDelAutor.length > 0 ? (
+                guiasDelAutor.map((guia) => (
+                  <div
+                    key={guia.id_gde}
+                    onClick={async () => {
+                      localStorage.setItem("guiaSeleccionada", JSON.stringify({
+                        id: guia.id_gde,
+                        nombre: guia.nombre,
+                        descripcion: guia.descripcion,
+                        autor: `${guia.nombre_autor} ${guia.apellidos_autor}`,
+                        id_autor: guia.id_usuario,
+                        tipo_autor: guia.tipo_autor,
+                        seguidores: guia.num_seguidores,
+                        mesirve: guia.num_mesirve,
+                        materia: guia.nombre_materia,
+                      }));
+                       navigate('/guia-seguida');
+                    }}
+                    className="cursor-pointer rounded-lg p-4 flex items-center gap-4 shadow hover:bg-gray-700 transition"
+                  >
+                    <img
+                      src={`http://localhost:4000/avatar/imagen?id_usuario=${guia.id_usuario}`}
+                      alt={guia.nombre}
+                      className="w-20 h-20 rounded-full object-cover"
+                    />
+                    <div className="flex-1">
+                      <div className="font-semibold text-lg flex items-center gap-2">
+                        {guia.nombre}
+                        {guia.tipo_autor === 2 && (
+                          <img
+                            src="/src/assets/SharkCheck.png"
+                            alt="SharkCheck"
+                            className="inline w-15 h-10 rounded-full"
+                          />
+                        )}
+                      </div>
+                      <p className="text-sm text-gray-300">Autor: {guia.nombre_autor} {guia.apellidos_autor}</p>
+                      <p className="text-sm text-gray-400 truncate">{guia.descripcion}</p>
+                      <div className="flex items-center gap-3 mt-1 text-sm text-gray-400">
+                        <span>📚 {guia.nombre_materia}</span>
+                        <span>👥 {guia.num_seguidores}</span>
+                        <span>⭐ {guia.num_mesirve}</span>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>             
-              ))}
+                ))
+              ) : (
+                <p className="text-center text-gray-400">Este usuario no ha publicado ninguna guía.</p>
+              )}
+
             </div>
           </div>
 
@@ -279,7 +391,7 @@ export default function UserProfileAdmin() {
 
       {/* Alerta de confirmación */}
       {isDeleteAlertVisible && (
-        <div className="fixed inset-0 bg-opacity-50 flex justify-center items-center z-50">
+        <div className="bg-gray-900 fixed inset-0 bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white text-black p-6 rounded-lg shadow-lg">
             <h3 className="text-xl font-semibold mb-4">¡Atención!</h3>
             <p>Este cambio es permanente. ¿Estás seguro de que deseas eliminar la cuenta?</p>
@@ -292,7 +404,7 @@ export default function UserProfileAdmin() {
       )}
 
       {isRestrictAlertVisible && (
-        <div className="fixed inset-0 bg-opacity-50 flex justify-center items-center z-50">
+        <div className="bg-gray-900 fixed inset-0 bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white text-black p-6 rounded-lg shadow-lg">
             <h3 className="text-xl font-semibold mb-4">¡Atención!</h3>
             <p>Este cambio restringirá el acceso del usuario. ¿Estás seguro?</p>
@@ -305,7 +417,7 @@ export default function UserProfileAdmin() {
       )}
 
       {isRestoreAlertVisible && (
-        <div className="fixed inset-0 bg-opacity-50 flex justify-center items-center z-50">
+        <div className="bg-gray-900 fixed inset-0 bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white text-black p-6 rounded-lg shadow-lg">
             <h3 className="text-xl font-semibold mb-4">¡Atención!</h3>
             <p>Este cambio restaurará el acceso del usuario. ¿Estás seguro?</p>
@@ -318,30 +430,70 @@ export default function UserProfileAdmin() {
       )}
 
       {isAsignacionAlertVisible && (
-        <div className="fixed inset-0 bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white text-black p-6 rounded-lg shadow-lg">
-            <h3 className="text-xl font-semibold mb-4">¡Atención!</h3>
-            <p>Esta a punto de asignar la característica de academia a este usuario. ¿Estás seguro?</p>
-            <div className="mt-4 flex justify-end gap-4">
-                <button className="btn bg-blue-600 text-white px-6 py-2 rounded-lg shadow-md hover:bg-blue-700 transition" onClick={handleConfirmAsignacion}>Aceptar</button>
-                <button className="btn bg-red-600 text-white px-6 py-2 rounded-lg shadow-md hover:bg-red-700 transition" onClick={handleCancelAsignacion}>Cancelar</button>
+        <div className="bg-gray-900 fixed inset-0 bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white text-black p-6 rounded-lg shadow-lg w-96">
+            <h3 className="text-xl font-semibold mb-4">Asignar característica de academia</h3>
+            <p className="mb-4">Selecciona la academia a la que se le asignará la característica a este usuario:</p>
+            
+            <select
+              className="select select-bordered w-full mb-4 bg-white text-black"
+              value={academiaSeleccionada || ""}
+              onChange={(e) => setAcademiaSeleccionada(e.target.value)}
+            >
+              <option value="" disabled>Selecciona una academia</option>
+              {academiasDisponibles.map((a) => (
+                <option key={a.id_academia} value={a.id_academia}>{a.nombre_academia}</option>
+              ))}
+            </select>
+
+            <div className="flex justify-end gap-4">
+              <button
+                className="btn bg-blue-600 text-white px-6 py-2 rounded-lg shadow-md hover:bg-blue-700 transition"
+                onClick={handleConfirmAsignacion}
+                disabled={!academiaSeleccionada}
+              >
+                Aceptar
+              </button>
+              <button
+                className="btn bg-red-600 text-white px-6 py-2 rounded-lg shadow-md hover:bg-red-700 transition"
+                onClick={() => setIsAsignacionAlertVisible(false)}
+              >
+                Cancelar
+              </button>
             </div>
           </div>
         </div>
       )}
 
+
       {isQuitarAlertVisible && (
-        <div className="fixed inset-0 bg-opacity-50 flex justify-center items-center z-50">
+        <div className="bg-gray-900 fixed inset-0 bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white text-black p-6 rounded-lg shadow-lg">
             <h3 className="text-xl font-semibold mb-4">¡Atención!</h3>
-            <p>Esta a punto de quitar la característica de academia a este usuario. ¿Estás seguro?</p>
+            <p>
+              Está a punto de quitar la característica de academia al usuario en la academia: 
+              <strong className="ml-1">{academiaAQuitar?.nombre_academia || 'Academia desconocida'}</strong>.
+              ¿Estás seguro?
+            </p>
             <div className="mt-4 flex justify-end gap-4">
-                <button className="btn bg-blue-600 text-white px-6 py-2 rounded-lg shadow-md hover:bg-blue-700 transition" onClick={handleConfirmQuitar}>Aceptar</button>
-                <button className="btn bg-red-600 text-white px-6 py-2 rounded-lg shadow-md hover:bg-red-700 transition" onClick={handleCancelQuitar}>Cancelar</button>
+              <button
+                className="btn bg-blue-600 text-white px-6 py-2 rounded-lg shadow-md hover:bg-blue-700 transition"
+                onClick={handleConfirmQuitar} 
+              >
+                Aceptar
+              </button>
+              <button
+                className="btn bg-red-600 text-white px-6 py-2 rounded-lg shadow-md hover:bg-red-700 transition"
+                onClick={() => setIsQuitarAlertVisible(false)} 
+              >
+                Cancelar
+              </button>
             </div>
           </div>
         </div>
       )}
+
+
     </div>
   );
 }
