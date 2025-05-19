@@ -151,14 +151,14 @@ export default function VerGuia() {
                     disabled={!todasVistas}
                     onClick={() => navigate('/reportes')} 
                 >
-                    Notificar por cambios
+                    Notificar por cambios técnicos
                 </button>
                 <button
                     className="btn btn-accent w-1/3 h-14 min-w-[120px]"
                     disabled={!todasVistas}
                     onClick={() => navigate('/reportes')}
                 >
-                    Eliminar guía
+                    Mandar a lista negra
                 </button>
             </div>
 

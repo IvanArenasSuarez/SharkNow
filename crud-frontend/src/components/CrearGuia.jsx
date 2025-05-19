@@ -3,17 +3,17 @@ import { useNavigate } from 'react-router-dom';
 
 export default function CrearGuia() {
     const navigate = useNavigate();
-    const [tipoGuia, setTipoGuia] = React.useState("curricular");
+    const [tipoGuia, setTipoGuia] = React.useState("C");
 
     const [datosGuia, setDatosGuia] = React.useState({
         id: 0,
-        tipo: "curricular",
+        tipo: "C",
         materia: "",
         plan: "",
         nombre: "",
         descripcion: "",
         version: 1,
-        publicada: "n",
+        estado: "N",
         seguidores: 0,
     });
 
@@ -71,7 +71,6 @@ export default function CrearGuia() {
 
     const handleCrear = () => {
         localStorage.setItem("guia", JSON.stringify(datosGuia));
-        console.table(datosGuia);
         navigate('/editar-guia');
     };
 
@@ -88,11 +87,11 @@ export default function CrearGuia() {
                             type="radio" 
                             name="tipo" 
                             className="radio" 
-                            value="curricular"
-                            checked={tipoGuia === "curricular"}
+                            value="C"
+                            checked={tipoGuia === "C"}
                             onChange={() => {
-                                setTipoGuia("curricular");
-                                setDatosGuia(prev => ({ ...prev, tipo: "curricular" }));
+                                setTipoGuia("C");
+                                setDatosGuia(prev => ({ ...prev, tipo: "C" }));
                             }}
                         />
                         <label className="text-lg">Curricular</label>
@@ -101,11 +100,11 @@ export default function CrearGuia() {
                             type="radio" 
                             name="tipo" 
                             className="radio" 
-                            value="extracurricular"
-                            checked={tipoGuia === "extracurricular"}
+                            value="E"
+                            checked={tipoGuia === "E"}
                             onChange={() => {
-                                setTipoGuia("extracurricular");
-                                setDatosGuia(prev => ({ ...prev, tipo: "extracurricular" }));
+                                setTipoGuia("E");
+                                setDatosGuia(prev => ({ ...prev, tipo: "E" }));
                             }}
                         />
                         <label className="text-lg">Extracurricular</label>
@@ -113,7 +112,7 @@ export default function CrearGuia() {
                 </div>
 
                 <div className="flex flex-col lg:flex-row gap-8">
-                    {tipoGuia === "curricular" && (
+                    {tipoGuia === "C" && (
                         <div className="w-full lg:w-[50%] flex flex-col gap-6">
                             <fieldset>
                                 <legend className='font-semibold mb-2 text-lg'>Plan</legend>
@@ -167,9 +166,10 @@ export default function CrearGuia() {
                                 </select>
                             </fieldset>
                         </div>
+
                     )}
 
-                    <div className={`w-full ${tipoGuia === "curricular" ? "lg:w-[50%]" : "lg:w-full"} flex flex-col gap-6 flex-grow items-center justify-center`}>
+                    <div className={`w-full ${tipoGuia === "C" ? "lg:w-[50%]" : "lg:w-full"} flex flex-col gap-6 flex-grow items-center justify-center`}>
                         <fieldset className="w-full max-w-lg">
                             <legend className="font-semibold mb-2 text-lg">Nombre de la Guía</legend>
                             <input

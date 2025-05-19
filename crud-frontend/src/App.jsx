@@ -184,6 +184,7 @@ function App() {
                                 <Route path="/perfil/admin" element={<UserProfileAdmin />} />
                                 <Route path="/reportes" element={<Reportes />} />
                                 <Route path="/ver-reporte" element={<VerReporte />} />
+                                <Route path="/guia-seguida" element={<GuiaSeguida />} />
                             </>
                             )}
 

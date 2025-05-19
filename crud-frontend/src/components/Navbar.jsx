@@ -72,13 +72,35 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => {
-    if (userData?.tipo_de_cuenta === 2 && userData?.jefe){
-      setTieneCaracteristicaAcademia(true);
-    } else {
-      setTieneCaracteristicaAcademia(false);
+    const fetchAvatarImage = async () => {
+      try {
+        const res = await fetch(`http://localhost:4000/avatar/imagen?id_usuario=${userData.id_usuario}`);
+        const blob = await res.blob();
+  
+        if (blob.type.startsWith("image/")) {
+          const imageURL = URL.createObjectURL(blob);
+          setAvatarURL(imageURL);
+        }
+      } catch (error) {
+        console.error("Error al obtener imagen del avatar:", error);
+      }
+    };
+  
+    if (userData?.id_usuario) {
+      fetchAvatarImage();
     }
-  },[]);
-
+  
+    // Escuchar evento global y recargar imagen cuando se actualice
+    const handleAvatarUpdate = () => fetchAvatarImage();
+    window.addEventListener("avatarActualizado", handleAvatarUpdate);
+  
+    // Limpieza del listener
+    return () => {
+      window.removeEventListener("avatarActualizado", handleAvatarUpdate);
+    };
+  }, []);
+  
+  
   const handleLogout = () => {
     localStorage.removeItem("token");
     window.location.href = "/login";
