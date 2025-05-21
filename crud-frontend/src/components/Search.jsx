@@ -61,6 +61,7 @@ export default function Search() {
             seguidores: guia.num_seguidores,
             mesirve: guia.num_mesirve,
             materia: guia.nombre_materia,
+            estado: guia.estado,
             imagen: `http://localhost:4000/avatar/imagen?id_usuario=${guia.id_usuario}`
           })));
           
@@ -99,6 +100,7 @@ export default function Search() {
               seguidores: guia.num_seguidores,
               mesirve: guia.num_mesirve,
               materia: guia.nombre_materia,
+              estado: guia.estado,
               imagen: `http://localhost:4000/avatar/imagen?id_usuario=${guia.id_usuario}`
             })));
           } else {
@@ -201,10 +203,17 @@ export default function Search() {
                   <>
                     <div className="font-semibold text-lg flex items-center gap-2">
                       {resultado.nombre}
-                      {resultado.tipo_autor === 2 && (
+                      {resultado.tipo_autor === 2 && resultado.estado === 'P' && (
                         <img
                           src="/src/assets/SharkCheck.png" // Imagen de Check
                           alt="SharkCheck"
+                          className="inline w-15 h-10 rounded-full"
+                        />
+                      )}
+                      {resultado.estado === 'V' && (
+                        <img
+                          src="/src/assets/SharkVerify.png" // Imagen de Check
+                          alt="SharkVerify"
                           className="inline w-15 h-10 rounded-full"
                         />
                       )}

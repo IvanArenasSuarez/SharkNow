@@ -127,6 +127,7 @@ export default function UserProfile() {
                         seguidores: guia.num_seguidores,
                         mesirve: guia.num_mesirve,
                         materia: guia.nombre_materia,
+                        estado: guia.estado,
                       }));
 
                       try {
@@ -148,10 +149,17 @@ export default function UserProfile() {
                     <div className="flex-1">
                       <div className="font-semibold text-lg flex items-center gap-2">
                         {guia.nombre}
-                        {guia.tipo_autor === 2 && (
+                        {guia.tipo_autor === 2 && guia.estado === 'P' && (
                           <img
                             src="/src/assets/SharkCheck.png"
                             alt="SharkCheck"
+                            className="inline w-15 h-10 rounded-full"
+                          />
+                        )}
+                        {guia.estado === 'V' && (
+                          <img
+                            src="/src/assets/SharkVerify.png" // Imagen de Check
+                            alt="SharkVerify"
                             className="inline w-15 h-10 rounded-full"
                           />
                         )}

@@ -52,10 +52,17 @@ export default function GuiaSinSeguir() {
   return (
     <>
       <h1 className="text-4xl font-bold text-center mt-8 mb-6">Vista de Guía
-        {guiaSeleccionada.tipo_autor === 2 && (
+        {guiaSeleccionada.tipo_autor === 2 && guiaSeleccionada.estado === 'P' &&(
           <img
             src="/src/assets/SharkCheck.png"
             alt="SharkCheck"
+            className="inline w-25 h-15 rounded-full"
+          />
+        )}
+        {guiaSeleccionada.estado === 'V' && (
+          <img
+            src="/src/assets/SharkVerify.png"
+            alt="SharkVerify"
             className="inline w-25 h-15 rounded-full"
           />
         )}
