@@ -7,14 +7,7 @@ export default function GuiaSinSeguir() {
   const guiaSeleccionada = JSON.parse(localStorage.getItem("guiaSeleccionada"));
 
   const [datosGuia, setDatosGuia] = useState(null);
-  const [preguntas, setPreguntas] = useState([
-    "¿Qué es un algoritmo?",
-    "¿Cuál de los siguientes es un ejemplo de algoritmo de búsqueda?",
-    "¿Qué estructura de control es esencial en un algoritmo recursivo?",
-    "¿Cuál es la complejidad temporal del algoritmo de ordenación BubbleSort en el peor caso?",
-    "¿Qué técnica utiliza el algoritmo Divide y Vencerás?",
-    "¿Cuál de estos es un algoritmo de recorrido de grafos?"
-  ]);
+  const [preguntas, setPreguntas] = useState([]);
 
   useEffect(() => {
     const fetchDetallesGuia = async () => {
@@ -32,13 +25,42 @@ export default function GuiaSinSeguir() {
     fetchDetallesGuia();
   }, []);
 
+  useEffect(() => {
+    async function obtenerPreguntas() {
+      if (!guiaSeleccionada?.id) return;
+      try {
+        const response = await fetch(`http://localhost:4000/guias/preguntas?id_guia=${guiaSeleccionada.id}`); 
+        if (!response.ok) throw new Error("Error al obtener las preguntas");
+
+        const data = await response.json();
+        setPreguntas(data);
+
+        // Guardar también en localStorage
+        localStorage.setItem("preguntas", JSON.stringify({ listado: data }));
+      } catch (error) {
+        console.error("Error al cargar preguntas:", error);
+      }
+    }
+
+    obtenerPreguntas();
+  }, []);
+
   if (!datosGuia) return <p className="text-center mt-10">Cargando detalles de la guía...</p>;
 
   const esCurricular = datosGuia.tipo === "C";
 
   return (
     <>
-      <h1 className="text-4xl font-bold text-center mt-8 mb-6">Vista de Guía</h1>
+      <h1 className="text-4xl font-bold text-center mt-8 mb-6">Vista de Guía
+        {guiaSeleccionada.tipo_autor === 2 && (
+          <img
+            src="/src/assets/SharkCheck.png"
+            alt="SharkCheck"
+            className="inline w-25 h-15 rounded-full"
+          />
+        )}
+      </h1>
+
       <div className="p-4 max-w-5xl mx-auto">
         <div className="flex flex-col lg:flex-row gap-4">
           {/* Columna Izquierda - Información de la Guía */}
@@ -75,25 +97,68 @@ export default function GuiaSinSeguir() {
           {/* Columna Derecha - Lista de Preguntas */}
           <div className="w-full lg:w-1/2 text-white">
             <div className="flex justify-end mb-2">
-              <button className="btn btn-sm btn-outline border-red-500 text-red-500 hover:bg-red-500 hover:text-white" onClick={() => navigate('/reporte')}>
-                Reportar
-              </button>
+              <button
+              className="btn btn-sm btn-outline border-red-500 text-red-500 hover:bg-red-500 hover:text-white"
+              onClick={() => {
+                // Guardamos los datos necesarios para el reporte
+                localStorage.setItem("reporteData", JSON.stringify({
+                  id_usuario: userData.id_usuario,
+                  id_gde: guiaSeleccionada.id
+                }));
+
+                // Redirigimos a la página de reporte
+                navigate('/reporte');
+              }}
+            >
+              Reportar
+            </button>
+
             </div>
             <ul className="bg-base-100 rounded-box shadow-md h-[400px] overflow-y-auto">
               <li className="p-4 text-xs opacity-60 tracking-wide font-semibold">Lista de Preguntas</li>
-              {preguntas.map((pregunta, index) => (
-                <li key={index} className="flex items-center gap-4 px-3 border-b py-2">
-                  <div className="flex flex-col flex-grow">
-                    <div className="font-semibold text-lg">{pregunta}</div>
-                    <p className="text-sm text-gray-600">Esta es una descripción de {pregunta}.</p>
-                  </div>
-                </li>
-              ))}
+              {preguntas.length > 0 ? (
+                preguntas.map((pregunta, index) => (
+                  <li key={index} className="flex items-center gap-4 px-3 border-b py-2">
+                    <div className="flex flex-col flex-grow">
+                      <div className="font-semibold text-lg">{pregunta.question}</div>
+                      <p className="text-sm text-gray-500">Tipo: {pregunta.type}</p>
+                    </div>
+                  </li>
+                ))
+              ) : (
+                <li className="text-center py-4 text-gray-400">No hay preguntas registradas.</li>
+              )}
             </ul>
+
             {/* Botones Finales */}
             <div className="flex justify-center gap-4 mt-6">
-            <button className="btn btn-primary btn-lg text-lg" onClick={() => navigate('/quiz-guia')}>Iniciar Sesión de Estudio</button>
-            <button className="btn btn-secondary btn-lg text-lg" onClick={() => navigate('/guia-seguida')}>Seguir</button>
+              <button className="btn btn-primary btn-lg text-lg" onClick={() => navigate('/quiz-guia')}>Iniciar Sesión de Estudio</button>
+              <button
+                className="btn btn-secondary btn-lg text-lg"
+                onClick={async () => {
+                  try {
+                    const response = await fetch("http://localhost:4000/guias/seguir", {
+                      method: "POST",
+                      headers: {
+                        "Content-Type": "application/json"
+                      },
+                      body: JSON.stringify({
+                        id_usuario: userData.id_usuario,
+                        id_gde: guiaSeleccionada.id
+                      })
+                    });
+
+                    if (!response.ok) throw new Error("Error al seguir la guía");
+
+                    // Redirige si todo fue exitoso
+                    navigate('/guia-seguida');
+                  } catch (error) {
+                    console.error("Error al seguir la guía:", error);
+                  }
+                }}
+              >
+                Seguir
+              </button>
             </div>
           </div>
         </div>
