@@ -62,7 +62,6 @@ export default function MisGuias() {
                         {misGuias.length > 0 ? (
                             misGuias.map((guia) => (
                                 <li key={guia.id_gde} className="flex items-center gap-4 h-25 px-3 border-b">
-                                    <img className="w-12 h-12 rounded-full" src="https://img.daisyui.com/images/profile/demo/1@94.webp" alt="Perfil" />
                                     <div className="flex flex-col flex-grow">
                                         <div className="font-semibold text-lg">{guia.nombre}</div>
                                         <p className="text-sm text-gray-600">{guia.descripcion}</p>
@@ -75,10 +74,10 @@ export default function MisGuias() {
                                                     tipo: guia.tipo,
                                                     nombre: guia.nombre,
                                                     descripcion: guia.descripcion,
-                                                    materia: guia.materia,
-                                                    plan: guia.plan_estudios,
+                                                    materia: guia.id_materia,
+                                                    plan: guia.id_pde,
                                                     version: guia.version,
-                                                    publicada: guia.estado,
+                                                    estado: guia.estado,
                                                     seguidores: guia.num_seguidores,
                                                 };
                                                 localStorage.setItem("guia", JSON.stringify(guiaSeleccionada)); // Guardar la guía en localStorage
