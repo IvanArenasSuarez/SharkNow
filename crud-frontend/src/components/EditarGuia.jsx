@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import EditarPregunta from "./EditarPregunta";
 import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from "jwt-decode";
+
 
 export default function EditarGuia() {
   const refEditarPregunta = useRef();
@@ -16,6 +18,17 @@ export default function EditarGuia() {
   const userData = JSON.parse(localStorage.getItem("userData"));
 
   useEffect(() => {
+
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        setEsMaestro(decoded.tipo_de_cuenta === 2);
+      } catch (error) {
+        console.error("Error al decodificar el token:", error);
+      }
+    }
+
     let preguntas = localStorage.getItem("preguntas");
     if (!preguntas) {
         const initialData = {
@@ -33,6 +46,7 @@ export default function EditarGuia() {
 
   const [guia, setGuia] = useState(() => {
     const guiaGuardada = localStorage.getItem('guia');
+    console.log(guiaGuardada);
     if (guiaGuardada) {
       return JSON.parse(guiaGuardada);
     }
@@ -234,8 +248,41 @@ useEffect(() => {
   const handlePublicarOEnviar = () => {
   const guiaStorage = JSON.parse(localStorage.getItem('guia')) || guia;
   const preguntasStorage = JSON.parse(localStorage.getItem('preguntas'));
-  console.log(preguntasStorage.nuevas.length);
-  console.log(preguntasStorage.nuevas.length);
+
+  const totalPreguntas =
+  (preguntasStorage.nuevas.length) +
+  (preguntasStorage.listado.length) +
+  (preguntasStorage.editadas.length);
+
+     if (totalPreguntas < 15) {
+    alert(`Esta guía debe tener 15 o más preguntas. Solo contiene: ${totalPreguntas}`);
+    return;
+  }
+
+  const token = localStorage.getItem("token");
+  fetch('http://localhost:4000/guias/guardar', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json' },
+    body: JSON.stringify({ guia: guiaStorage, preguntas: preguntasStorage }),
+  })
+    .then(res => res.json())
+    .then(data => {
+      if(esMaestro){
+        navigate('/mis-guias');
+      }else{
+        navigate('/mis-guias');
+      }
+    })
+    .catch(error => {
+      console.error('Error al guardar la guía:', error);
+    });
+  };
+
+const handleGuardar = () => {
+  const guiaStorage = JSON.parse(localStorage.getItem('guia')) || guia;
+  const preguntasStorage = JSON.parse(localStorage.getItem('preguntas'));
+
   const token = localStorage.getItem("token");
   fetch('http://localhost:4000/guias/guardar', {
     method: 'POST',
@@ -251,6 +298,7 @@ useEffect(() => {
       console.error('Error al guardar la guía:', error);
     });
   };
+
   // Tras cargar o editar la guía:
 useEffect(() => {
   localStorage.setItem('guia', JSON.stringify(guia));
@@ -383,17 +431,45 @@ useEffect(() => {
                 ) && (
                   <button 
                     className="btn btn-primary w-1/3 h-14 min-w-[120px]"
-                    onClick={() => {
+                    onClick={async() => {
                       if (guia.estado==="P" && guia.seguidores > 0 && !popupShown) {
                         setShowPopup(true);
                           } else {
-                        
-                        handlePublicarOEnviar();
+                          if (enviarAcademia) {
+                            try {
+                              const token = localStorage.getItem("token");
+                              console.log(guia.academia);
+                              const res = await fetch(`http://localhost:4000/responsable-academia/${guia.academia}`, {
+                                headers: {
+                                  Authorization: `Bearer ${token}`,
+                                }
+                              });
+                              const data = await res.json();
+                              const nombreResponsable = data.nombre || "usuario responsable";
+                              console.log(nombreResponsable);
+
+                              // 2. Confirmar con el usuario
+                              const confirmar = window.confirm(`¿Deseas enviar esta guía a ${nombreResponsable}?`);
+                              if (confirmar) {
+                                handlePublicarOEnviar();
+                              }
+                            } catch (error) {
+                              console.error("Error al obtener el nombre del usuario responsable:", error);
+                              alert("No se pudo obtener el nombre del responsable. Intenta más tarde.");
+                            }
+
+                          } else {
+                            // Publicar: cambiar estado localStorage y guardar
+                            const guiaStorage = JSON.parse(localStorage.getItem("guia")) || guia;
+                            guiaStorage.estado = "P";
+                            localStorage.setItem("guia", JSON.stringify(guiaStorage));
+                            handlePublicarOEnviar();
+                          }
                       }
                     }}>{enviarAcademia ? "Enviar" : "Publicar"}
                   </button>
               )}
-              <button className="btn btn-accent w-1/3 h-14 min-w-[120px]" onClick={handlePublicarOEnviar}>Guardar y Salir</button>
+              <button className="btn btn-accent w-1/3 h-14 min-w-[120px]" onClick={handleGuardar}>Guardar y Salir</button>
               <button className="btn btn-secondary w-1/3 h-14 min-w-[120px]" onClick={handleEliminarGuia}>Eliminar</button>
             </div>
             

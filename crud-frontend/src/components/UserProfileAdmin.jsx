@@ -9,12 +9,13 @@ export default function UserProfileAdmin() {
   const [datosUsuario, setDatosUsuario] = useState(null);
   const [guiasDelAutor, setGuiasDelAutor] = useState([]);
   const [tieneCaracteristicaAcademia, setTieneCaracteristicaAcademia] = useState(false);
+  const [reportesAnteriores, setReportesAnteriores] = useState([]);
+
 
   // Ya esta asignada la característica de academia para alguna de las academias a las que pertenece el usuario
   const [alguienTieneCaracteristicaAcademia, setAlguienTieneCaracteristicaAcademia] = useState(false);
   const [academiasDisponibles, setAcademiasDisponibles] = useState([]);
   const [academiaSeleccionada, setAcademiaSeleccionada] = useState(null);
-  
   const [academiaAQuitar, setAcademiaAQuitar] = useState(null);
 
   // Estado para el usuario al que restringiremos la cuenta
@@ -58,7 +59,41 @@ export default function UserProfileAdmin() {
   }
   }, []);
 
+  // Obtener reportes anteriores del autor seleccionado
+  useEffect(() => {
+  const autor = JSON.parse(localStorage.getItem("autorSeleccionado"));
+  if (!autor?.id) return;
 
+  fetch(`http://localhost:4000/reportes/anteriores?id_usuario=${autor.id}`)
+    .then(res => res.json())
+    .then(data => {
+      setReportesAnteriores(data);
+    })
+    .catch(err => {
+      console.error("Error al obtener reportes anteriores:", err);
+    });
+  }, []);
+
+
+
+  // Verificar si el usuario tiene restricción
+  useEffect(() => {
+  const autor = JSON.parse(localStorage.getItem("autorSeleccionado"));
+  if (!autor?.id) return;
+
+  fetch(`http://localhost:4000/perfil/estado?id_usuario=${autor.id}`)
+    .then(res => res.json())
+    .then(data => {
+      if (typeof data.estado === 'boolean') {
+        setTieneRestriccion(!data.estado); // true si está restringido
+      }
+    })
+    .catch(err => {
+      console.error("Error al verificar estado del usuario:", err);
+    });
+}, []);
+
+  // Verificar si el usuario tiene la característica de academia
   useEffect(() => {
   const autor = JSON.parse(localStorage.getItem("autorSeleccionado"));
   if (!autor?.id) return;
@@ -117,11 +152,30 @@ export default function UserProfileAdmin() {
   };
 
   // Función para confirmar la restricción de acceso
-  const handleConfirmRestrict = () => {
-    // Aquí puedes agregar la operación de restricción de acceso en la base de datos
-    console.log("Acceso restringido");
-    setIsRestrictAlertVisible(false);
+  const handleConfirmRestrict = async () => {
+    const autor = JSON.parse(localStorage.getItem("autorSeleccionado"));
+    if (!autor?.id) return;
+
+    try {
+      const res = await fetch("http://localhost:4000/perfil/restringir", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id_usuario: autor.id }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Error al restringir acceso.");
+
+      alert("Acceso restringido correctamente.");
+      window.location.reload(); // Para actualizar el estado mostrado
+    } catch (err) {
+      console.error("Error al restringir acceso:", err);
+      alert("Ocurrió un error al restringir el acceso.");
+    } finally {
+      setIsRestrictAlertVisible(false);
+    }
   };
+
 
   // Función para cancelar la restricción
   const handleCancelRestrict = () => {
@@ -134,11 +188,34 @@ export default function UserProfileAdmin() {
   };
 
   // Función para confirmar la restauración de acceso
-  const handleConfirmRestore = () => {
-    // Aquí puedes agregar la operación de restauración de acceso en la base de datos
-    console.log("Acceso restaurado");
-    setIsRestoreAlertVisible(false);
+  const handleConfirmRestore = async () => {
+    const autor = JSON.parse(localStorage.getItem("autorSeleccionado"));
+
+    try {
+      const res = await fetch("http://localhost:4000/perfil/restaurar-acceso", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ id_usuario: autor.id })
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        alert(`Error: ${data.message}`);
+        return;
+      }
+
+      alert("Acceso restaurado correctamente.");
+      window.location.reload(); // Refresca el estado del usuario
+    } catch (error) {
+      console.error("Error al restaurar el acceso:", error);
+      alert("Ocurrió un error al intentar restaurar el acceso.");
+    } finally {
+      setIsRestoreAlertVisible(false);
+    }
   };
+
 
   // Función para cancelar la restauración
   const handleCancelRestore = () => {
@@ -235,7 +312,7 @@ export default function UserProfileAdmin() {
   return (
     <div className="flex flex-col min-h-screen text-white">
       <div className="container mx-auto p-6 flex-grow">
-        <div className="grid grid-cols-1 md:grid-cols-[1fr_1.5fr_1.2fr] gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-[1.1fr_1.6fr_1fr] gap-5">
           {/* Sección de Perfil */}
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg relative">
             {/* Menú desplegable */}
@@ -334,6 +411,7 @@ export default function UserProfileAdmin() {
                         seguidores: guia.num_seguidores,
                         mesirve: guia.num_mesirve,
                         materia: guia.nombre_materia,
+                        estado: guia.estado,
                       }));
                        navigate('/guia-seguida');
                     }}
@@ -347,10 +425,17 @@ export default function UserProfileAdmin() {
                     <div className="flex-1">
                       <div className="font-semibold text-lg flex items-center gap-2">
                         {guia.nombre}
-                        {guia.tipo_autor === 2 && (
+                        {guia.tipo_autor === 2 && guia.estado === 'P' && (
                           <img
                             src="/src/assets/SharkCheck.png"
                             alt="SharkCheck"
+                            className="inline w-15 h-10 rounded-full"
+                          />
+                        )}
+                        {guia.estado === 'V' && (
+                          <img
+                            src="/src/assets/SharkVerify.png" // Imagen de Check
+                            alt="SharkVerify"
                             className="inline w-15 h-10 rounded-full"
                           />
                         )}
@@ -375,16 +460,19 @@ export default function UserProfileAdmin() {
           {/* Sección de Reportes Anteriores */}
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
             <h2 className="text-2xl font-bold mb-4">Reportes Anteriores</h2>
-            <ul className="rounded-lg shadow-md max-h-[calc(6*100px)] overflow-y-auto">
-              {[...Array(3)].map((_, index) => (
-                <li key={index} className="p-4 rounded-lg shadow">
-                  <h3 className="font-semibold text-lg">Reporte {index + 1}</h3>
-                  <p className="text-sm text-gray-200">Guía: Lógica básica de algoritmia {index + 1}</p>
-                  <p className="text-sm text-gray-400">Razón: Disonancia de Contenido</p>
-
-                </li>
-              ))}
-            </ul>
+              {reportesAnteriores.length > 0 ? (
+                <ul className="rounded-lg shadow-md max-h-[calc(6*100px)] overflow-y-auto">
+                  {reportesAnteriores.map((reporte, index) => (
+                    <li key={index} className="p-4 rounded-lg shadow border-b">
+                      <h3 className="font-semibold text-lg">Reporte {index + 1}</h3>
+                      <p className="text-l text-white">Guía: {reporte.nombre_guia}</p>
+                      <p className="text-m text-red-500">Categoría: {reporte.categoria}</p>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-center text-gray-400">Este usuario no tiene reportes aceptados.</p>
+              )}
           </div>
         </div>
       </div>
@@ -409,8 +497,18 @@ export default function UserProfileAdmin() {
             <h3 className="text-xl font-semibold mb-4">¡Atención!</h3>
             <p>Este cambio restringirá el acceso del usuario. ¿Estás seguro?</p>
             <div className="mt-4 flex justify-end gap-4">
-                <button className="btn bg-blue-600 text-white px-6 py-2 rounded-lg shadow-md hover:bg-blue-700 transition" onClick={handleConfirmRestrict}>Aceptar</button>
-                <button className="btn bg-red-600 text-white px-6 py-2 rounded-lg shadow-md hover:bg-red-700 transition" onClick={handleCancelRestrict}>Cancelar</button>
+              <button
+                className="btn bg-blue-600 text-white px-6 py-2 rounded-lg shadow-md hover:bg-blue-700 transition"
+                onClick={handleConfirmRestrict}
+              >
+                Aceptar
+              </button>
+              <button
+                className="btn bg-red-600 text-white px-6 py-2 rounded-lg shadow-md hover:bg-red-700 transition"
+                onClick={handleCancelRestrict}
+              >
+                Cancelar
+              </button>
             </div>
           </div>
         </div>
@@ -422,12 +520,23 @@ export default function UserProfileAdmin() {
             <h3 className="text-xl font-semibold mb-4">¡Atención!</h3>
             <p>Este cambio restaurará el acceso del usuario. ¿Estás seguro?</p>
             <div className="mt-4 flex justify-end gap-4">
-                <button className="btn bg-blue-600 text-white px-6 py-2 rounded-lg shadow-md hover:bg-blue-700 transition" onClick={handleConfirmRestore}>Aceptar</button>
-                <button className="btn bg-red-600 text-white px-6 py-2 rounded-lg shadow-md hover:bg-red-700 transition" onClick={handleCancelRestore}>Cancelar</button>
+              <button
+                className="btn bg-blue-600 text-white px-6 py-2 rounded-lg shadow-md hover:bg-blue-700 transition"
+                onClick={handleConfirmRestore}
+              >
+                Aceptar
+              </button>
+              <button
+                className="btn bg-red-600 text-white px-6 py-2 rounded-lg shadow-md hover:bg-red-700 transition"
+                onClick={handleCancelRestore}
+              >
+                Cancelar
+              </button>
             </div>
           </div>
         </div>
       )}
+
 
       {isAsignacionAlertVisible && (
         <div className="bg-gray-900 fixed inset-0 bg-opacity-50 flex justify-center items-center z-50">

@@ -99,10 +99,10 @@ export default function MisGuiasProf() {
                                                     tipo: guia.tipo,
                                                     nombre: guia.nombre,
                                                     descripcion: guia.descripcion,
-                                                    materia: guia.materia,
-                                                    plan: guia.plan_estudios,
+                                                    materia: guia.id_materia,
+                                                    plan: guia.id_pde,
                                                     version: guia.version,
-                                                    publicada: guia.estado,
+                                                    estado: guia.estado,
                                                     seguidores: guia.num_seguidores,
                                                 };
                                                 localStorage.setItem("guia", JSON.stringify(guiaSeleccionada)); // Guardar la guía en localStorage
