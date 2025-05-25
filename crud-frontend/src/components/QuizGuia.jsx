@@ -149,6 +149,34 @@ export default function QuizGuia() {
         }
     }, [questionTime]);
     
+    useEffect(() => {
+        if (completed && sessionData) {
+            const enviarSesion = async () => {
+                try {
+                    const token = localStorage.getItem('token');
+                    const res = await fetch('http://localhost:4000/sesion-estudio', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: token,
+                    },
+                    body: JSON.stringify(sessionData),
+                    });
+
+                    if (!res.ok) {
+                        throw new Error('Error al enviar la sesión');
+                    }
+
+                    const data = await res.json();
+                    console.log('Sesión registrada:', data);
+                } catch (error) {
+                    console.error('Error al registrar la sesión:', error);
+                }
+            };
+            enviarSesion();
+        }
+    }, [completed, sessionData]);
+
 
     const handleAnswer = (selectedOption) => {
         const isCorrect = selectedOption === questions[step].answer;
@@ -168,7 +196,6 @@ export default function QuizGuia() {
     
         setShowFeedback(true);
     };
-    
 
     const handleMatchAnswer = (leftIndex, rightIndex) => {
         const pair = questions[step].pairs[leftIndex];
