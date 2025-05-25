@@ -145,7 +145,7 @@ function App() {
                                 <Route path="/avatar" element={<Avatar />} />
                                 <Route path="/perfil" element={<Profile />} />
                                 <Route path="/mis-guias" element={<MisGuias />} />
-                                <Route path="/quiz-guia" element={<QuizGuia />} />
+                                <Route path="/quiz-guia/:id_gde" element={<QuizGuia />} />
                                 <Route path="/ver-guia-seguida" element={<VerGuiaSeguida />} />7
                                 <Route path="/estadisticas" element={<Estadisticas />} />
                                 <Route path="/guia-seguida" element={<GuiaSeguida />} />

@@ -49,6 +49,9 @@ function DroppableArea({ index, acceptAnswer, answer, assignedColor }) {
 }
 
 export default function QuizGuia() {
+    const { id_gde } = useParams();
+    const [questions, setQuestions] = useState(null);
+    const [error, setError] = useState(null);
     const startTime = new Date();
     const [qualityPerQuestion, setQualityPerQuestion] = useState([]);
     const [step, setStep] = useState(0);
@@ -67,7 +70,7 @@ export default function QuizGuia() {
     const [allCorrect, setAllCorrect] = useState({});
     const [sessionData, setSessionData] = useState(null);
 
-    const questions = [
+    /*const questions = [
         {
             id: 8,
             type: "multipleChoice",
@@ -93,7 +96,28 @@ export default function QuizGuia() {
                 { left: "Izquierda", right: "A" }
             ],
         }
-    ];
+    ];*/
+
+    useEffect(() => {
+    const obtenerQuiz = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const res = await fetch(`http://localhost:4000/quiz/${id_gde}`, {
+          headers: {
+            Authorization: token,
+          },
+        });
+
+        if (!res.ok) throw new Error('No se pudo obtener el quiz');
+
+        const data = await res.json();
+        setQuestions(data); // ← aquí se asignan directamente
+      } catch (err) {
+        setError(err.message);
+      }
+    };
+    obtenerQuiz();
+  }, [id_gde]);
 
     useEffect(() => {
         if (!completed) {
