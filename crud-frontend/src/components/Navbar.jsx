@@ -55,6 +55,24 @@ export default function Navbar() {
       } catch (error) {
         console.error("Error al obtener imagen del avatar:", error);
       }
+    
+      try {
+      const decoded = jwt_decode(token);
+
+      // Verificamos si es tipo 2 (profesor)
+      if (decoded.tipo_de_cuenta === 2) {
+        // Verificamos si tiene al menos una academia donde es jefe
+        const academias = decoded.academias || [];
+        const esJefeEnAlguna = academias.some(a => a.jefe === true);
+
+        setTieneCaracteristicaAcademia(esJefeEnAlguna);
+      } else {
+        setTieneCaracteristicaAcademia(false);
+      }
+    } catch (err) {
+      console.error("Error al decodificar el token:", err);
+    }
+
     };
   
     if (userData?.id_usuario) {
