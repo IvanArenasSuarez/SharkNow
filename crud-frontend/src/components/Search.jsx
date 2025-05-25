@@ -188,7 +188,7 @@ export default function Search() {
                 
               >
                 <img
-                  src={resultado.imagen}
+                  src={resultado.imagen || "/src/assets/Shark1.png"} 
                   alt={resultado.nombre || resultado.autor}
                   className="w-16 h-16 rounded-full object-cover"
                 />

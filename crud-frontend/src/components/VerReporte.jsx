@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function VerReporte() {
   const navigate = useNavigate();
-  
+
   const [detalleGuia, setDetalleGuia] = useState(null);
   const reporte = JSON.parse(localStorage.getItem("reporteSeleccionado"));
   const [preguntas, setPreguntas] = useState([]);
@@ -12,52 +12,24 @@ export default function VerReporte() {
   const [selectedQuestion, setSelectedQuestion] = useState(null);
 
   useEffect(() => {
-    
     if (reporte?.id_gde) {
+      // Obtener detalles de la guía
       fetch(`http://localhost:4000/guias/detalles?id_gde=${reporte.id_gde}`)
         .then(res => res.json())
-        .then(data => {
-          setDetalleGuia(data);
-        })
-        .catch(err => {
-          console.error("Error al obtener detalles de la guía:", err);
-        });
+        .then(data => setDetalleGuia(data))
+        .catch(err => console.error("Error al obtener detalles de la guía:", err));
 
-      // También podrías recuperar preguntas reales aquí si las deseas.
-      // Aquí hay datos mock para visualización de ejemplo:
-      setPreguntas([
-        {
-          pregunta: "¿Cuál es la capital de Francia?",
-          tipo: "Opción Múltiple",
-          respuestas: ["Madrid", "Berlín", "París", "Roma"],
-          correcta: "París",
-          visualizada: false
-        },
-        {
-          pregunta: "La tierra es plana.",
-          tipo: "Verdadero o Falso",
-          respuestas: ["Falso", "Verdadero"],
-          correcta: "Falso",
-          visualizada: false
-        },
-        {
-          pregunta: "Relaciona las capitales con sus países.",
-          tipo: "Relación de Columnas",
-          respuestas: [
-            { columna1: "Francia", columna2: "París" },
-            { columna1: "Alemania", columna2: "Berlín" },
-            { columna1: "Italia", columna2: "Roma" },
-            { columna1: "España", columna2: "Madrid" }
-          ],
-          correcta: [
-            { columna1: "Francia", columna2: "París" },
-            { columna1: "Alemania", columna2: "Berlín" },
-            { columna1: "Italia", columna2: "Roma" },
-            { columna1: "España", columna2: "Madrid" }
-          ],
-          visualizada: false
-        }
-      ]);
+      // Obtener preguntas reales
+      fetch(`http://localhost:4000/guias/preguntas?id_guia=${reporte.id_gde}`)
+        .then(res => res.json())
+        .then(data => {
+          const formateadas = data.map(p => ({
+            ...p,
+            visualizada: false
+          }));
+          setPreguntas(formateadas);
+        })
+        .catch(err => console.error("Error al obtener preguntas:", err));
     }
   }, []);
 
@@ -92,7 +64,9 @@ export default function VerReporte() {
           className="w-16 h-16 rounded-full object-cover"
         />
         <div>
-          <div className="font-semibold text-lg">Autor: {detalleGuia?.nombre_autor || "Autor desconocido"} {detalleGuia?.apellidos_autor}</div>
+          <div className="font-semibold text-lg">
+            Autor: {detalleGuia?.nombre_autor || "Autor desconocido"} {detalleGuia?.apellidos_autor || ""}
+          </div>
         </div>
       </div>
 
@@ -102,30 +76,29 @@ export default function VerReporte() {
           <fieldset>
             <legend className="font-semibold mb-2 text-lg">Nombre de la guía</legend>
             <div className="text-lg">{detalleGuia?.nombre || "Nombre no disponible"}</div>
-          </fieldset>   
+          </fieldset>
 
-            {detalleGuia?.nombre_materia && (
+          {detalleGuia?.nombre_materia && (
             <fieldset>
-                <legend className="font-semibold mb-2 text-lg">Materia</legend>
-                <div className="text-lg">{detalleGuia.nombre_materia}</div>
+              <legend className="font-semibold mb-2 text-lg">Materia</legend>
+              <div className="text-lg">{detalleGuia.nombre_materia}</div>
             </fieldset>
-            )}
+          )}
 
-            {detalleGuia?.nombre_academia && (
+          {detalleGuia?.nombre_academia && (
             <fieldset>
-                <legend className="font-semibold mb-2 text-lg">Academia</legend>
-                <div className="text-lg">{detalleGuia.nombre_academia}</div>
+              <legend className="font-semibold mb-2 text-lg">Academia</legend>
+              <div className="text-lg">{detalleGuia.nombre_academia}</div>
             </fieldset>
-            )}
+          )}
 
-            {detalleGuia?.nombre_programa && detalleGuia?.anio_plan && (
+          {detalleGuia?.nombre_programa && detalleGuia?.anio_plan && (
             <fieldset>
-                <legend className="font-semibold mb-2 text-lg">Plan de Estudios</legend>
-                <div className="text-lg">{detalleGuia.nombre_programa} ({detalleGuia.anio_plan})</div>
+              <legend className="font-semibold mb-2 text-lg">Plan de Estudios</legend>
+              <div className="text-lg">{detalleGuia.nombre_programa} ({detalleGuia.anio_plan})</div>
             </fieldset>
-            )}
+          )}
 
-          
           <fieldset>
             <legend className="font-semibold mb-2 text-lg">Versión de la guía</legend>
             <div className="text-lg">{detalleGuia?.version}</div>
@@ -147,8 +120,8 @@ export default function VerReporte() {
                 className={`flex items-center gap-4 px-3 border-b py-2 ${pregunta.visualizada ? "bg-green-700" : ""}`}
               >
                 <div className="flex flex-col flex-grow">
-                  <div className="font-semibold text-lg">{pregunta.pregunta}</div>
-                  <p className="text-sm text-gray-300">{pregunta.tipo}</p>
+                  <div className="font-semibold text-lg">{pregunta.question}</div>
+                  <p className="text-sm text-gray-300">{pregunta.type}</p>
                 </div>
                 <button onClick={() => handleEyeClick(i)} className="btn btn-square btn-ghost">
                   <svg className="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -179,29 +152,43 @@ export default function VerReporte() {
 
       {/* Popup para detalle de pregunta */}
       {popupVisible && selectedQuestion && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-base-100 p-6 rounded-lg shadow-lg w-1/3">
-            <h2 className="text-xl font-bold mb-4">Pregunta: {selectedQuestion.pregunta}</h2>
+            <h2 className="text-xl font-bold mb-4">Pregunta: {selectedQuestion.question}</h2>
             <div className="mb-4">
-              {selectedQuestion.tipo === "Verdadero o Falso" && (
-                <p className="font-semibold">Respuesta correcta: {selectedQuestion.correcta}</p>
+              {selectedQuestion.type === "trueFalse" && (
+                <p className="font-semibold">Respuesta correcta: {selectedQuestion.answer}</p>
               )}
-              {selectedQuestion.tipo === "Opción Múltiple" && (
+              {selectedQuestion.type === "multipleChoice" && (
                 <ul className="list-disc pl-5">
-                  {selectedQuestion.respuestas.map((r, i) => (
+                  {selectedQuestion.options.map((r, i) => (
                     <li key={i} className="text-sm text-white">
-                      {r === selectedQuestion.correcta ? <span className="font-bold">* {r}</span> : r}
+                      {selectedQuestion.answer.includes(r) ? (
+                        <span className="font-bold text-green-400">{r}</span>
+                      ) : (
+                        r
+                      )}
                     </li>
                   ))}
                 </ul>
               )}
-              {selectedQuestion.tipo === "Relación de Columnas" && (
+              {selectedQuestion.type === "matching" && (
                 <>
-                  <p className="font-semibold">Relaciona las siguientes columnas:</p>
+                  <p className="font-semibold mb-2">Relaciona las siguientes columnas:</p>
                   <ul className="list-disc pl-5">
-                    {selectedQuestion.respuestas.map((r, i) => (
-                      <li key={i} className="text-sm text-white">{r.columna1} - {r.columna2}</li>
-                    ))}
+                    {selectedQuestion.options.map((r, i) => {
+                      const esCorrecta = selectedQuestion.answer.some(
+                        (c) => c.izquierda === r.izquierda && c.derecha === r.derecha
+                      );
+                      return (
+                        <li
+                          key={i}
+                          className={`text-sm ${esCorrecta ? "font-bold text-green-400" : "text-white"}`}
+                        >
+                          {r.izquierda} - {r.derecha}
+                        </li>
+                      );
+                    })}
                   </ul>
                 </>
               )}

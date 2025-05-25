@@ -39,42 +39,50 @@ export default function Reporte() {
   ];
 
   const handleSubmit = async () => {
-    if (!selectedReason) {
-      alert("Por favor, selecciona una razón para el reporte.");
-      return;
-    }
+  if (!selectedReason) {
+    alert("Por favor, selecciona una razón para el reporte.");
+    return;
+  }
 
-    if (!description.trim()) {
-      alert("Por favor, describe el problema en el campo de texto.");
-      return;
-    }
+  if (!description.trim()) {
+    alert("Por favor, describe el problema en el campo de texto.");
+    return;
+  }
 
-    const payload = {
-      id_usuario: guiaSeleccionada?.id_autor,
-      id_gde: guiaSeleccionada?.id,
-      categoria: selectedReason,
-      descripcion: description,
-    };
+  const payload = {
+    id_usuario: guiaSeleccionada?.id_autor,
+    id_gde: guiaSeleccionada?.id,
+    categoria: selectedReason,
+    descripcion: description,
+    id_quienreporto: userData?.id_usuario,
+  };
 
-    try {
-      const res = await fetch("http://localhost:4000/reportes/registrar", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+  try {
+    const res = await fetch("http://localhost:4000/reportes/registrar", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
 
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.message || "Error al enviar el reporte");
+    if (!res.ok) {
+      const errorData = await res.json();
+
+      if (res.status === 409) {
+        alert("Ya has reportado esta guía por esa categoría.");
+        return;
       }
 
-      alert("Reporte enviado correctamente.");
-      navigate(-1); // Regresar a la vista anterior
-    } catch (error) {
-      console.error("Error al enviar el reporte:", error);
-      alert("Ocurrió un error al enviar el reporte. Intente nuevamente.");
+      throw new Error(errorData.message || "Error al enviar el reporte");
     }
-  };
+
+    alert("Reporte enviado correctamente.");
+    navigate(-1); // Regresar a la vista anterior
+  } catch (error) {
+    console.error("Error al enviar el reporte:", error);
+    alert("Ocurrió un error al enviar el reporte. Intente nuevamente.");
+  }
+};
+
 
   return (
     <div className="flex flex-col min-h-screen">

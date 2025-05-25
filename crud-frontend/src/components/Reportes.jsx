@@ -10,65 +10,70 @@ export default function Reportes() {
   const [listaNegraReal, setListaNegraReal] = useState([]);
   const [busquedaListaNegra, setBusquedaListaNegra] = useState("");
   const [listaNegraFiltrada, setListaNegraFiltrada] = useState([]);
+  const [filtroAcceso, setFiltroAcceso] = useState(""); // "", "restringido"
 
+  // Buscar reportes dinámicamente por nombre de guía y categoría
+  useEffect(() => {
+    const fetchReportes = async () => {
+      try {
+        let query = "";
 
-  // Buscar reportes dinámicamente por nombre de guía y categoria
-useEffect(() => {
-  const fetchReportes = async () => {
-    try {
-      let query = "";
+        if (searchTerm) {
+          query += `nombre=${encodeURIComponent(searchTerm)}&`;
+        }
 
-      if (searchTerm) {
-        query += `nombre=${encodeURIComponent(searchTerm)}&`;
+        if (categoriaSeleccionada) {
+          query += `categoria=${encodeURIComponent(categoriaSeleccionada)}&`;
+        }
+
+        const res = await fetch(`http://localhost:4000/reportes/buscar?${query}`);
+        const data = await res.json();
+        setReportes(data);
+      } catch (error) {
+        console.error("Error al buscar reportes:", error);
       }
+    };
 
-      if (categoriaSeleccionada) {
-        query += `categoria=${encodeURIComponent(categoriaSeleccionada)}&`;
-      }
+    fetchReportes();
+  }, [searchTerm, categoriaSeleccionada]);
 
-      const res = await fetch(`http://localhost:4000/reportes/buscar?${query}`);
-      const data = await res.json();
-      setReportes(data);
-    } catch (error) {
-      console.error("Error al buscar reportes:", error);
+  // Cargar la lista negra completa
+  useEffect(() => {
+    fetch("http://localhost:4000/reportes/lista-negra")
+      .then((res) => res.json())
+      .then((data) => {
+        setListaNegraReal(data);
+      })
+      .catch((err) => {
+        console.error("Error al cargar la lista negra:", err);
+      });
+  }, []);
+
+  // Filtrar lista negra según texto y acceso
+  useEffect(() => {
+    let resultados = listaNegraReal;
+
+    if (filtroAcceso === "restringido") {
+      resultados = resultados.filter((usuario) => usuario.estado === false);
     }
-  };
 
-  fetchReportes();
-}, [searchTerm, categoriaSeleccionada]);
+    if (busquedaListaNegra.trim()) {
+      const filtroTexto = busquedaListaNegra.toLowerCase();
+      resultados = resultados.filter(
+        (usuario) =>
+          usuario.nombre.toLowerCase().includes(filtroTexto) ||
+          usuario.apellidos.toLowerCase().includes(filtroTexto)
+      );
+    }
 
-useEffect(() => {
-  fetch("http://localhost:4000/reportes/lista-negra")
-    .then((res) => res.json())
-    .then((data) => {
-      setListaNegraReal(data);
-    })
-    .catch((err) => {
-      console.error("Error al cargar la lista negra:", err);
-    });
-}, []);
-
-useEffect(() => {
-  if (!busquedaListaNegra.trim()) {
-    setListaNegraFiltrada(listaNegraReal);
-  } else {
-    const filtro = busquedaListaNegra.toLowerCase();
-    const resultados = listaNegraReal.filter(
-      (usuario) =>
-        usuario.nombre.toLowerCase().includes(filtro) ||
-        usuario.apellidos.toLowerCase().includes(filtro)
-    );
     setListaNegraFiltrada(resultados);
-  }
-}, [busquedaListaNegra, listaNegraReal]);
-
-
+  }, [busquedaListaNegra, listaNegraReal, filtroAcceso]);
 
   return (
     <div className="min-h-screen flex flex-col items-center px-6 py-6">
       <h1 className="text-4xl font-bold text-center mb-6 w-full">Reportes</h1>
       <div className="flex flex-col lg:flex-row justify-between gap-6 w-full max-w-7xl">
-        
+
         {/* Lista de Reportes */}
         <div className="p-6 rounded-lg shadow-lg w-full lg:w-[600px] flex flex-col gap-6">
           <h2 className="text-2xl font-bold text-center">Reportes por Revisar</h2>
@@ -83,17 +88,16 @@ useEffect(() => {
               />
             </label>
             <select
-                className="select border rounded-lg p-2 flex-[1]"
-                value={categoriaSeleccionada}
-                onChange={(e) => setCategoriaSeleccionada(e.target.value)}
-                >
-                <option value="">Categorías</option>
-                <option value="spam">Spam</option>
-                <option value="disonancia">Disonancia</option>
-                <option value="disc_odio">Discurso de odio</option>
-                <option value="cont_exp">Contenido explícito</option>
+              className="select border rounded-lg p-2 flex-[1]"
+              value={categoriaSeleccionada}
+              onChange={(e) => setCategoriaSeleccionada(e.target.value)}
+            >
+              <option value="">Categorías</option>
+              <option value="spam">Spam</option>
+              <option value="disonancia">Disonancia</option>
+              <option value="disc_odio">Discurso de odio</option>
+              <option value="cont_exp">Contenido explícito</option>
             </select>
-
           </div>
           <ul className="bg-base-100 rounded-box shadow-md max-h-[calc(4.5*100px)] overflow-y-auto">
             <li className="p-4 text-xs opacity-60 tracking-wide">Lista de reportes</li>
@@ -105,7 +109,7 @@ useEffect(() => {
                   onClick={() => {
                     localStorage.setItem("reporteSeleccionado", JSON.stringify(reporte));
                     navigate("/ver-reporte");
-                }}
+                  }}
                 >
                   <img
                     className="w-12 h-12 rounded-full"
@@ -128,50 +132,69 @@ useEffect(() => {
           </ul>
         </div>
 
-        {/* Lista Negra (no modificada aún) */}
+        {/* Lista Negra */}
         <div className="p-6 rounded-lg shadow-lg w-full lg:w-[600px] flex flex-col gap-6">
           <h2 className="text-2xl font-bold text-center">Lista Negra</h2>
-          <label className="input flex items-center border rounded-lg px-3 py-1">
-            <input
+          <div className="flex gap-2">
+            <label className="input flex-1 border rounded-lg px-3 py-1 flex items-center">
+              <input
                 type="search"
                 className="grow ml-2 outline-none"
                 placeholder="Buscar usuario"
                 value={busquedaListaNegra}
                 onChange={(e) => setBusquedaListaNegra(e.target.value)}
-            />
-          </label>
+              />
+            </label>
+            <select
+              className="select border rounded-lg p-2 w-40"
+              value={filtroAcceso}
+              onChange={(e) => setFiltroAcceso(e.target.value)}
+            >
+              <option value="">Todos</option>
+              <option value="restringido">Restringidos</option>
+            </select>
+          </div>
           <ul className="bg-base-100 rounded-box shadow-md max-h-[calc(4.5*100px)] overflow-y-auto">
             <li className="p-4 text-xs opacity-60 tracking-wide">Usuarios en lista negra</li>
-                {listaNegraFiltrada.map((usuario) => (
-                    <li
-                    key={usuario.id_usuario}
-                    className="flex items-center gap-4 h-25 px-3 border-b cursor-pointer hover:bg-gray-200"
-                    onClick={() => {
-                        localStorage.setItem("autorSeleccionado", 
-                        JSON.stringify({
-                            id: usuario.id_usuario,
-                            nombre: usuario.nombre,
-                            apellidos: usuario.apellidos,
-                        })
-                        );
-                        navigate("/perfil/admin");
-                    }}
-                    >
-                    <img
-                        className="w-12 h-12 rounded-full"
-                        src={`http://localhost:4000/avatar/imagen?id_usuario=${usuario.id_usuario}`}
-                        alt="Avatar"
-                    />
-                    <div className="flex flex-col flex-grow">
-                        <div className="font-semibold text-lg">
-                        {usuario.nombre} {usuario.apellidos}
-                        </div>
-                        <span className="text-sm font-bold">Reportes aceptados: {usuario.total_reportes}</span>
-                    </div>
-                    </li>
-                ))}
-            </ul>
-
+            {listaNegraFiltrada.map((usuario) => (
+              <li
+                key={usuario.id_usuario}
+                className="flex items-center gap-4 h-25 px-3 border-b cursor-pointer hover:bg-gray-200"
+                onClick={() => {
+                  localStorage.setItem(
+                    "autorSeleccionado",
+                    JSON.stringify({
+                      id: usuario.id_usuario,
+                      nombre: usuario.nombre,
+                      apellidos: usuario.apellidos,
+                    })
+                  );
+                  navigate("/perfil/admin");
+                }}
+              >
+                <img
+                  className="w-12 h-12 rounded-full"
+                  src={`http://localhost:4000/avatar/imagen?id_usuario=${usuario.id_usuario}`}
+                  alt="Avatar"
+                />
+                <div className="flex flex-col flex-grow">
+                  <div className="font-semibold text-lg">
+                    {usuario.nombre} {usuario.apellidos}
+                  </div>
+                  <span className="text-sm font-bold">
+                    Reportes aceptados: {usuario.total_reportes}
+                  </span>
+                  <span
+                    className={`text-sm font-bold ${
+                      usuario.estado ? "text-green-600" : "text-red-600"
+                    }`}
+                  >
+                    Acceso: {usuario.estado ? "Activo" : "Restringido"}
+                  </span>
+                </div>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </div>
