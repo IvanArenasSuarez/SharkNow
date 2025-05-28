@@ -1,56 +1,80 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from "jwt-decode";
 
 export default function AceptarGuiaAcademia() {
     const navigate = useNavigate();
 
+    const [motivo, setMotivo] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+
     // Información de la guía
-    const infoGuia = {
-        nombre: "Guía de Estudio de Matemáticas",
-        autor: "Prof. Juan Pérez",
-        tipo: "Curricular",
-        materia: "Matemáticas",
-        academia: "Academia de Ciencias",
-        progAcad: "Matemáticas Avanzadas",
-        planDEst: "Plan 2024",
-        version: "1.0",
-        desc: "Esta es una guía completa para estudiar el curso de matemáticas avanzadas.",
-    };
+    useEffect(() => {
+        let preguntas = localStorage.getItem("preguntas");
+        if (!preguntas) {
+            const initialData = {
+                listado: [],
+                nuevas: [],
+                editadas: [],
+                eliminadas: []
+            };
+            localStorage.setItem("preguntas", JSON.stringify(initialData));
+            preguntas = initialData;
+        } else {
+            preguntas = JSON.parse(preguntas);
+        }
+      }, []);
+    
+      const [guia, setGuia] = useState(() => {
+        const guiaGuardada = localStorage.getItem('guia');
+        if (guiaGuardada) {
+          return JSON.parse(guiaGuardada);
+        }
+        return {};
+      });
 
     // Estado de las preguntas de la guía
-    const [preguntas, setPreguntas] = useState([
-        {
-            pregunta: "¿Cuál es la capital de Francia?",
-            tipo: "Opción Múltiple",
-            respuestas: ["Madrid", "Berlín", "París", "Roma"],
-            correcta: "París",
-            visualizada: false
-        },
-        {
-            pregunta: "La tierra es plana.",
-            tipo: "Verdadero o Falso",
-            respuestas: ["Falso", "Verdadero"],
-            correcta: "Falso",
-            visualizada: false
-        },
-        {
-            pregunta: "Relaciona las capitales con sus países.",
-            tipo: "Relación de Columnas",
-            respuestas: [
-                { columna1: "Francia", columna2: "París" },
-                { columna1: "Alemania", columna2: "Berlín" },
-                { columna1: "Italia", columna2: "Roma" },
-                { columna1: "España", columna2: "Madrid" }
-            ],
-            correcta: [
-                { columna1: "Francia", columna2: "París" },
-                { columna1: "Alemania", columna2: "Berlín" },
-                { columna1: "Italia", columna2: "Roma" },
-                { columna1: "España", columna2: "Madrid" }
-            ],
-            visualizada: false
-        },
-    ]);
+    const [preguntas, setPreguntas] = useState(() => {
+    const guardadas = localStorage.getItem("preguntas");
+    if (!guardadas) return [];
+    try {
+      const datos = JSON.parse(guardadas);
+      const listado = Array.isArray(datos.listado) ? datos.listado : [];
+      const nuevas = Array.isArray(datos.nuevas) ? datos.nuevas : [];
+      const editadas = Array.isArray(datos.editadas) ? datos.editadas : [];
+      return [...listado, ...nuevas, ...editadas];
+    } catch (error) {
+      console.error("Error al parsear preguntas de localStorage:", error);
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    async function obtenerPreguntas() {
+      try {
+        const response = await fetch(`http://localhost:4000/guias/preguntas?id_guia=${guia.id}`); 
+        if (!response.ok) throw new Error("Error al obtener las preguntas");
+  
+        const data = await response.json();
+  
+        // Guardamos en estado
+        setPreguntas(data);
+  
+        // Guardamos en localStorage.preguntas.listado
+        const preguntasStorage = JSON.parse(localStorage.getItem("preguntas"));
+  
+        preguntasStorage.listado = data;
+        console.table(preguntasStorage);
+        localStorage.setItem("preguntas", JSON.stringify(preguntasStorage));
+      } catch (error) {
+        console.error("Error al cargar preguntas:", error);
+      }
+    }
+  
+    obtenerPreguntas();
+  }, []);
 
     const [todasVistas, setTodasVistas] = useState(false);
     const [popupVisible, setPopupVisible] = useState(false);
@@ -76,6 +100,103 @@ export default function AceptarGuiaAcademia() {
         setSelectedQuestion(null);
     };
 
+const handleRechazar = async () => {
+  if (!motivo.trim()) {
+    setError("Debe especificar un motivo de rechazo");
+    return;
+  }
+
+  setIsSubmitting(true);
+  setError(null);
+
+  try {
+    const token = localStorage.getItem('token');
+    console.table(guia);
+
+    const response = await fetch('http://localhost:4000/guias/solicitudes/rechazar', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ 
+        id_solicitud: guia.id_solicitud, 
+        motivo 
+      })
+    });
+
+    const textResponse = await response.text(); // Primero obtener como texto
+    
+    try {
+      const data = textResponse ? JSON.parse(textResponse) : {};
+      
+      if (!response.ok) {
+        throw new Error(data.message || "Error al rechazar la guía");
+      }
+
+      // Cerrar el modal y navegar
+      document.getElementById('rechazarGuia').close();
+      navigate("/mis-guias-academia", {
+        state: { message: "Guía rechazada exitosamente" }
+      });
+    } catch (jsonError) {
+      console.error("Error parsing JSON:", jsonError);
+      throw new Error("Respuesta del servidor no es JSON válido");
+    }
+  } catch (err) {
+    console.error("Error al rechazar guía:", err);
+    setError(err.message || "Error al procesar la respuesta del servidor");
+  } finally {
+    setIsSubmitting(false);
+  }
+};
+
+const aceptarValidacion = async (id_gde, id_solicitud) => {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch('http://localhost:4000/guias/solicitudes/aceptar', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                id_gde: id_gde,
+                id_solicitud: id_solicitud
+            })
+        });
+
+        const data = await response.json();
+
+        if(!response.ok || !data.success) {
+            throw new Error(data.error || 'Error al procesar la solicitud');
+        }
+
+        console.log('Guia aceptada y solicitud eliminada', data);
+        return {
+            guia: data.guia,
+            solicitud: data.solicitud
+        }
+    } catch (ina) {
+        console.error("Error al aceptar la validación de la guía de estudio", ina.message);
+        throw ina;
+    }
+};
+
+const handleAceptar = async () => {
+    setLoading(true);
+
+    try {
+        const result = await aceptarValidacion(guia.id, guia.id_solicitud);
+        console.log("Resultado: ", result);
+        navigate('/mis-guias-academia');
+    } catch (ina) {
+        setError(ina.message);
+    } finally {
+        setLoading(false);
+    }
+};
+
     return (
         <div className="p-6 max-w-5xl mx-auto">
             <h1 className="text-2xl font-bold text-center mb-6">Evaluar Guía de Estudio por Academia</h1>
@@ -86,20 +207,19 @@ export default function AceptarGuiaAcademia() {
                     <div className="bg-base-100 rounded-box shadow-md p-4 space-y-2">
                         <h2 className="text-xl font-bold mb-4">Información de la Guía</h2>
                         <ul className="space-y-2">
-                            <li><strong>Nombre: </strong>{infoGuia.nombre}</li>
-                            <li><strong>Autor: </strong>{infoGuia.autor}</li>
-                            {infoGuia.tipo === "Curricular" && (
+                            <li><strong>Nombre: </strong>{guia.nombre}</li>
+                            <li><strong>Autor: </strong>{guia.nombre_usuario + " " + guia.apellidos}</li>
+                            {guia.tipo === "C" && (
                                 <>
-                                    <li><strong>Materia: </strong>{infoGuia.materia}</li>
-                                    <li><strong>Academia: </strong>{infoGuia.academia}</li>
-                                    <li><strong>Programa Académico: </strong>{infoGuia.progAcad}</li>
-                                    <li><strong>Plan de Estudio: </strong>{infoGuia.planDEst}</li>
-                                    <li><strong>Versión de la guía: </strong>{infoGuia.version}</li>
+                                    <li><strong>Materia: </strong>{guia.materia}</li>
+                                    <li><strong>Academia: </strong>{guia.academia}</li>
+                                    <li><strong>Plan de Estudio: </strong>{guia.plan}</li>
+                                    <li><strong>Versión de la guía: </strong>{guia.version}</li>
                                 </>
                             )}
                             <li>
                                 <strong>Descripción: </strong>
-                                <p className="text-gray-300 max-h-40 overflow-y-auto">{infoGuia.desc}</p>
+                                <p className="text-gray-300 max-h-40 overflow-y-auto">{guia.descripcion}</p>
                             </li>
                         </ul>
                     </div>
@@ -113,8 +233,8 @@ export default function AceptarGuiaAcademia() {
                         {preguntas.map((pregunta, index) => (
                             <li key={index} className={`flex items-center gap-4 px-3 border-b py-2 ${pregunta.visualizada ? "bg-green-700" : ""}`}>
                                 <div className="flex flex-col flex-grow">
-                                    <div className="font-semibold text-lg">{pregunta.pregunta}</div>
-                                    <p className="text-sm text-gray-600">{pregunta.tipo}</p>
+                                    <div className="font-semibold text-lg">{pregunta.question}</div>
+                                    <p className="text-sm text-gray-600">{pregunta.type}</p>
                                 </div>
                                 <div className="flex gap-2">
                                     <button
@@ -139,7 +259,7 @@ export default function AceptarGuiaAcademia() {
                 <button
                     className="btn btn-primary w-1/3 h-14 min-w-[120px]"
                     disabled={!todasVistas}
-                    onClick={() => navigate('/reportes')}
+                    onClick={handleAceptar}
                 >
                     Aceptar y Publicar
                 </button>
@@ -161,18 +281,20 @@ export default function AceptarGuiaAcademia() {
                         className="textarea textarea-bordered w-full mb-6" 
                         placeholder="Escriba el motivo aquí..."
                         rows={4}
+                        value={motivo}
+                        onChange={(e) => setMotivo(e.target.value)}
+                        required
                     ></textarea>
+
+                    {error && <p className="text-red-500 mb-4">{error}</p>}
 
                     <div className="flex justify-center gap-4">
                         <button 
-                            className="btn btn-error px-6"
-                            onClick={() => {
-                                navigate("/");
-                                console.log("Rechazado con motivo");
-                                document.getElementById('rechazarGuia').close();
-                            }}
+                            className={`btn btn-error px-6 ${isSubmitting ? 'cargando' : ''}`}
+                            onClick={handleRechazar}
+                            disabled={isSubmitting}
                         >
-                            Rechazar
+                            {isSubmitting ? "" : "Rechazar"}
                         </button>
 
                         <form method="dialog">
@@ -186,21 +308,21 @@ export default function AceptarGuiaAcademia() {
             {popupVisible && selectedQuestion && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
                     <div className="bg-base-100 p-6 rounded-lg shadow-lg w-1/3">
-                        <h2 className="text-xl font-bold mb-4">Pregunta: {selectedQuestion.pregunta}</h2>
+                        <h2 className="text-xl font-bold mb-4">Pregunta: {selectedQuestion.question}</h2>
 
                         <div className="mb-4">
-                            {selectedQuestion.tipo === "Verdadero o Falso" ? (
+                            {selectedQuestion.type === "trueFalse" ? (
                                 <div>
                                     <div className="font-semibold">Respuesta correcta:</div>
-                                    <div>{selectedQuestion.correcta}</div>
+                                    <div>{selectedQuestion.answer}</div>
                                 </div>
-                            ) : selectedQuestion.tipo === "Opción Múltiple" ? (
+                            ) : selectedQuestion.type === "multipleChoice" ? (
                                 <div>
                                     <div className="font-semibold">Respuestas:</div>
                                     <ul className="list-disc pl-5">
-                                        {selectedQuestion.respuestas.map((respuesta, idx) => (
+                                        {selectedQuestion.options.map((respuesta, idx) => (
                                             <li key={idx} className="text-sm text-white">
-                                                {respuesta === selectedQuestion.correcta ? (
+                                                {selectedQuestion.answer.includes(respuesta) ? (
                                                     <span className="text-green-500">{respuesta}</span>
                                                 ) : (
                                                     respuesta
@@ -209,11 +331,11 @@ export default function AceptarGuiaAcademia() {
                                         ))}
                                     </ul>
                                 </div>
-                            ) : selectedQuestion.tipo === "Relación de Columnas" && (
+                            ) : selectedQuestion.type === "matching" && (
                                 <div>
                                     <div className="font-semibold">Relaciona las siguientes:</div>
                                     <div className="grid grid-cols-2 gap-4">
-                                        {selectedQuestion.respuestas.map((item, idx) => (
+                                        {selectedQuestion.options.map((item, idx) => (
                                             <div key={idx}>
                                                 <div>{item.columna1} - {item.columna2}</div>
                                             </div>

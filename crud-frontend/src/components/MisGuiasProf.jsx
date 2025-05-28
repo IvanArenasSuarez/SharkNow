@@ -115,16 +115,6 @@ export default function MisGuiasProf() {
                                                 </g>
                                             </svg>
                                         </button>
-                                        <button 
-                                            onClick={() => navigate("/ver-guia-seguida")}
-                                            className="btn btn-square btn-ghost"
-                                        >
-                                            <svg className="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                                <g strokeLinejoin="round" strokeLinecap="round" strokeWidth="2" fill="none" stroke="currentColor">
-                                                    <path d="m4.5 12.75 6 6 9-13.5"></path>
-                                                </g>
-                                            </svg>
-                                        </button>
                                     </div>
                                 </li>
                             ))
@@ -151,7 +141,20 @@ export default function MisGuiasProf() {
 
                                 const handleClick = () => {
                                     if (esRechazada) {
-                                        navigate(`/editar-guia/${solicitud.id_gde}`);
+                                        const guiaSeleccionada = {
+                                            id: solicitud.id_gde,
+                                            tipo: solicitud.tipo,
+                                            nombre: solicitud.nombre,
+                                            descripcion: solicitud.descripcion,
+                                            materia: solicitud.id_materia,
+                                            plan: solicitud.id_pde,
+                                            version: solicitud.version,
+                                            estado: solicitud.guia_estado,
+                                            seguidores: solicitud.num_seguidores,
+                                        };
+                                        console.table(guiaSeleccionada);
+                                        localStorage.setItem("guia", JSON.stringify(guiaSeleccionada)); // Guardar la guía en localStorage
+                                        navigate("/editar-guia", { state: { id_gde: solicitud.id_gde } });
                                     }
                                 };
 

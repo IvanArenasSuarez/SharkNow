@@ -269,7 +269,7 @@ useEffect(() => {
     .then(res => res.json())
     .then(data => {
       if(esMaestro){
-        navigate('/mis-guias');
+        navigate('/mis-guias-profesor');
       }else{
         navigate('/mis-guias');
       }
