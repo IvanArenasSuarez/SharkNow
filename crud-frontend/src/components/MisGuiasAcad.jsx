@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from "jwt-decode";
 
 export default function MisGuiasProf() {
     const navigate = useNavigate();
@@ -36,7 +37,20 @@ export default function MisGuiasProf() {
             const fetchSolicitudes = async () => {
                 try {
                     const token = localStorage.getItem("token");
-                    const response = await fetch(`http://localhost:4000/guias/solicitudes/acad?id_academia=${userData.id_academia} `, {
+                    
+                    // 1. Decodificar el token para obtener las academias
+                    const decoded = jwtDecode(token);
+                    const academias = decoded.academias || [];
+                    
+                    // 2. Buscar la academia donde es jefe
+                    const academiaJefe = academias.find(a => a.jefe === true);
+                    
+                    if (!academiaJefe) {
+                        console.error("El usuario no es jefe de ninguna academia");
+                        return;
+                    }
+                    console.log("Academia jefe: ", academiaJefe)
+                    const response = await fetch(`http://localhost:4000/guias/solicitudes/acad?id_academia=${academiaJefe.id}`, {
                         headers: {
                             Authorization: `Bearer ${token}`,
                         },
@@ -164,7 +178,25 @@ export default function MisGuiasProf() {
                                     </div>
                                     <button 
                                         className="btn btn-square btn-ghost"
-                                        onClick={() => navigate(`/guiaAcademia/${solicitud.id_gde}`)}
+                                        onClick={() => {
+                                            const guiaSeleccionada = {
+                                                    id: solicitud.id_gde,
+                                                    id_solicitud: solicitud.id_solicitud,
+                                                    tipo: solicitud.tipo,
+                                                    nombre: solicitud.nombre_guia,
+                                                    nombre_usuario: solicitud.nombre_usuario,
+                                                    apellidos: solicitud.apellidos,
+                                                    descripcion: solicitud.descripcion,
+                                                    materia: solicitud.nombre_materia,
+                                                    academia: solicitud.nombre_academia,
+                                                    plan: solicitud.nombre_pde,
+                                                    version: solicitud.version,
+                                                    estado: solicitud.estado,
+                                                    seguidores: solicitud.num_seguidores,
+                                                };
+                                                localStorage.setItem("guia", JSON.stringify(guiaSeleccionada)); // Guardar la guía en localStorage
+                                                navigate("/guiaAcademia", { state: { id_gde: solicitud.id_gde } });
+                                        }}
                                     >
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5c-4.8 0-9 5.6-9 7.5s4.2 7.5 9 7.5 9-5.6 9-7.5-4.2-7.5-9-7.5z" />
