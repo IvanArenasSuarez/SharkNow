@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { BellIcon, X } from "lucide-react";
+import { jwtDecode } from "jwt-decode";
 
 export default function Navbar() {
   const navigate = useNavigate();
   const userData = JSON.parse(localStorage.getItem("userData"));
   const [avatarURL, setAvatarURL] = useState(null);
-  const [tieneCaracteristicaAcademia, setTieneCaracteristicaAcademia] = useState(true);
+  const [tieneCaracteristicaAcademia, setTieneCaracteristicaAcademia] = useState(false);
   const [notificationsVisible, setNotificationsVisible] = useState(false);
   const [notifications, setNotifications] = useState([
     {
@@ -57,8 +58,8 @@ export default function Navbar() {
       }
     
       try {
-      const decoded = jwt_decode(token);
-
+      const token = localStorage.getItem('token');
+      const decoded = jwtDecode(token);
       // Verificamos si es tipo 2 (profesor)
       if (decoded.tipo_de_cuenta === 2) {
         // Verificamos si tiene al menos una academia donde es jefe
@@ -66,6 +67,7 @@ export default function Navbar() {
         const esJefeEnAlguna = academias.some(a => a.jefe === true);
 
         setTieneCaracteristicaAcademia(esJefeEnAlguna);
+        
       } else {
         setTieneCaracteristicaAcademia(false);
       }
@@ -88,36 +90,6 @@ export default function Navbar() {
       window.removeEventListener("avatarActualizado", handleAvatarUpdate);
     };
   }, []);
-
-  useEffect(() => {
-    const fetchAvatarImage = async () => {
-      try {
-        const res = await fetch(`http://localhost:4000/avatar/imagen?id_usuario=${userData.id_usuario}`);
-        const blob = await res.blob();
-  
-        if (blob.type.startsWith("image/")) {
-          const imageURL = URL.createObjectURL(blob);
-          setAvatarURL(imageURL);
-        }
-      } catch (error) {
-        console.error("Error al obtener imagen del avatar:", error);
-      }
-    };
-  
-    if (userData?.id_usuario) {
-      fetchAvatarImage();
-    }
-  
-    // Escuchar evento global y recargar imagen cuando se actualice
-    const handleAvatarUpdate = () => fetchAvatarImage();
-    window.addEventListener("avatarActualizado", handleAvatarUpdate);
-  
-    // Limpieza del listener
-    return () => {
-      window.removeEventListener("avatarActualizado", handleAvatarUpdate);
-    };
-  }, []);
-  
   
   const handleLogout = () => {
     localStorage.removeItem("token");

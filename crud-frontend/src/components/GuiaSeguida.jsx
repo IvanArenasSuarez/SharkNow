@@ -198,7 +198,7 @@ export default function GuiaSeguida() {
 
             {userData?.tipo_de_cuenta === 1 && (
               <div className="flex justify-center gap-4 mt-6">
-                <button className="btn btn-primary btn-lg text-lg" onClick={() => navigate('/quiz-guia')}>
+                <button className="btn btn-primary btn-lg text-lg" onClick={() => navigate(`/quiz-guia/${guiaSeleccionada.id}`)}>
                   Iniciar Sesión de Estudio
                 </button>
                 <button className="btn btn-secondary btn-lg text-lg" onClick={dejarDeSeguir}>

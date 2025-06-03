@@ -95,109 +95,104 @@ function App() {
     };
 
     return (
-        <Router>
-            <DndProvider backend={HTML5Backend}>
-                {isAuthenticated && (
+  <Router>
+    <DndProvider backend={HTML5Backend}>
+      <div className="min-h-screen flex flex-col">
+
+        {/* Navbar */}
+        {isAuthenticated && (
+          userData?.tipo_de_cuenta === 3 ? (
+            <NavbarAdmin userData={userData} onLogout={handleLogout} />
+          ) : (
+            <Navbar userData={userData} onLogout={handleLogout} />
+          )
+        )}
+
+        {/* Main Content */}
+        <main className="flex-grow">
+          <Routes>
+            <Route
+              path="/login"
+              element={!isAuthenticated ? (
+                <div className="flex h-screen">
+                  <div className='flex-[2] flex justify-center items-center'>
+                    <Login_Carrusel />
+                  </div>
+                  <div className='flex-[2] flex justify-center items-center'>
+                    <Login_Form onLogin={handleLogin} />
+                  </div>
+                </div>
+              ) : (
                 userData?.tipo_de_cuenta === 3 ? (
-                    <NavbarAdmin userData={userData} onLogout={handleLogout} />
+                  <Navigate to="/reportes" />
                 ) : (
-                    <Navbar userData={userData} onLogout={handleLogout} />
+                  <Navigate to="/" />
                 )
+              )}
+            />
+            <Route path="/registro" element={<Registro />} />
+            <Route path="/recuperar-contraseña" element={<RecuperarContraseña />} />
+            <Route path="/ver-guia-seguida" element={<VerGuiaSeguida />} />
+            <Route path="/guia-seguida" element={<GuiaSeguida />} />
+
+            {isAuthenticated ? (
+              <>
+                <Route path="/busqueda" element={<Search />} />
+
+                {userData?.tipo_de_cuenta === 1 && (
+                  <>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/reporte" element={<Reporte />} />
+                    <Route path="/avatar" element={<Avatar />} />
+                    <Route path="/perfil" element={<Profile />} />
+                    <Route path="/mis-guias" element={<MisGuias />} />
+                    <Route path="/quiz-guia/:id_gde" element={<QuizGuia />} />
+                    <Route path="/estadisticas" element={<Estadisticas />} />
+                    <Route path="/guia-sin-seguir" element={<GuiaSinSeguir />} />
+                    <Route path="/perfil/usuario" element={<UserProfile />} />
+                    <Route path="/crear-guia" element={<CrearGuia />} />
+                    <Route path="/editar-guia" element={<EditarGuia />} />
+                    <Route path="/editar-pregunta" element={<EditarPregunta />} />
+                  </>
                 )}
-                
-                <Routes>
-                    <Route
-                        path="/login"
-                        element={!isAuthenticated ? (
-                            <div className="flex h-screen">
-                                <div className='flex-[2] flex justify-center items-center'>
-                                    <Login_Carrusel />
-                                </div>
-                                <div className='flex-[2] flex justify-center items-center'>
-                                    <Login_Form onLogin={handleLogin} />
-                                </div>
-                            </div>
-                        ) : (
-                              
-                                userData?.tipo_de_cuenta === 3 ? (
-                                    <Navigate to="/reportes" />
-                                ) : (
-                                    <Navigate to="/" />
-                                )
-                                
-                            
-                        )}
-                    />
-                            <Route path="/registro" element={<Registro />} />
-                            <Route path="/recuperar-contraseña" element={<RecuperarContraseña />} />
-                            <Route path="/ver-guia-seguida" element={<VerGuiaSeguida />} />7
-                            <Route path="/guia-seguida" element={<GuiaSeguida />} />
-                            
-                    {isAuthenticated ? (
-                        <>
-                             <Route path="/busqueda" element={<Search />} />
-                       
-                            
-                            {userData?.tipo_de_cuenta === 1 && (
-                            <>
-                                <Route path="/" element={<Home />} />
-                                <Route path="/reporte" element={<Reporte />} />
-                                <Route path="/avatar" element={<Avatar />} />
-                                <Route path="/perfil" element={<Profile />} />
-                                <Route path="/mis-guias" element={<MisGuias />} />
-                                <Route path="/quiz-guia/:id_gde" element={<QuizGuia />} />
-                                <Route path="/ver-guia-seguida" element={<VerGuiaSeguida />} />7
-                                <Route path="/estadisticas" element={<Estadisticas />} />
-                                <Route path="/guia-seguida" element={<GuiaSeguida />} />
-                                <Route path="/guia-sin-seguir" element={<GuiaSinSeguir />} />
-                                <Route path="/perfil/usuario" element={<UserProfile />} />
-                                <Route path="/crear-guia" element={<CrearGuia />} />
-                                <Route path="/editar-guia" element={<EditarGuia />} />
-                                <Route path="/editar-pregunta" element={<EditarPregunta />} />                            
 
+                {userData?.tipo_de_cuenta === 2 && (
+                  <>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/avatar" element={<Avatar />} />
+                    <Route path="/perfil" element={<Profile />} />
+                    <Route path="/mis-guias-profesor" element={<MisGuiasProf />} />
+                    <Route path="/mis-guias-academia" element={<MisGuiasAcad />} />
+                    <Route path="/perfil/usuario" element={<UserProfile />} />
+                    <Route path="/crear-guia" element={<CrearGuia />} />
+                    <Route path="/editar-guia" element={<EditarGuia />} />
+                    <Route path="/editar-pregunta" element={<EditarPregunta />} />
+                    <Route path="/guiaAcademia" element={<AceptarGuiaAcademia />} />
+                  </>
+                )}
 
-                            </>
-                            )}
+                {userData?.tipo_de_cuenta === 3 && (
+                  <>
+                    <Route path="/perfil/admin" element={<UserProfileAdmin />} />
+                    <Route path="/reportes" element={<Reportes />} />
+                    <Route path="/ver-reporte" element={<VerReporte />} />
+                  </>
+                )}
+              </>
+            ) : (
+              <Route path="*" element={<Navigate to="/login" />} />
+            )}
+          </Routes>
+        </main>
 
+        {/* Footer */}
+        <Footer />
 
-                            {userData?.tipo_de_cuenta === 2 && (
-                            <>
-                                <Route path="/" element={<Home />} />
-                                <Route path="/avatar" element={<Avatar />} />
-                                <Route path="/perfil" element={<Profile />} />
-                                <Route path="/mis-guias-profesor" element={<MisGuiasProf />} />
-                                <Route path="/mis-guias-academia" element={<MisGuiasAcad />} />
-                                <Route path="/perfil/usuario" element={<UserProfile />} />
-                                <Route path="/crear-guia" element={<CrearGuia />} />
-                                <Route path="/editar-guia" element={<EditarGuia />} />
-                                <Route path="/editar-pregunta" element={<EditarPregunta />} />                            
-                                <Route path="/guia-seguida" element={<GuiaSeguida />} />
-                                <Route path="/guiaAcademia" element={<AceptarGuiaAcademia />} />
+      </div>
+    </DndProvider>
+  </Router>
+);
 
-                            </>
-                            )}
-
-
-
-                            {userData?.tipo_de_cuenta === 3 && (
-                            <>
-                                <Route path="/perfil/admin" element={<UserProfileAdmin />} />
-                                <Route path="/reportes" element={<Reportes />} />
-                                <Route path="/ver-reporte" element={<VerReporte />} />
-                                <Route path="/guia-seguida" element={<GuiaSeguida />} />
-                            </>
-                            )}
-
-
-                        </>
-                    ) : (
-                        <Route path="*" element={<Navigate to="/login" />} />
-                    )}
-                </Routes>
-            </DndProvider>
-            <Footer />
-        </Router>
-    );
 }
 
 export default App;

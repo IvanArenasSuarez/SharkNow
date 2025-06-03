@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 export default function MisGuias() {
     const navigate = useNavigate();
     const [misGuias, setMisGuias] = useState([]);
+    const [guiasSeguidas, setGuiasSeguidas] = useState([]);
 
     useEffect(() => {
         const fetchGuias = async () => {
@@ -26,6 +27,28 @@ export default function MisGuias() {
         };
 
         fetchGuias();
+    }, []);
+
+    useEffect(() => {
+        const fetchGuiasSeguidas = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('http://localhost:4000/guias/seguidas', {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    setGuiasSeguidas(data);
+                } else {
+                    console.error("Error:", data.message);
+                }
+            } catch (err) {
+                console.error("Error al obtener las guias seguidas: ", err);
+            }
+        };
+        fetchGuiasSeguidas();
     }, []);
 
     const gotoCrearGuias = () => {
@@ -92,7 +115,24 @@ export default function MisGuias() {
                                             </svg>
                                         </button>
                                         <button 
-                                            onClick={() => navigate("/ver-guia-seguida")}
+                                            onClick={() => {
+                                                const guiaSeleccionada = {
+                                                    id: guia.id_gde,
+                                                    tipo: guia.tipo,
+                                                    nombre: guia.nombre,
+                                                    usuario: guia.nombre_usuario,
+                                                    apellidos: guia.apellidos,
+                                                    descripcion: guia.descripcion,
+                                                    materia: guia.nombre_materia,
+                                                    academia: guia.nombre_academia,
+                                                    plan: guia.nombre_pde,
+                                                    version: guia.version,
+                                                    estado: guia.estado,
+                                                    seguidores: guia.num_seguidores,
+                                                };
+                                                localStorage.setItem("guia", JSON.stringify(guiaSeleccionada)); // Guardar la guía en localStorage
+                                                navigate("/ver-guia-seguida", { state: { id_gde: guia.id_gde } })
+                                            }}
                                             className="btn btn-square btn-ghost"
                                         >
                                             <svg className="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -134,34 +174,48 @@ export default function MisGuias() {
 
                     <ul className="bg-base-100 rounded-box shadow-md max-h-[calc(4*100px)] overflow-y-auto">
                         <li className="p-4 text-xs opacity-60 tracking-wide">Lista de guías seguidas</li>
-                        {[...Array(5)].map((_, index) => (
-                            <li key={index} className="flex items-center gap-4 h-25 px-3 border-b">
-                                <img className="w-12 h-12 rounded-full" src="https://img.daisyui.com/images/profile/demo/1@94.webp" alt="Perfil" />
-                                <div className="flex flex-col flex-grow">
-                                    <div className="font-semibold text-lg">Guía {index + 1}</div>
-                                    <p className="text-sm text-gray-600">
-                                        This guide is a valuable resource for students seeking academic excellence.
-                                    </p>
-                                </div>
-                                <div className="flex gap-2">
-                                    <button className="btn btn-square btn-ghost">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
-                                        </svg>
-                                    </button>
-                                    <button 
-                                        onClick={() => navigate("/ver-guia-seguida")}
-                                        className="btn btn-square btn-ghost"
-                                    >
-                                        <svg className="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                            <g strokeLinejoin="round" strokeLinecap="round" strokeWidth="2" fill="none" stroke="currentColor">
-                                                <path d="m4.5 12.75 6 6 9-13.5"></path>
-                                            </g>
-                                        </svg>
-                                    </button>
-                                </div>
-                            </li>
-                        ))}
+                        {guiasSeguidas.length > 0 ? (
+                            guiasSeguidas.map((seguidas) => (
+                                <li key={seguidas.id_gde} className="flex items-center gap-4 h-25 px-3 border-b">
+                                    <img className="w-12 h-12 rounded-full" src={`http://localhost:4000/avatar/imagen?id_usuario=${seguidas.id_usuario}`} alt="Perfil" />
+                                    <div className="flex flex-col flex-grow">
+                                        <div className="font-semibold text-lg">{seguidas.nombre_gde}</div>
+                                        <p className="text-sm text-gray-600">{seguidas.descripcion}</p>
+                                    </div>
+                                    <div className="flex gap-2">
+                                        <button 
+                                            onClick={() => {
+                                                const guiaSeleccionada = {
+                                                    id: seguidas.id_gde,
+                                                    tipo: seguidas.tipo,
+                                                    nombre: seguidas.nombre_gde,
+                                                    usuario: seguidas.nombre_usuario,
+                                                    apellidos: seguidas.apellidos,
+                                                    descripcion: seguidas.descripcion,
+                                                    materia: seguidas.nombre_materia,
+                                                    academia: seguidas.nombre_academia,
+                                                    plan: seguidas.nombre_pde,
+                                                    version: seguidas.version,
+                                                    estado: seguidas.estado,
+                                                    seguidores: seguidas.num_seguidores,
+                                                };
+                                                localStorage.setItem("guia", JSON.stringify(guiaSeleccionada)); // Guardar la guía en localStorage
+                                                navigate("/ver-guia-seguida", { state: { id_gde: seguidas.id_gde } })}
+                                            } 
+                                            className="btn btn-square btn-ghost"
+                                        >
+                                            <svg className="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                                <g strokeLinejoin="round" strokeLinecap="round" strokeWidth="2" fill="none" stroke="currentColor">
+                                                    <path d="m4.5 12.75 6 6 9-13.5"></path>
+                                                </g>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </li>
+                            ))
+                        ) : (
+                            <li className="p-4 text-gray-400 italic">Aún no has creado guías</li>
+                        )}
                     </ul>
                 </div>
             </div>
