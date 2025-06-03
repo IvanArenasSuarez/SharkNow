@@ -139,7 +139,7 @@ export default function GuiaSinSeguir() {
 
             {/* Botones Finales */}
             <div className="flex justify-center gap-4 mt-6">
-              <button className="btn btn-primary btn-lg text-lg" onClick={() => navigate('/quiz-guia')}>Iniciar Sesión de Estudio</button>
+              <button className="btn btn-primary btn-lg text-lg" onClick={() => navigate(`/quiz-guia/${guiaSeleccionada.id}`)}>Iniciar Sesión de Estudio</button>
               <button
                 className="btn btn-secondary btn-lg text-lg"
                 onClick={async () => {
