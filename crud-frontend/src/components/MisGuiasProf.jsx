@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate} from 'react-router-dom';
+import { jwtDecode } from "jwt-decode";
 
 export default function MisGuiasProf() {
     const navigate = useNavigate();
@@ -7,6 +8,7 @@ export default function MisGuiasProf() {
 
     const [misGuias, setMisGuias] = useState([]);
     const [solicitudes, setSolicitudes] = useState([]);
+    const [esJefe, setEsJefe] = useState(false);
 
     useEffect(() => {
             const fetchGuias = async () => {
@@ -53,6 +55,28 @@ export default function MisGuiasProf() {
         }
         fetchSolicitudes();
     }, []);
+
+    useEffect(() => {
+        const verificarSiEsJefe = () => {
+            try {
+                 const token = localStorage.getItem('token');
+                    const decoded = jwtDecode(token);
+                      // Verificamos si es tipo 2 (profesor)
+                    if (decoded.tipo_de_cuenta === 2) {
+                    // Verificamos si tiene al menos una academia donde es jefe
+                    const academias = decoded.academias || [];
+                    const esJefeEnAlguna = academias.some(a => a.jefe === true);
+                
+                    setEsJefe(esJefeEnAlguna);
+                }
+                else esJefe(false);
+            } catch (err) {
+                console.error("No se pudo saber la procedencia: ", err);
+            }
+        }
+
+        verificarSiEsJefe();
+    });
 
     return (
         <div className="min-h-screen flex flex-col items-center px-6 py-6">
@@ -194,11 +218,13 @@ export default function MisGuiasProf() {
                                     </li>
                                 )
                             })  
-                        )}
-                        
+                        )}  
                     </ul>
                 </div>
             </div>
+            {esJefe && (
+                <button onClick={() => navigate('/mis-guias-academia')} className="btn btn-primary my-8 mx-8">Vista de Academia</button>
+            )}
         </div>
     );
 }

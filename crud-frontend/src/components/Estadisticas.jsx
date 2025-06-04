@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';  // Asegúrate de tener los estilos por defecto de react-calendar
-
 // Datos simulados de sesiones de estudio
 const sampleData = [
     { fecha: '2025-03-20', aciertos: 80, correctas: 8, incorrectas: 2 },
@@ -16,6 +16,8 @@ export default function Estadisticas() {
     const [data, setData] = useState([]);
     const [selectedDate, setSelectedDate] = useState(null);
     const [selectedSession, setSelectedSession] = useState(null);
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         setData(sampleData);
@@ -42,6 +44,7 @@ export default function Estadisticas() {
                         </LineChart>
                     </ResponsiveContainer>
                 </div>
+                <button onClick={() => navigate('/ver-guia-seguida')} className="btn btn-primary my-8 mx-8">Regresar</button>
             </div>
 
             {/* Calendario */}

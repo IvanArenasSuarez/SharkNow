@@ -75,7 +75,7 @@ export default function MisGuiasProf() {
             <div className="flex flex-col lg:flex-row justify-between gap-6 w-full max-w-7xl">
                 {/* Mis Guías */}
                 <div className="p-6 rounded-lg shadow-lg w-full lg:w-[600px] flex flex-col gap-6">
-                    <h1 className="text-2xl font-bold text-center">Mis Guías</h1>
+                    <h1 className="text-2xl font-bold text-center">Guías creadas</h1>
 
                     <div className="flex items-center gap-2">
                         <label className="input flex-[3] flex items-center border rounded-lg px-3 py-1">
@@ -162,7 +162,7 @@ export default function MisGuiasProf() {
                                 <li key={solicitud.id_solicitud} className='flex items-center gap-4 p-4 rounded-lg shadow'>
                                     <img
                                         className="w-12 h-12 rounded-full"
-                                        src="https://img.daisyui.com/images/profile/demo/1@94.webp"
+                                        src={`http://localhost:4000/avatar/imagen?id_usuario=${solicitud.id_usuario}`} 
                                         alt="Perfil"
                                     />
                                     <div className='flex-grow'>
@@ -209,6 +209,7 @@ export default function MisGuiasProf() {
                     </ul>
                 </div>
             </div>
+            <button onClick={() => navigate('/mis-guias-profesor')} className="btn btn-primary my-8 mx-8">Vista de Profesor</button>
         </div>
     );
 }

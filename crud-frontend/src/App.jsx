@@ -132,8 +132,6 @@ function App() {
             />
             <Route path="/registro" element={<Registro />} />
             <Route path="/recuperar-contraseña" element={<RecuperarContraseña />} />
-            <Route path="/ver-guia-seguida" element={<VerGuiaSeguida />} />
-            <Route path="/guia-seguida" element={<GuiaSeguida />} />
 
             {isAuthenticated ? (
               <>
@@ -153,6 +151,8 @@ function App() {
                     <Route path="/crear-guia" element={<CrearGuia />} />
                     <Route path="/editar-guia" element={<EditarGuia />} />
                     <Route path="/editar-pregunta" element={<EditarPregunta />} />
+                    <Route path="/ver-guia-seguida" element={<VerGuiaSeguida />} />
+                    <Route path="/guia-seguida" element={<GuiaSeguida />} />
                   </>
                 )}
 
