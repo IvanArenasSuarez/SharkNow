@@ -10,6 +10,12 @@ export default function VerReporte() {
   const [todasVistas, setTodasVistas] = useState(false);
   const [popupVisible, setPopupVisible] = useState(false);
   const [selectedQuestion, setSelectedQuestion] = useState(null);
+  const [isRechazoAlertVisible, setIsRechazoAlertVisible] = useState(false);
+  const [isAceptarAlertVisible, setIsAceptarAlertVisible] = useState(false);
+  const [isNotificarAlertVisible, setIsNotificarAlertVisible] = useState(false);
+  const [motivoAceptacion, setMotivoAceptacion] = useState("");
+  const [motivoNotificacion, setMotivoNotificacion] = useState("");
+
 
   useEffect(() => {
     if (reporte?.id_gde) {
@@ -49,6 +55,27 @@ export default function VerReporte() {
     setPopupVisible(false);
     setSelectedQuestion(null);
   };
+
+  const handleConfirmRechazo = async () => {
+  try {
+    const res = await fetch("http://localhost:4000/reportes/rechazar", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id_reporte: reporte.id_reporte }),
+    });
+
+    if (!res.ok) throw new Error("Error al rechazar el reporte");
+
+    alert("Reporte rechazado exitosamente.");
+    navigate("/reportes");
+  } catch (err) {
+    console.error("Error:", err);
+    alert("Ocurrió un error al rechazar el reporte.");
+  } finally {
+    setIsRechazoAlertVisible(false);
+  }
+};
+
 
   const eyeIcon = "M12 4.5C9.61 4.5 7.47 5.46 6 7c-1.47-1.54-3.61-2.5-6-2.5 2.39 0 4.73 1.46 6 3 1.47-1.54 3.61-3 6-3 2.39 0 4.73 1.46 6 3-1.47-1.54-3.61-2.5-6-2.5zm0 12c-2.39 0-4.73-1.46-6-3-1.47 1.54-3.61 3-6 3 2.39 0 4.73-1.46 6-3 1.47 1.54 3.61 3 6 3zm0-4c-2.39 0-4.73-1.46-6-3-1.47 1.54-3.61 3-6 3 2.39 0 4.73-1.46 6-3 1.47 1.54 3.61 3 6 3z";
 
@@ -136,16 +163,16 @@ export default function VerReporte() {
 
       {/* Acciones */}
       <div className="flex justify-between gap-4 mt-6">
-        <button className="btn btn-primary w-1/3 h-14" disabled={!todasVistas} onClick={() => navigate("/reportes")}>
+        <button className="btn btn-primary w-1/3 h-14" disabled={reporte.categoria === "cont_exp" || reporte.categoria === "disc_odio"} onClick={() => setIsNotificarAlertVisible(true)}>
           Notificar por cambios técnicos
         </button>
-        <button className="btn btn-accent w-1/3 h-14" disabled={!todasVistas} onClick={() => navigate("/reportes")}>
+        <button className="btn btn-accent w-1/3 h-14" disabled={reporte.categoria === "disonancia" || reporte.categoria === "spam"} onClick={() => setIsAceptarAlertVisible(true)}>
           Mandar a lista negra
         </button>
       </div>
 
       <div className="mt-4">
-        <button className="btn btn-error w-full h-14" disabled={!todasVistas} onClick={() => navigate("/reportes")}>
+        <button className="btn btn-error w-full h-14" disabled={!todasVistas} onClick={() => setIsRechazoAlertVisible(true)}>
           Rechazar reporte
         </button>
       </div>
@@ -197,6 +224,162 @@ export default function VerReporte() {
           </div>
         </div>
       )}
+
+      {/* Alerta de rechazo */}
+      {isRechazoAlertVisible && (
+        <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white text-black p-6 rounded-lg shadow-lg w-96">
+            <h3 className="text-xl font-semibold mb-4">Confirmar rechazo</h3>
+            <p>¿Estás seguro de que deseas rechazar este reporte? Esta acción no se puede deshacer.</p>
+            <div className="mt-4 flex justify-end gap-4">
+              <button
+                className="btn bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
+                onClick={handleConfirmRechazo}
+              >
+                Aceptar
+              </button>
+              <button
+                className="btn bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700"
+                onClick={() => setIsRechazoAlertVisible(false)}
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Alerta de lista negra */}
+      {isAceptarAlertVisible && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+          <div className="bg-white text-black p-6 rounded-lg shadow-lg w-[500px]">
+            <h2 className="text-xl font-semibold mb-4 ">Confirmar Aceptación del Reporte</h2>
+            <p>Estás a punto de aceptar este reporte. Esto mandará al autor a la lista negra y ocultará la guía. Es obligatorio ingresar un motivo:</p>
+            <textarea
+              className="textarea textarea-bordered w-full mb-4 text-black bg-gray-200"
+              rows={4}
+              placeholder="Escribe el motivo aquí..."
+              value={motivoAceptacion}
+              onChange={(e) => setMotivoAceptacion(e.target.value)}
+            />
+            <div className="flex justify-end gap-4">
+              <button
+                className="btn bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
+                onClick={async () => {
+                  if (!motivoAceptacion.trim()) {
+                    alert("Por favor, ingresa un motivo para aceptar el reporte.");
+                    return;
+                  }
+
+                  try {
+                    const res = await fetch("http://localhost:4000/reportes/aceptar", {
+                      method: "PUT",
+                      headers: {
+                        "Content-Type": "application/json"
+                      },
+                      body: JSON.stringify({
+                        id_reporte: reporte.id_reporte,
+                        motivo: motivoAceptacion.trim()
+                      })
+                    });
+
+                    const data = await res.json();
+
+                    if (!res.ok) {
+                      alert("Error: " + (data.error || "No se pudo aceptar el reporte."));
+                    } else {
+                      alert("Reporte aceptado correctamente.");
+                      navigate("/reportes");
+                    }
+                  } catch (err) {
+                    console.error("Error al aceptar el reporte:", err);
+                    alert("Error al procesar la solicitud.");
+                  }
+
+                  setIsAceptarAlertVisible(false);
+                  setMotivoAceptacion("");
+                }}
+              >
+                Aceptar
+              </button>
+              <button
+                className="btn bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700"
+                onClick={() => {
+                  setIsAceptarAlertVisible(false);
+                  setMotivoAceptacion("");
+                }}
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Alerta de notificar*/}
+      {isNotificarAlertVisible && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+          <div className="bg-white text-black p-6 rounded-lg shadow-lg w-[500px]">
+            <h2 className="text-xl font-semibold mb-4">Confirmar Notificación Técnica</h2>
+            <p className="mb-2">Estás a punto de notificar un cambio técnico. Esto desactivará la guía, pero no afectará el acceso del autor. Es obligatorio ingresar un motivo:</p>
+            <textarea
+              className="textarea textarea-bordered w-full mb-4 text-black bg-gray-200"
+              rows={4}
+              placeholder="Describe el motivo del cambio técnico..."
+              value={motivoNotificacion}
+              onChange={(e) => setMotivoNotificacion(e.target.value)}
+            />
+            <div className="flex justify-end gap-4">
+              <button
+                className="btn bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
+                onClick={async () => {
+                  if (!motivoNotificacion.trim()) {
+                    alert("Por favor, ingresa un motivo para notificar el cambio técnico.");
+                    return;
+                  }
+
+                  try {
+                    const res = await fetch("http://localhost:4000/reportes/aceptar", {
+                      method: "PUT",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({
+                        id_reporte: reporte.id_reporte,
+                        motivo: motivoNotificacion.trim()
+                      })
+                    });
+
+                    const data = await res.json();
+
+                    if (!res.ok) {
+                      alert("Error: " + (data.error || "No se pudo procesar la notificación."));
+                    } else {
+                      alert("Notificación procesada correctamente.");
+                      navigate("/reportes");
+                    }
+                  } catch (err) {
+                    console.error("Error al notificar:", err);
+                    alert("Error al procesar la solicitud.");
+                  }
+
+                  setIsNotificarAlertVisible(false);
+                  setMotivoNotificacion("");
+                }}
+              >
+                Aceptar
+              </button>
+              <button
+                className="btn bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700"
+                onClick={() => {
+                  setIsNotificarAlertVisible(false);
+                  setMotivoNotificacion("");
+                }}
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+
     </div>
   );
 }

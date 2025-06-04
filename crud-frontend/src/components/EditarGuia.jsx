@@ -292,7 +292,10 @@ const handleGuardar = () => {
   })
     .then(res => res.json())
     .then(data => {
-      navigate('/mis-guias');
+      if(esMaestro)
+        navigate('/mis-guias-profesor');
+      else 
+        navigate('/mis-guias');
     })
     .catch(error => {
       console.error('Error al guardar la guía:', error);

@@ -135,11 +135,34 @@ export default function UserProfileAdmin() {
   };
 
   // Función para confirmar la eliminación
-  const handleConfirmDelete = () => {
-    // Aquí puedes agregar la operación de eliminación de la cuenta en la base de datos
-    console.log("Cuenta eliminada");
-    setIsDeleteAlertVisible(false);
+  const handleConfirmDelete = async () => {
+    const autor = JSON.parse(localStorage.getItem("autorSeleccionado"));
+    if (!autor?.id) return;
+
+    try {
+      const res = await fetch("http://localhost:4000/perfil/eliminar", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id_usuario: autor.id }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert("Error: " + (data.error || "No se pudo eliminar la cuenta"));
+      } else {
+        alert("Cuenta eliminada exitosamente.");
+        localStorage.removeItem("autorSeleccionado");
+        navigate("/reportes"); // o redirecciona a donde tenga más sentido
+      }
+    } catch (error) {
+      console.error("Error al eliminar cuenta:", error);
+      alert("Error al procesar la eliminación.");
+    } finally {
+      setIsDeleteAlertVisible(false);
+    }
   };
+
 
   // Función para cancelar la eliminación
   const handleCancelDelete = () => {
@@ -354,7 +377,10 @@ export default function UserProfileAdmin() {
                     <li><a onClick={handleRestoreAccess}>Restaurar acceso</a></li>
                   )}
                   {/* Opción de Eliminar cuenta */}
-                  <li><a onClick={handleDeleteAccount}>Eliminar cuenta</a></li>
+                  {datosUsuario?.tipo === 1 && (
+                    <li><a onClick={() => setIsDeleteAlertVisible(true)}>Eliminar cuenta</a></li>
+                  )}
+
                   
                 </ul>
               </div>
@@ -479,17 +505,28 @@ export default function UserProfileAdmin() {
 
       {/* Alerta de confirmación */}
       {isDeleteAlertVisible && (
-        <div className="bg-gray-900 fixed inset-0 bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white text-black p-6 rounded-lg shadow-lg">
-            <h3 className="text-xl font-semibold mb-4">¡Atención!</h3>
-            <p>Este cambio es permanente. ¿Estás seguro de que deseas eliminar la cuenta?</p>
+        <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white text-black p-6 rounded-lg shadow-lg w-[500px]">
+            <h3 className="text-xl font-semibold mb-4">Eliminar cuenta</h3>
+            <p>¿Estás seguro de que deseas eliminar permanentemente la cuenta de este alumno? Esta acción no se puede deshacer y borrará todos sus datos.</p>
             <div className="mt-4 flex justify-end gap-4">
-                <button className="btn bg-blue-600 text-white px-6 py-2 rounded-lg shadow-md hover:bg-blue-700 transition" onClick={handleConfirmDelete}>Aceptar</button>
-                <button className="btn bg-red-600 text-white px-6 py-2 rounded-lg shadow-md hover:bg-red-700 transition" onClick={handleCancelDelete}>Cancelar</button>
+              <button
+                className="btn bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
+                onClick={handleConfirmDelete}
+              >
+                Aceptar
+              </button>
+              <button
+                className="btn bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700"
+                onClick={() => setIsDeleteAlertVisible(false)}
+              >
+                Cancelar
+              </button>
             </div>
           </div>
         </div>
       )}
+
 
       {isRestrictAlertVisible && (
         <div className="bg-gray-900 fixed inset-0 bg-opacity-50 flex justify-center items-center z-50">

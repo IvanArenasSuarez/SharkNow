@@ -354,7 +354,7 @@ export default function VerGuiaSeguida() {
 
             {/* Segunda Fila - Botones de Acción */}
             <div className="flex justify-center gap-8 mt-12">
-                <button className="btn btn-lg btn-primary " onClick={() => navigate('/quiz-guia')}>Comenzar Sesión</button>
+                <button className="btn btn-lg btn-primary " onClick={() => navigate(`/quiz-guia/${guia.id}`)}>Comenzar Sesión</button>
                 <button className="btn btn-lg btn-accent" 
                     onClick={() => {
                         handleSubmit();
