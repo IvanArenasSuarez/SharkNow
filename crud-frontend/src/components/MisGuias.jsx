@@ -187,6 +187,7 @@ export default function MisGuias() {
                                             onClick={() => {
                                                 const guiaSeleccionada = {
                                                     id: seguidas.id_gde,
+                                                    id_usuario: seguidas.id_usuario,
                                                     tipo: seguidas.tipo,
                                                     nombre: seguidas.nombre_gde,
                                                     usuario: seguidas.nombre_usuario,

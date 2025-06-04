@@ -50,11 +50,11 @@ export default function Reporte() {
   }
 
   const payload = {
-    id_usuario: guiaSeleccionada?.id_autor,
-    id_gde: guiaSeleccionada?.id,
+    id_usuario: guiaSeleccionada?.id_autor,   // Autor de la guía
+    id_gde: guiaSeleccionada?.id,             // ID de la guía
     categoria: selectedReason,
     descripcion: description,
-    id_quienreporto: userData?.id_usuario,
+    id_quienreporto: userData?.id_usuario,    // Usuario que reporta
   };
 
   try {

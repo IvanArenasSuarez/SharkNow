@@ -361,7 +361,23 @@ export default function VerGuiaSeguida() {
                         navigate('/mis-guias')
                     }
                 }>Salir y Guardar</button>
-                <button className="btn btn-lg btn-error" onClick={() => navigate('/reporte')}>Reportar</button>
+                <button
+                className="btn btn-lg btn-error"
+                onClick={() => {
+                    const payload = {
+                    id: guia.id, // id_gde
+                    id_autor: guia.id_autor || guia.id_usuario, // asegúrate que este campo esté en 'guia'
+                    nombre: guia.nombre
+                    };
+                    localStorage.setItem("guiaSeleccionada", JSON.stringify(payload));
+                    navigate("/reporte");
+                }}
+                >
+                Reportar
+                </button>
+
+
+
             </div>
         </div>
     );
