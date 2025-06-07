@@ -313,12 +313,12 @@ const handleEnviar = () => {
     (preguntasStorage.nuevas.length) +
     (preguntasStorage.listado.length) +
     (preguntasStorage.editadas.length);
-/*
+
   if (totalPreguntas < 15) {
     alert(`Esta guía debe tener 15 o más preguntas. Solo contiene: ${totalPreguntas}`);
     return;
   }
-*/
+  
   const token = localStorage.getItem("token");
   
   fetch('http://localhost:4000/guias/guardar', {
