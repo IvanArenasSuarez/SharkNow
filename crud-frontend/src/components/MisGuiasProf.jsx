@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate} from 'react-router-dom';
+import { jwtDecode } from "jwt-decode";
 
 export default function MisGuiasProf() {
     const navigate = useNavigate();
@@ -7,6 +8,7 @@ export default function MisGuiasProf() {
 
     const [misGuias, setMisGuias] = useState([]);
     const [solicitudes, setSolicitudes] = useState([]);
+    const [esJefe, setEsJefe] = useState(false);
 
     useEffect(() => {
             const fetchGuias = async () => {
@@ -54,6 +56,28 @@ export default function MisGuiasProf() {
         fetchSolicitudes();
     }, []);
 
+    useEffect(() => {
+        const verificarSiEsJefe = () => {
+            try {
+                 const token = localStorage.getItem('token');
+                    const decoded = jwtDecode(token);
+                      // Verificamos si es tipo 2 (profesor)
+                    if (decoded.tipo_de_cuenta === 2) {
+                    // Verificamos si tiene al menos una academia donde es jefe
+                    const academias = decoded.academias || [];
+                    const esJefeEnAlguna = academias.some(a => a.jefe === true);
+                
+                    setEsJefe(esJefeEnAlguna);
+                }
+                else esJefe(false);
+            } catch (err) {
+                console.error("No se pudo saber la procedencia: ", err);
+            }
+        }
+
+        verificarSiEsJefe();
+    });
+
     return (
         <div className="min-h-screen flex flex-col items-center px-6 py-6">
             <h1 className="text-4xl font-bold text-center mb-6 w-full">Guias de Estudio</h1>
@@ -85,7 +109,6 @@ export default function MisGuiasProf() {
                         {misGuias.length > 0 ? (
                             misGuias.map((guia) => (
                                 <li key={guia.id_gde} className="flex items-center gap-4 h-25 px-3 border-b">
-                                    <img className="w-12 h-12 rounded-full" src="https://img.daisyui.com/images/profile/demo/1@94.webp" alt="Perfil" />
                                     <div className="flex flex-col flex-grow">
                                         <div className="font-semibold text-lg">{guia.nombre}</div>
                                         <p className="text-sm text-gray-600">{guia.descripcion}</p>
@@ -164,10 +187,6 @@ export default function MisGuiasProf() {
                                         onClick={handleClick}
                                         className={`flex items-center gap-4 h-auto px-3 py-4 border-b rounded transition ${esRechazada ? 'cursor-pointer hover:bg-red-50' : ''}`}
                                     >
-                                        <img className='w-12 h-12 rounded-full'
-                                            src="https://img.daisyui.com/images/profile/demo/1@94.webp" 
-                                            alt='Perfil'
-                                        />
                                         <div className='flex flex-col flex-grow'>
                                             <div className='font-semibold text-lg'>
                                                 {solicitud.nombre}
@@ -194,11 +213,13 @@ export default function MisGuiasProf() {
                                     </li>
                                 )
                             })  
-                        )}
-                        
+                        )}  
                     </ul>
                 </div>
             </div>
+            {esJefe && (
+                <button onClick={() => navigate('/mis-guias-academia')} className="btn btn-primary my-8 mx-8">Vista de Academia</button>
+            )}
         </div>
     );
 }

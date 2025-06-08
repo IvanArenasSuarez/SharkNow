@@ -194,8 +194,7 @@ export default function QuizGuia() {
 
                     const data = await res.json();
                     console.log('Sesión registrada:', data);
-
-                    if (data.recompensa) {
+                      if (data.recompensa) {
                     console.log("nueva recompensa");
                     const recompensasPrevias = JSON.parse(localStorage.getItem('recompensas_pendientes') || '[]');
                     const idsPrevios = new Set(recompensasPrevias.map(r => r.id));
@@ -203,6 +202,7 @@ export default function QuizGuia() {
                     const recompensasActualizadas = [...recompensasPrevias, ...nuevasRecompensas];
                     localStorage.setItem('recompensas_pendientes', JSON.stringify(recompensasActualizadas));
                     }
+
                 } catch (error) {
                     console.error('Error al registrar la sesión:', error);
                 }
@@ -246,8 +246,8 @@ export default function QuizGuia() {
       setMatchingAnswers((prev) => ({
         ...prev,
         [leftIndex]: selectedRight.right,
-      }));
-    };
+    }));
+};
 
     
     const checkMatchingAnswers = () => {
@@ -255,45 +255,47 @@ export default function QuizGuia() {
     let allCorrectLocal = true;
 
     console.log("📤 Respuestas seleccionadas por el usuario:");
-    Object.entries(matchingAnswers).forEach(([leftIndex, selectedRightText]) => {
-  const leftText = correctPairs[leftIndex].left;
-  console.log(`  ${leftText} → ${selectedRightText}`);
-});
-
+     Object.entries(matchingAnswers).forEach(([leftIndex, selectedRightText]) => {
+      const leftText = correctPairs[leftIndex].left;
+      console.log(`  ${leftText} → ${selectedRightText}`);
+    });
 
     console.log("✅ Respuestas correctas:");
     correctPairs.forEach((pair) => {
         console.log(`  ${pair.left} → ${pair.right}`);
     });
 
-    correctPairs.forEach((pair, leftIndex) => {
-  const selectedRightText = matchingAnswers[leftIndex];
-  if (selectedRightText !== pair.right) {
-    allCorrectLocal = false;
-  }
-});
+        
 
-    const calidad = calculateQuality(allCorrectLocal, questionTime);
-    setQuestionTime(0);
-    setQualityPerQuestion([...qualityPerQuestion, { id_reactivo: questions[step].id, calidad }]);
 
-    setAllCorrect((prev) => ({
-        ...prev,
-        [step]: allCorrectLocal,
-    }));
+  correctPairs.forEach((pair, leftIndex) => {
+      const selectedRightText = matchingAnswers[leftIndex];
+      if (selectedRightText !== pair.right) {
+        allCorrectLocal = false;
+      }
+    });
 
-    if (allCorrectLocal) {
-        setScore(score + 1);
-        setFeedbackMessage("¡Correcto!");
-    } else {
-        const pairsText = questions[step].pairs
-            .map(pair => `${pair.left} → ${pair.right}`)
-            .join("\n\n");
-        setFeedbackMessage(`Incorrecto. La relación correcta es:\n\n${pairsText}`);
-    }
+        const calidad = calculateQuality(allCorrectLocal, questionTime);
+        setQuestionTime(0);
+        setQualityPerQuestion([...qualityPerQuestion, { id_reactivo: questions[step].id, calidad }]);
 
-    setShowFeedback(true);
-};
+        setAllCorrect((prev) => ({
+            ...prev,
+            [step]: allCorrectLocal,
+        }));
+
+        if (allCorrectLocal) {
+            setScore(score + 1);
+            setFeedbackMessage("¡Correcto!");
+        } else {
+            const pairsText = questions[step].pairs
+                .map(pair => `${pair.left} → ${pair.right}`)
+                .join("\n\n");
+            setFeedbackMessage(`Incorrecto. La relación correcta es:\n\n${pairsText}`);
+        }
+
+        setShowFeedback(true);
+    };
 
     const nextStep = () => {
          setAssignedColors({});
@@ -319,11 +321,12 @@ export default function QuizGuia() {
 
 return (
 <div className="p-4 w-full max-w-xl h-[450px] mx-auto bg-gray-900 text-white rounded-lg shadow-lg mt-12 overflow-auto flex flex-col justify-center items-center">
-<div style={{ display: 'flex', justifyContent: 'flex-end', padding: '0.5rem' }}>
-  <span style={{ fontWeight: 'bold' }}>
-    Pregunta {step + 1}/{questions.length}
-  </span>
-</div>
+    <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '0.5rem' }}>Add commentMore actions
+      <span style={{ fontWeight: 'bold' }}>
+        Pregunta {step + 1}/{questions.length}
+      </span>
+    </div>  
+    
     {loading ? (
       <div className="text-center text-lg font-semibold">Cargando preguntas...</div>
     ) : !readyToStart ? (

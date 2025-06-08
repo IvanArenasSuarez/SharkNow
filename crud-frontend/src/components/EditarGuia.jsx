@@ -245,39 +245,137 @@ useEffect(() => {
     ]);
   };
   
-  const handlePublicarOEnviar = () => {
+const handlePublicar = () => {
   const guiaStorage = JSON.parse(localStorage.getItem('guia')) || guia;
   const preguntasStorage = JSON.parse(localStorage.getItem('preguntas'));
 
   const totalPreguntas =
-  (preguntasStorage.nuevas.length) +
-  (preguntasStorage.listado.length) +
-  (preguntasStorage.editadas.length);
+    (preguntasStorage.nuevas.length) +
+    (preguntasStorage.listado.length) +
+    (preguntasStorage.editadas.length);
 
-     if (totalPreguntas < 15) {
+  if (totalPreguntas < 15) {
     alert(`Esta guía debe tener 15 o más preguntas. Solo contiene: ${totalPreguntas}`);
     return;
   }
 
   const token = localStorage.getItem("token");
+  
   fetch('http://localhost:4000/guias/guardar', {
     method: 'POST',
-    headers: { Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json' },
+    headers: { 
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json' 
+    },
     body: JSON.stringify({ guia: guiaStorage, preguntas: preguntasStorage }),
   })
-    .then(res => res.json())
-    .then(data => {
-      if(esMaestro){
-        navigate('/mis-guias-profesor');
-      }else{
-        navigate('/mis-guias');
-      }
-    })
-    .catch(error => {
-      console.error('Error al guardar la guía:', error);
+  .then(res => {
+    if (!res.ok) {
+      return res.text().then(text => { throw new Error(text) });
+    }
+    return res.json();
+  })
+  .then(data => {
+    // Después de guardar, proceder a publicar
+    return fetch('http://localhost:4000/guias/publicar', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ id_gde: guia.id }),
     });
-  };
+  })
+  .then(res => {
+    if (!res.ok) {
+      return res.text().then(text => { throw new Error(text) });
+    }
+    return res.json();
+  })
+  .then(data => {
+    if (data.recompensa) {
+        console.log("¡Nueva recompensa obtenida!");
+        const recompensasPrevias = JSON.parse(localStorage.getItem('recompensas_pendientes') || '[]');
+        const idsPrevios = new Set(recompensasPrevias.map(r => r.id));
+        const nueva = data.recompensa;
+        if (!idsPrevios.has(nueva.id)) {
+          const actualizadas = [...recompensasPrevias, nueva];
+          localStorage.setItem('recompensas_pendientes', JSON.stringify(actualizadas));
+        }
+      }
+
+    if(esMaestro){
+      navigate('/mis-guias-profesor');
+    }else{
+      navigate('/mis-guias');
+    }
+  })
+  .catch(error => {
+    console.error('Error al publicar la guía:', error);
+    alert('Error al publicar la guía: ' + error.message);
+  });
+};
+
+const handleEnviar = () => {
+  const guiaStorage = JSON.parse(localStorage.getItem('guia')) || guia;
+  const preguntasStorage = JSON.parse(localStorage.getItem('preguntas'));
+
+  const totalPreguntas =
+    (preguntasStorage.nuevas.length) +
+    (preguntasStorage.listado.length) +
+    (preguntasStorage.editadas.length);
+
+  if (totalPreguntas < 15) {
+    alert(`Esta guía debe tener 15 o más preguntas. Solo contiene: ${totalPreguntas}`);
+    return;
+  }
+  
+  const token = localStorage.getItem("token");
+  
+  fetch('http://localhost:4000/guias/guardar', {
+    method: 'POST',
+    headers: { 
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json' 
+    },
+    body: JSON.stringify({ guia: guiaStorage, preguntas: preguntasStorage }),
+  })
+  .then(res => {
+    if (!res.ok) {
+      return res.text().then(text => { throw new Error(text) });
+    }
+    return res.json();
+  })
+  .then(data => {
+    // Después de guardar, proceder a publicar
+    return fetch('http://localhost:4000/guias/enviarSolicitud', {
+      method: 'POST',
+      headers: { 
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json' 
+      },
+      body: JSON.stringify({ id_usuario: userData.id_usuario, id_gde: guia.id }),
+    });
+  })
+  .then(res => {
+    if (!res.ok) {
+      return res.text().then(text => { throw new Error(text) });
+    }
+    return res.json();
+  })
+  .then(data => {
+    if(esMaestro){
+      navigate('/mis-guias-profesor');
+    }else{
+      navigate('/mis-guias');
+    }
+  })
+  .catch(error => {
+    console.error('Error al Crear la solicitud:', error);
+    alert('Error al crear la solicitud: ' + error.message);
+  });
+};
+
 const handleGuardar = () => {
   const guiaStorage = JSON.parse(localStorage.getItem('guia')) || guia;
   const preguntasStorage = JSON.parse(localStorage.getItem('preguntas'));
@@ -466,7 +564,7 @@ useEffect(() => {
                               // 2. Confirmar con el usuario
                               const confirmar = window.confirm(`¿Deseas enviar esta guía a ${nombreResponsable}?`);
                               if (confirmar) {
-                                handlePublicarOEnviar();
+                                handleEnviar();
                               }
                             } catch (error) {
                               console.error("Error al obtener el nombre del usuario responsable:", error);
@@ -478,7 +576,7 @@ useEffect(() => {
                             const guiaStorage = JSON.parse(localStorage.getItem("guia")) || guia;
                             guiaStorage.estado = "P";
                             localStorage.setItem("guia", JSON.stringify(guiaStorage));
-                            handlePublicarOEnviar();
+                            handlePublicar();
                           }
                       }
                     }}>{enviarAcademia ? "Enviar" : "Publicar"}

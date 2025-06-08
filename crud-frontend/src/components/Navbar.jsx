@@ -45,7 +45,18 @@ export default function Navbar() {
 
     };
   
-    const fetchNotifications = async () => {
+
+    // Escuchar evento global y recargar imagen cuando se actualice
+    const handleAvatarUpdate = () => fetchAvatarImage();
+    window.addEventListener("avatarActualizado", handleAvatarUpdate);
+  
+    // Limpieza del listener
+    return () => {
+      window.removeEventListener("avatarActualizado", handleAvatarUpdate);
+    };
+  }, []);
+
+  const fetchNotifications = async () => {
     try {
       const token = localStorage.getItem("token");
       const res = await fetch("http://localhost:4000/notificaciones", {
@@ -60,20 +71,11 @@ export default function Navbar() {
     }
   };
 
-    if (userData?.id_usuario) {
+  if (userData?.id_usuario) {
       fetchAvatarImage();
-       fetchNotifications();
-    }
+      fetchNotifications();
+  }
   
-    // Escuchar evento global y recargar imagen cuando se actualice
-    const handleAvatarUpdate = () => fetchAvatarImage();
-    window.addEventListener("avatarActualizado", handleAvatarUpdate);
-  
-    // Limpieza del listener
-    return () => {
-      window.removeEventListener("avatarActualizado", handleAvatarUpdate);
-    };
-  }, []);
   
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -85,27 +87,26 @@ export default function Navbar() {
     navigate(route);
   };
 
-const handleRemoveNotification = async (id) => {
-  try {
-    const token = localStorage.getItem("token");
+  const handleRemoveNotification = async (id) => {
+    try {
+      const token = localStorage.getItem("token");
 
-    const res = await fetch(`http://localhost:4000/eliminarnotificaciones/${id}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+      const res = await fetch(`http://localhost:4000/eliminarnotificaciones/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-    if (!res.ok) throw new Error("Error al eliminar notificación");
+      if (!res.ok) throw new Error("Error al eliminar notificación");
 
-    // Si fue exitosa, elimina localmente
-    setNotifications((prev) => prev.filter((n) => n.id !== id));
-  } catch (error) {
-    console.error("Error al eliminar notificación:", error);
-  }
-};
+      // Si fue exitosa, elimina localmente
+      setNotifications((prev) => prev.filter((n) => n.id !== id));
 
-
+    } catch (error) {
+      console.error("Error al eliminar notificación:", error);
+    }
+  };
 
 const getDotColor = (type) => {
   switch (type) {

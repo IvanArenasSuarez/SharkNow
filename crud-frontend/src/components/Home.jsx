@@ -8,10 +8,11 @@ export default function Home() {
   const [popupVisible, setPopupVisible] = useState(false);
   const [recompensasMostradas, setRecompensasMostradas] = useState(false);
 
-  const desbloquearRecompensas = () => {
-    const recompensasObtenidas = JSON.parse(localStorage.getItem('recompensas_pendientes') || '[]');
 
-    setTimeout(() => {
+  const recompensasObtenidas = JSON.parse(localStorage.getItem('recompensas_pendientes') || '[]');
+
+  const desbloquearRecompensas = () => {
+      setTimeout(() => {
       setRecompensas(recompensasObtenidas);
     }, 1000); // Simulamos un retraso de 1 segundo
   };

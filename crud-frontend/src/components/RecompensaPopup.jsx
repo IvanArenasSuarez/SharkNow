@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 function RecompensaPopup({ recompensas, onCerrar }) {
   const [recompensaIndex, setRecompensaIndex] = useState(0);
 
-  useEffect(() => {
+   useEffect(() => {
     // Eliminar la recompensa actual del localStorage al mostrarla
     const recompensaActual = recompensas[recompensaIndex];
     const almacenadas = JSON.parse(localStorage.getItem('recompensas_pendientes') || '[]');
