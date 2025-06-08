@@ -168,6 +168,7 @@ function App() {
                     <Route path="/editar-guia" element={<EditarGuia />} />
                     <Route path="/editar-pregunta" element={<EditarPregunta />} />
                     <Route path="/guiaAcademia" element={<AceptarGuiaAcademia />} />
+                    <Route path="/guia-seguida" element={<GuiaSeguida />} />
                   </>
                 )}
 
@@ -176,6 +177,7 @@ function App() {
                     <Route path="/perfil/admin" element={<UserProfileAdmin />} />
                     <Route path="/reportes" element={<Reportes />} />
                     <Route path="/ver-reporte" element={<VerReporte />} />
+                    <Route path="/guia-seguida" element={<GuiaSeguida />} />
                   </>
                 )}
               </>
