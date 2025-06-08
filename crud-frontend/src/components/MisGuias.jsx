@@ -185,8 +185,9 @@ export default function MisGuias() {
                                     <div className="flex gap-2">
                                         <button 
                                             onClick={() => {
-                                                const guiaSeleccionada = {
+                                               const guiaSeleccionada = {
                                                     id: seguidas.id_gde,
+                                                    id_usuario: seguidas.id_usuario,
                                                     tipo: seguidas.tipo,
                                                     nombre: seguidas.nombre_gde,
                                                     usuario: seguidas.nombre_usuario,
