@@ -63,6 +63,11 @@ export default function UserProfile() {
       });
   }, []);
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    window.location.href = "/login";
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
       <div className="container mx-auto p-6 flex-grow">
@@ -220,9 +225,9 @@ export default function UserProfile() {
                       throw new Error("Error al realizar la transferencia.");
                     }
 
-                    alert("Transferencia de característica completada.");
+                    alert("Transferencia de característica completada.\nPor favor, vuelva a iniciar sesión");
                     setIsTransferirAlertVisible(false);
-                    window.location.reload();
+                    handleLogout();
 
                   } catch (err) {
                     console.error("Error al transferir característica:", err);
