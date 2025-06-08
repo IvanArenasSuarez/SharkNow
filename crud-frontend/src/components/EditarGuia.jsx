@@ -278,21 +278,33 @@ useEffect(() => {
       console.error('Error al guardar la guía:', error);
     });
   };
-
 const handleGuardar = () => {
   const guiaStorage = JSON.parse(localStorage.getItem('guia')) || guia;
   const preguntasStorage = JSON.parse(localStorage.getItem('preguntas'));
-
   const token = localStorage.getItem("token");
+
   fetch('http://localhost:4000/guias/guardar', {
     method: 'POST',
-    headers: { Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json' },
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    },
     body: JSON.stringify({ guia: guiaStorage, preguntas: preguntasStorage }),
   })
     .then(res => res.json())
     .then(data => {
-      if(esMaestro)
+      if (data.recompensa) {
+        console.log("¡Nueva recompensa obtenida!");
+        const recompensasPrevias = JSON.parse(localStorage.getItem('recompensas_pendientes') || '[]');
+        const idsPrevios = new Set(recompensasPrevias.map(r => r.id));
+        const nueva = data.recompensa;
+        if (!idsPrevios.has(nueva.id)) {
+          const actualizadas = [...recompensasPrevias, nueva];
+          localStorage.setItem('recompensas_pendientes', JSON.stringify(actualizadas));
+        }
+      }
+
+      if (esMaestro)
         navigate('/mis-guias-profesor');
       else 
         navigate('/mis-guias');
@@ -300,7 +312,7 @@ const handleGuardar = () => {
     .catch(error => {
       console.error('Error al guardar la guía:', error);
     });
-  };
+};
 
   // Tras cargar o editar la guía:
 useEffect(() => {

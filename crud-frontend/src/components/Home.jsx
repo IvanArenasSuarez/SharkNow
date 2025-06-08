@@ -9,26 +9,10 @@ export default function Home() {
   const [recompensasMostradas, setRecompensasMostradas] = useState(false);
 
   const desbloquearRecompensas = () => {
-    const recompensasSimuladas = [
-      /*{
-        id: 'A_Sombrero_1-B',
-        nombre: 'Gorra blanca',
-        tipo: 'Sombreros',
-      },
-      {
-        id: 'C_Olas_1_B',
-        nombre: 'Olas marinas',
-        tipo: 'Marcos',
-      },
-      {
-        id: 'C_Insignia_1-D',
-        nombre: 'Insignia Épica',
-        tipo: 'Insignias',
-      },*/
-    ];
+    const recompensasObtenidas = JSON.parse(localStorage.getItem('recompensas_pendientes') || '[]');
 
     setTimeout(() => {
-      setRecompensas(recompensasSimuladas);
+      setRecompensas(recompensasObtenidas);
     }, 1000); // Simulamos un retraso de 1 segundo
   };
 
