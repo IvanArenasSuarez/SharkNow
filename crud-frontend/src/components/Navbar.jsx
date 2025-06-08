@@ -45,7 +45,10 @@ export default function Navbar() {
 
     };
   
-
+    if (userData?.id_usuario) {
+      fetchAvatarImage();
+      fetchNotifications();
+    }
     // Escuchar evento global y recargar imagen cuando se actualice
     const handleAvatarUpdate = () => fetchAvatarImage();
     window.addEventListener("avatarActualizado", handleAvatarUpdate);
@@ -70,12 +73,6 @@ export default function Navbar() {
       console.error("Error al obtener notificaciones:", err);
     }
   };
-
-  if (userData?.id_usuario) {
-      fetchAvatarImage();
-      fetchNotifications();
-  }
-  
   
   const handleLogout = () => {
     localStorage.removeItem("token");
