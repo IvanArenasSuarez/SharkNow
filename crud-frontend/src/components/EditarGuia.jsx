@@ -278,10 +278,10 @@ const handlePublicar = () => {
   .then(data => {
     // Después de guardar, proceder a publicar
     return fetch('http://localhost:4000/guias/publicar', {
-      method: 'PUT',
-      headers: { 
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json' 
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({ id_gde: guia.id }),
     });
@@ -293,6 +293,17 @@ const handlePublicar = () => {
     return res.json();
   })
   .then(data => {
+    if (data.recompensa) {
+        console.log("¡Nueva recompensa obtenida!");
+        const recompensasPrevias = JSON.parse(localStorage.getItem('recompensas_pendientes') || '[]');
+        const idsPrevios = new Set(recompensasPrevias.map(r => r.id));
+        const nueva = data.recompensa;
+        if (!idsPrevios.has(nueva.id)) {
+          const actualizadas = [...recompensasPrevias, nueva];
+          localStorage.setItem('recompensas_pendientes', JSON.stringify(actualizadas));
+        }
+      }
+
     if(esMaestro){
       navigate('/mis-guias-profesor');
     }else{
