@@ -49,6 +49,12 @@ export default function Estadisticas() {
     }, []);
 
     useEffect(() => {
+        data.forEach((item, index) => {
+            console.log(`Sesión ${index + 1}:`);
+            console.log("Fecha: " + item.fecha);
+            console.log("Reactivos: " + item.total_reactivos);
+            console.log("Correctas: " + item.correctas);
+        });
         const session = data.find((item) => item.fecha === selectedDate);
         setSelectedSession(session || null);
     }, [selectedDate, data]);
@@ -65,7 +71,7 @@ export default function Estadisticas() {
                             <XAxis dataKey="fecha" stroke="#ccc" />
                             <YAxis domain={[0, 100]} stroke="#ccc" />
                             <Tooltip contentStyle={{ backgroundColor: '#222', color: '#fff' }} />
-                            <Line type="monotone" dataKey="correctas" stroke="#6366F1" strokeWidth={2} />
+                            <Line type="monotone" dataKey="aciertos" stroke="#6366F1" strokeWidth={2} />
                         </LineChart>
                     </ResponsiveContainer>
                 </div>
