@@ -235,7 +235,14 @@ export default function VerGuiaSeguida() {
                         </li>
                     </ul>
                     {/* Botón de Estadísticas */}
-                    <button className="btn btn-outline btn-accent mt-6 w-full"  onClick={() => navigate('/estadisticas')}>📊 Ver Estadísticas</button>
+                    <button className="btn btn-outline btn-accent mt-6 w-full"  onClick={() => {
+                        const estadisticas = {
+                            id_gde: guia.id,
+                            id_usuario: userData.id_usuario
+                        }
+                        localStorage.setItem("estadisticas", JSON.stringify(estadisticas));
+                        navigate('/estadisticas')
+                    }}>📊 Ver Estadísticas</button>, 
                 </div>
 
                 {/* Columna Derecha - Formulario de Notificaciones */}

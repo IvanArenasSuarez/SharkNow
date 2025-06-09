@@ -17,10 +17,35 @@ export default function Estadisticas() {
     const [selectedDate, setSelectedDate] = useState(null);
     const [selectedSession, setSelectedSession] = useState(null);
 
+    const [guia, setGuia] = useState(() => {
+        const guiaRecibida = localStorage.getItem('estadisticas');
+        if(guiaRecibida) {
+            return JSON.parse(guiaRecibida);
+        }
+        return {};
+    });
+
+
     const navigate = useNavigate();
 
     useEffect(() => {
-        setData(sampleData);
+        const fetchFechas = async () => {
+            try {
+                const response = await fetch(`http://localhost:4000/guias/estadisticas?id_gde=${guia.id_gde}&id_usuario=${guia.id_usuario}`);
+                const info = await response.json();
+                const processedData = info.data.map((item) => ({
+                    ...item,
+                    fecha: item.fecha.split('T')[0]
+                }));
+
+                setData(processedData);
+                const totalAciertos = processedData.reduce((sum, item) => sum + item.correctas, 0);
+            } catch (error) {
+                console.error("Error: " + error);
+            }
+        }
+
+        fetchFechas();
     }, []);
 
     useEffect(() => {
@@ -40,7 +65,7 @@ export default function Estadisticas() {
                             <XAxis dataKey="fecha" stroke="#ccc" />
                             <YAxis domain={[0, 100]} stroke="#ccc" />
                             <Tooltip contentStyle={{ backgroundColor: '#222', color: '#fff' }} />
-                            <Line type="monotone" dataKey="aciertos" stroke="#6366F1" strokeWidth={2} />
+                            <Line type="monotone" dataKey="correctas" stroke="#6366F1" strokeWidth={2} />
                         </LineChart>
                     </ResponsiveContainer>
                 </div>
@@ -66,7 +91,7 @@ export default function Estadisticas() {
                         <p className="text-lg font-semibold text-gray-100">Detalles de la Sesión</p>
                         <p className="text-sm text-gray-300">Fecha: {selectedSession.fecha}</p>
                         <p className="text-sm text-green-400">Correctas: {selectedSession.correctas}</p>
-                        <p className="text-sm text-red-400">Incorrectas: {selectedSession.incorrectas}</p>
+                        <p className="text-sm text-red-400">Incorrectas: {(selectedSession.total_reactivos - selectedSession.correctas)}</p>
                     </div>
                 )}
             </div>
