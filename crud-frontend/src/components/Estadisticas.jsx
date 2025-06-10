@@ -33,10 +33,16 @@ export default function Estadisticas() {
             try {
                 const response = await fetch(`http://localhost:4000/guias/estadisticas?id_gde=${guia.id_gde}&id_usuario=${guia.id_usuario}`);
                 const info = await response.json();
-                const processedData = info.data.map((item) => ({
-                    ...item,
-                    fecha: item.fecha.split('T')[0]
-                }));
+                console.table(info);
+                const processedData = info.data.map((item) => {
+                    const correctas = item.correctas || 0;
+                    const total = item.total_reactivos || 1;
+                    return {
+                        ...item,
+                        fecha: item.fecha.split('T')[0],
+                        aciertos: Math.round((100/total) * correctas)
+                    };
+                });
 
                 setData(processedData);
                 const totalAciertos = processedData.reduce((sum, item) => sum + item.correctas, 0);

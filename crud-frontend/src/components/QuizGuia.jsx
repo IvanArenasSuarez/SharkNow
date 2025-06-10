@@ -78,6 +78,8 @@ export default function QuizGuia() {
     const [shuffledRight, setShuffledRight] = useState([]);
     const [meSirve, setMeSirve] = useState(false);
 
+    const userData = JSON.parse(localStorage.getItem("userData")); 
+
   const toggleMeSirve = async () => {
     try {
       const url = meSirve
@@ -310,7 +312,7 @@ export default function QuizGuia() {
             setCompleted(true);
             const endTime = new Date();
             const sessionInfo = {
-                id_usuario: 1, 
+                id_usuario: userData.id_usuario, 
                 id_gde: id_gde,
                 hora_inicio: startTime.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit', hour12: false }),
                 hora_fin: endTime.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit', hour12: false }),

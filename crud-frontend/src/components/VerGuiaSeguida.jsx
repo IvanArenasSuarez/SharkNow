@@ -242,7 +242,7 @@ export default function VerGuiaSeguida() {
                         }
                         localStorage.setItem("estadisticas", JSON.stringify(estadisticas));
                         navigate('/estadisticas')
-                    }}>📊 Ver Estadísticas</button>, 
+                    }}>📊 Ver Estadísticas</button>
                 </div>
 
                 {/* Columna Derecha - Formulario de Notificaciones */}
