@@ -321,7 +321,7 @@ export default function QuizGuia() {
 
 return (
 <div className="p-4 w-full max-w-xl h-[450px] mx-auto bg-gray-900 text-white rounded-lg shadow-lg mt-12 overflow-auto flex flex-col justify-center items-center">
-    <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '0.5rem' }}>Add commentMore actions
+    <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '0.5rem' }}>
       <span style={{ fontWeight: 'bold' }}>
         Pregunta {step + 1}/{questions.length}
       </span>
