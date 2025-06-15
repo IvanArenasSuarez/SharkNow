@@ -4,13 +4,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';  // Asegúrate de tener los estilos por defecto de react-calendar
 // Datos simulados de sesiones de estudio
-const sampleData = [
-    { fecha: '2025-03-20', aciertos: 80, correctas: 8, incorrectas: 2 },
-    { fecha: '2025-03-21', aciertos: 75, correctas: 15, incorrectas: 5 },
-    { fecha: '2025-03-22', aciertos: 90, correctas: 18, incorrectas: 2 },
-    { fecha: '2025-03-23', aciertos: 85, correctas: 17, incorrectas: 3 },
-    { fecha: '2025-03-24', aciertos: 95, correctas: 19, incorrectas: 1 },
-];
+
 
 export default function Estadisticas() {
     const [data, setData] = useState([]);
@@ -69,7 +63,7 @@ export default function Estadisticas() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6 bg-gray-900 text-gray-200 min-h-screen">
             {/* Gráfica */}
             <div className="md:col-span-2 bg-gray-800 p-6 rounded-xl shadow-md">
-                <h2 className="text-xl font-semibold mb-4 text-gray-100">Progreso de Aciertos</h2>
+                <h2 className="text-xl font-semibold mb-4 text-gray-100">Progreso Porcentual de Aciertos </h2>
                 <div className="overflow-x-auto">
                     <ResponsiveContainer width={data.length > 5 ? 800 : "100%"} height={300}>
                         <LineChart data={data}>

@@ -278,7 +278,7 @@ const handlePublicar = () => {
   .then(data => {
     // Después de guardar, proceder a publicar
     return fetch('http://localhost:4000/guias/publicar', {
-      method: 'POST',
+      method: 'PUT',
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json'
