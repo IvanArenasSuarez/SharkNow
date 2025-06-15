@@ -78,6 +78,8 @@ export default function QuizGuia() {
     const [shuffledRight, setShuffledRight] = useState([]);
     const [meSirve, setMeSirve] = useState(false);
 
+    const userData = JSON.parse(localStorage.getItem("userData")); 
+
   const toggleMeSirve = async () => {
     try {
       const url = meSirve
@@ -194,6 +196,15 @@ export default function QuizGuia() {
 
                     const data = await res.json();
                     console.log('Sesión registrada:', data);
+                      if (data.recompensa) {
+                    console.log("nueva recompensa");
+                    const recompensasPrevias = JSON.parse(localStorage.getItem('recompensas_pendientes') || '[]');
+                    const idsPrevios = new Set(recompensasPrevias.map(r => r.id));
+                    const nuevasRecompensas = !idsPrevios.has(data.recompensa.id) ? [data.recompensa] : [];
+                    const recompensasActualizadas = [...recompensasPrevias, ...nuevasRecompensas];
+                    localStorage.setItem('recompensas_pendientes', JSON.stringify(recompensasActualizadas));
+                    }
+
                 } catch (error) {
                     console.error('Error al registrar la sesión:', error);
                 }
@@ -237,7 +248,7 @@ export default function QuizGuia() {
     // Guardar el índice original de la opción derecha con la que se hizo match
     setMatchingAnswers((prev) => ({
         ...prev,
-        [leftIndex]: selectedRight.originalIndex,
+        [leftIndex]: selectedRight.right,
     }));
 };
 
@@ -247,8 +258,9 @@ export default function QuizGuia() {
         let allCorrectLocal = true;
     
     console.log("📤 Respuestas seleccionadas por el usuario:");
-    Object.entries(matchingAnswers).forEach(([leftIndex, selectedRight]) => {
-        console.log(`  ${correctPairs[leftIndex].left} → ${selectedRight}`);
+     Object.entries(matchingAnswers).forEach(([leftIndex, selectedRightText]) => {
+      const leftText = correctPairs[leftIndex].left;
+      console.log(`  ${leftText} → ${selectedRightText}`);
     });
 
     console.log("✅ Respuestas correctas:");
@@ -256,22 +268,25 @@ export default function QuizGuia() {
         console.log(`  ${pair.left} → ${pair.right}`);
     });
 
-        correctPairs.forEach((pair, leftIndex) => {
-            const assignedRightValue = matchingAnswers[leftIndex];
-            if (assignedRightValue !== pair.right) {
-                allCorrectLocal = false;
-            }
-        });
-    
+        
+
+
+  correctPairs.forEach((pair, leftIndex) => {
+      const selectedRightText = matchingAnswers[leftIndex];
+      if (selectedRightText !== pair.right) {
+        allCorrectLocal = false;
+      }
+    });
+
         const calidad = calculateQuality(allCorrectLocal, questionTime);
         setQuestionTime(0);
         setQualityPerQuestion([...qualityPerQuestion, { id_reactivo: questions[step].id, calidad }]);
-    
+
         setAllCorrect((prev) => ({
             ...prev,
             [step]: allCorrectLocal,
         }));
-    
+
         if (allCorrectLocal) {
             setScore(score + 1);
             setFeedbackMessage("¡Correcto!");
@@ -279,15 +294,16 @@ export default function QuizGuia() {
             const pairsText = questions[step].pairs
                 .map(pair => `${pair.left} → ${pair.right}`)
                 .join("\n\n");
-            setFeedbackMessage(`Incorrecto. La relacion correcta es: \n\n ${pairsText}`);
+            setFeedbackMessage(`Incorrecto. La relación correcta es:\n\n${pairsText}`);
         }
-    
+
         setShowFeedback(true);
     };
 
     const nextStep = () => {
          setAssignedColors({});
          setMatchingAnswers({});
+         setShuffledRight([]);
          setQuestionTime(0);
         setShowFeedback(false);
         if (step < questions.length - 1) {
@@ -296,7 +312,7 @@ export default function QuizGuia() {
             setCompleted(true);
             const endTime = new Date();
             const sessionInfo = {
-                id_usuario: 1, 
+                id_usuario: userData.id_usuario, 
                 id_gde: id_gde,
                 hora_inicio: startTime.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit', hour12: false }),
                 hora_fin: endTime.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit', hour12: false }),
@@ -308,6 +324,12 @@ export default function QuizGuia() {
 
 return (
 <div className="p-4 w-full max-w-xl h-[450px] mx-auto bg-gray-900 text-white rounded-lg shadow-lg mt-12 overflow-auto flex flex-col justify-center items-center">
+    <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '0.5rem' }}>Add commentMore actions
+      <span style={{ fontWeight: 'bold' }}>
+        Pregunta {step + 1}/{questions.length}
+      </span>
+    </div>  
+    
     {loading ? (
       <div className="text-center text-lg font-semibold">Cargando preguntas...</div>
     ) : !readyToStart ? (

@@ -17,13 +17,50 @@ export default function Estadisticas() {
     const [selectedDate, setSelectedDate] = useState(null);
     const [selectedSession, setSelectedSession] = useState(null);
 
+    const [guia, setGuia] = useState(() => {
+        const guiaRecibida = localStorage.getItem('estadisticas');
+        if(guiaRecibida) {
+            return JSON.parse(guiaRecibida);
+        }
+        return {};
+    });
+
+
     const navigate = useNavigate();
 
     useEffect(() => {
-        setData(sampleData);
+        const fetchFechas = async () => {
+            try {
+                const response = await fetch(`http://localhost:4000/guias/estadisticas?id_gde=${guia.id_gde}&id_usuario=${guia.id_usuario}`);
+                const info = await response.json();
+                console.table(info);
+                const processedData = info.data.map((item) => {
+                    const correctas = item.correctas || 0;
+                    const total = item.total_reactivos || 1;
+                    return {
+                        ...item,
+                        fecha: item.fecha.split('T')[0],
+                        aciertos: Math.round((100/total) * correctas)
+                    };
+                });
+
+                setData(processedData);
+                const totalAciertos = processedData.reduce((sum, item) => sum + item.correctas, 0);
+            } catch (error) {
+                console.error("Error: " + error);
+            }
+        }
+
+        fetchFechas();
     }, []);
 
     useEffect(() => {
+        data.forEach((item, index) => {
+            console.log(`Sesión ${index + 1}:`);
+            console.log("Fecha: " + item.fecha);
+            console.log("Reactivos: " + item.total_reactivos);
+            console.log("Correctas: " + item.correctas);
+        });
         const session = data.find((item) => item.fecha === selectedDate);
         setSelectedSession(session || null);
     }, [selectedDate, data]);
@@ -66,7 +103,7 @@ export default function Estadisticas() {
                         <p className="text-lg font-semibold text-gray-100">Detalles de la Sesión</p>
                         <p className="text-sm text-gray-300">Fecha: {selectedSession.fecha}</p>
                         <p className="text-sm text-green-400">Correctas: {selectedSession.correctas}</p>
-                        <p className="text-sm text-red-400">Incorrectas: {selectedSession.incorrectas}</p>
+                        <p className="text-sm text-red-400">Incorrectas: {(selectedSession.total_reactivos - selectedSession.correctas)}</p>
                     </div>
                 )}
             </div>

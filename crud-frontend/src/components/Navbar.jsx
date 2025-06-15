@@ -9,39 +9,7 @@ export default function Navbar() {
   const [avatarURL, setAvatarURL] = useState(null);
   const [tieneCaracteristicaAcademia, setTieneCaracteristicaAcademia] = useState(false);
   const [notificationsVisible, setNotificationsVisible] = useState(false);
-  const [notifications, setNotifications] = useState([
-    {
-      id: 1,
-      type: 1,
-      message: "Hay una nueva versión de una guía de estudio que sigues, ¡Revisala!",
-      route: "/guia-sin-seguir",
-    },
-    {
-      id: 2,
-      type: 2,
-      message: "Validación de academia rechazada, se solicitan modificaciones.",
-      route: "/mis-guias-profesor",
-    },
-    {
-      id: 3,
-      type: 1,
-      message: "Validación de academia aceptada",
-      level: "3",
-      route: "/mis-guias-profesor",
-    },
-    {
-      id: 4,
-      type: 1,
-      message: "Se te ha transferido la característica de Academia",
-      route: "/mis-guias-academia",
-    },
-    {
-      id: 5,
-      type: 2,
-      message: "Se encontraron inconsistencias en tu guía de estudio",
-      route: "/editar-guia",
-    },
-  ]);
+  const [notifications, setNotifications] = useState([]);
 
   useEffect(() => {
     const fetchAvatarImage = async () => {
@@ -79,8 +47,8 @@ export default function Navbar() {
   
     if (userData?.id_usuario) {
       fetchAvatarImage();
+      fetchNotifications();
     }
-  
     // Escuchar evento global y recargar imagen cuando se actualice
     const handleAvatarUpdate = () => fetchAvatarImage();
     window.addEventListener("avatarActualizado", handleAvatarUpdate);
@@ -90,6 +58,21 @@ export default function Navbar() {
       window.removeEventListener("avatarActualizado", handleAvatarUpdate);
     };
   }, []);
+
+  const fetchNotifications = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch("http://localhost:4000/notificaciones", {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      const data = await res.json();
+      setNotifications(data);
+    } catch (err) {
+      console.error("Error al obtener notificaciones:", err);
+    }
+  };
   
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -101,10 +84,26 @@ export default function Navbar() {
     navigate(route);
   };
 
-  const handleRemoveNotification = (id) => {
-    setNotifications((prev) => prev.filter((n) => n.id !== id));
-  };
+  const handleRemoveNotification = async (id) => {
+    try {
+      const token = localStorage.getItem("token");
 
+      const res = await fetch(`http://localhost:4000/eliminarnotificaciones/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) throw new Error("Error al eliminar notificación");
+
+      // Si fue exitosa, elimina localmente
+      setNotifications((prev) => prev.filter((n) => n.id !== id));
+
+    } catch (error) {
+      console.error("Error al eliminar notificación:", error);
+    }
+  };
 
 const getDotColor = (type) => {
   switch (type) {
