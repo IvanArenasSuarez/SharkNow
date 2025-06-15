@@ -8,8 +8,8 @@ export default function CrearGuia() {
     const [datosGuia, setDatosGuia] = React.useState({
         id: 0,
         tipo: "C",
-        materia: "",
-        plan: "",
+        materia: null,
+        plan: null,
         nombre: "",
         descripcion: "",
         version: 1,

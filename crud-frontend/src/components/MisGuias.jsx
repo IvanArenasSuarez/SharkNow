@@ -25,7 +25,6 @@ export default function MisGuias() {
                 console.error("Error al obtener guías creadas:", error);
             }
         };
-
         fetchGuias();
     }, []);
 
